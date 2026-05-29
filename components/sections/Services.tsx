@@ -1,4 +1,9 @@
+"use client";
+
+import { StaggerItem, StaggerReveal } from "@/components/ui/StaggerReveal";
+import { SectionReveal } from "@/components/ui/SectionReveal";
 import type { CmsService } from "@/lib/cms/types";
+import { motion } from "framer-motion";
 
 function WindowIcon() {
   return (
@@ -58,23 +63,33 @@ export function Services({ services }: { services: CmsService[] }) {
     <section id="services" className="relative z-20 -mt-2 sm:-mt-4 md:-mt-6 lg:-mt-10">
       <div className="services-clip bg-ek-navy pb-10 pt-12 sm:pb-11 sm:pt-14 md:pb-12 md:pt-16">
         <div className="landing-container">
-          <p className="text-[10px] font-semibold tracking-[0.38em] text-white/50 uppercase">
-            Our Services
-          </p>
+          <SectionReveal>
+            <p className="text-[10px] font-semibold tracking-[0.38em] text-white/50 uppercase">
+              Our Services
+            </p>
+          </SectionReveal>
 
-          <div className="mt-6 grid grid-cols-2 gap-x-2 gap-y-7 sm:mt-7 sm:grid-cols-3 sm:gap-y-8 lg:grid-cols-5 lg:gap-3">
+          <StaggerReveal className="mt-6 grid grid-cols-2 gap-x-2 gap-y-7 sm:mt-7 sm:grid-cols-3 sm:gap-y-8 lg:grid-cols-5 lg:gap-3">
             {services.map((service) => {
               const Icon = icons[service.icon as keyof typeof icons] ?? WindowIcon;
               return (
-                <article key={service.id} className="flex flex-col items-center text-center">
-                  <Icon />
-                  <h3 className="mt-3 max-w-[8.75rem] text-[9px] leading-[1.35] font-bold tracking-[0.06em] text-white uppercase sm:text-[10px]">
-                    {service.title}
-                  </h3>
-                </article>
+                <StaggerItem key={service.id}>
+                  <motion.article
+                    whileHover={{ y: -4, scale: 1.02 }}
+                    transition={{ type: "spring", stiffness: 400, damping: 22 }}
+                    className="flex flex-col items-center text-center"
+                  >
+                    <div className="rounded-full p-2 transition-colors hover:bg-white/5">
+                      <Icon />
+                    </div>
+                    <h3 className="mt-3 max-w-[8.75rem] text-[9px] leading-[1.35] font-bold tracking-[0.06em] text-white uppercase sm:text-[10px]">
+                      {service.title}
+                    </h3>
+                  </motion.article>
+                </StaggerItem>
               );
             })}
-          </div>
+          </StaggerReveal>
         </div>
       </div>
     </section>

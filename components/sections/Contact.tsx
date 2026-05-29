@@ -3,6 +3,7 @@
 import { ContactForm } from "@/components/sections/ContactForm";
 import { useSite } from "@/components/providers/SiteProvider";
 import { SectionReveal } from "@/components/ui/SectionReveal";
+import { StaggerItem, StaggerReveal } from "@/components/ui/StaggerReveal";
 import { Instagram, Mail, MapPin } from "lucide-react";
 
 export function Contact() {
@@ -21,31 +22,37 @@ export function Contact() {
             </p>
           </SectionReveal>
 
-          <ul className="mt-8 space-y-5 text-sm text-white/85 sm:mt-10">
-            <li className="flex items-start gap-3">
-              <MapPin className="mt-0.5 h-5 w-5 shrink-0 text-ek-teal" aria-hidden />
-              <span>
-                {site.location.suburb}, {site.location.state} · {site.location.area}
-              </span>
-            </li>
-            <li className="flex items-center gap-3">
-              <Mail className="h-5 w-5 shrink-0 text-ek-teal" aria-hidden />
-              <a href={`mailto:${site.contact.email}`} className="hover:text-ek-teal">
-                {site.contact.email}
-              </a>
-            </li>
-            <li className="flex items-center gap-3">
-              <Instagram className="h-5 w-5 shrink-0 text-ek-teal" aria-hidden />
-              <a
-                href={site.instagram.url}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="hover:text-ek-teal"
-              >
-                @{site.instagram.handle}
-              </a>
-            </li>
-          </ul>
+          <StaggerReveal className="mt-8 space-y-5 text-sm text-white/85 sm:mt-10">
+            <StaggerItem>
+              <li className="flex list-none items-start gap-3">
+                <MapPin className="mt-0.5 h-5 w-5 shrink-0 text-ek-teal" aria-hidden />
+                <span>
+                  {site.location.suburb}, {site.location.state} · {site.location.area}
+                </span>
+              </li>
+            </StaggerItem>
+            <StaggerItem>
+              <li className="flex list-none items-center gap-3">
+                <Mail className="h-5 w-5 shrink-0 text-ek-teal" aria-hidden />
+                <a href={`mailto:${site.contact.email}`} className="hover:text-ek-teal">
+                  {site.contact.email}
+                </a>
+              </li>
+            </StaggerItem>
+            <StaggerItem>
+              <li className="flex list-none items-center gap-3">
+                <Instagram className="h-5 w-5 shrink-0 text-ek-teal" aria-hidden />
+                <a
+                  href={site.instagram.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="hover:text-ek-teal"
+                >
+                  @{site.instagram.handle}
+                </a>
+              </li>
+            </StaggerItem>
+          </StaggerReveal>
         </div>
 
         <SectionReveal delay={0.1}>

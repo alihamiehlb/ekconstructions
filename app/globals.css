@@ -27,6 +27,12 @@ body {
   background: #fff;
 }
 
+@media (max-width: 1023px) {
+  body {
+    padding-bottom: 4.5rem;
+  }
+}
+
 ::selection {
   background: color-mix(in srgb, var(--color-ek-teal) 35%, white);
 }
@@ -70,7 +76,7 @@ body {
 }
 
 .btn-primary {
-  @apply inline-flex items-center justify-center gap-2.5 rounded-[3px] bg-ek-teal px-6 py-3 text-[11px] font-bold tracking-[0.18em] text-white uppercase transition hover:bg-ek-teal-dark focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ek-teal sm:px-8 sm:py-3.5 sm:tracking-[0.2em];
+  @apply inline-flex items-center justify-center gap-2.5 rounded-[3px] bg-ek-teal px-6 py-3 text-[11px] font-bold tracking-[0.18em] text-white uppercase shadow-sm transition hover:-translate-y-0.5 hover:bg-ek-teal-dark hover:shadow-md active:translate-y-0 active:scale-[0.98] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ek-teal sm:px-8 sm:py-3.5 sm:tracking-[0.2em];
 }
 
 .btn-play {

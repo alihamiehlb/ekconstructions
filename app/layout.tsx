@@ -5,6 +5,7 @@ import { CsrfBootstrap } from "@/components/security/CsrfBootstrap";
 import { SiteProvider } from "@/components/providers/SiteProvider";
 import { SmoothScroll } from "@/components/providers/SmoothScroll";
 import { BackToTop } from "@/components/ui/BackToTop";
+import { MobileQuoteBar } from "@/components/ui/MobileQuoteBar";
 import { SkipLink } from "@/components/ui/SkipLink";
 import { ScrollProgress } from "@/components/ui/ScrollProgress";
 import { siteConfig } from "@/content/site";
@@ -66,6 +67,7 @@ export default async function RootLayout({
             <ScrollProgress />
             <PageViewTracker />
             {children}
+            <MobileQuoteBar />
             <BackToTop />
           </SmoothScroll>
         </SiteProvider>
