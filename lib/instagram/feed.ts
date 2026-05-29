@@ -15,6 +15,7 @@ const DEFAULT_FEED: InstagramFeed = {
   profileUrl: "https://www.instagram.com/ekconstructions/",
   syncedAt: "",
   posts: [],
+  savedUrls: [],
 };
 
 function readInstagramFeedFromFile(): InstagramFeed {
@@ -25,44 +26,14 @@ function readInstagramFeedFromFile(): InstagramFeed {
       ...DEFAULT_FEED,
       ...raw,
       posts: Array.isArray(raw.posts) ? raw.posts : [],
+      savedUrls: Array.isArray(raw.savedUrls) ? raw.savedUrls : readUrlsFromLegacyFile(),
     };
   } catch {
-    return { ...DEFAULT_FEED };
+    return { ...DEFAULT_FEED, savedUrls: readUrlsFromLegacyFile() };
   }
 }
 
-function writeInstagramFeedToFile(feed: InstagramFeed): void {
-  const dir = path.dirname(FEED_PATH);
-  if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
-  fs.writeFileSync(FEED_PATH, JSON.stringify(feed, null, 2), "utf8");
-}
-
-export function getInstagramFeedPath(): string {
-  return FEED_PATH;
-}
-
-/** Supabase (production) first, then committed JSON file (local / fallback). */
-export async function readInstagramFeed(): Promise<InstagramFeed> {
-  if (isSupabaseFeedConfigured()) {
-    const remote = await readInstagramFeedFromSupabase();
-    if (remote && remote.posts.length > 0) return remote;
-  }
-  return readInstagramFeedFromFile();
-}
-
-export function readInstagramFeedSync(): InstagramFeed {
-  return readInstagramFeedFromFile();
-}
-
-export async function writeInstagramFeed(feed: InstagramFeed): Promise<void> {
-  writeInstagramFeedToFile(feed);
-
-  if (isSupabaseFeedConfigured()) {
-    await writeInstagramFeedToSupabase(feed);
-  }
-}
-
-export function readInstagramPostUrls(): string[] {
+function readUrlsFromLegacyFile(): string[] {
   try {
     if (!fs.existsSync(URLS_PATH)) return [];
     const raw = JSON.parse(fs.readFileSync(URLS_PATH, "utf8")) as unknown;
@@ -75,6 +46,81 @@ export function readInstagramPostUrls(): string[] {
   }
 }
 
-export function writeInstagramPostUrls(urls: string[]): void {
+function writeInstagramFeedToFile(feed: InstagramFeed): void {
+  const dir = path.dirname(FEED_PATH);
+  if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
+  fs.writeFileSync(FEED_PATH, JSON.stringify(feed, null, 2), "utf8");
+}
+
+function writeUrlsToLegacyFile(urls: string[]): void {
   fs.writeFileSync(URLS_PATH, JSON.stringify(urls, null, 2), "utf8");
+}
+
+export function getInstagramFeedPath(): string {
+  return FEED_PATH;
+}
+
+/** Supabase (production) first, then committed JSON file (local / fallback). */
+export async function readInstagramFeed(): Promise<InstagramFeed> {
+  if (isSupabaseFeedConfigured()) {
+    const remote = await readInstagramFeedFromSupabase();
+    if (remote) {
+      const fileFallback = readInstagramFeedFromFile();
+      return {
+        ...remote,
+        savedUrls:
+          remote.savedUrls?.length ? remote.savedUrls : fileFallback.savedUrls ?? [],
+      };
+    }
+  }
+  return readInstagramFeedFromFile();
+}
+
+export function readInstagramFeedSync(): InstagramFeed {
+  return readInstagramFeedFromFile();
+}
+
+export async function writeInstagramFeed(feed: InstagramFeed): Promise<void> {
+  if (isSupabaseFeedConfigured()) {
+    const ok = await writeInstagramFeedToSupabase(feed);
+    if (!ok) {
+      throw new Error(
+        "Could not save Instagram feed to Supabase. Check SUPABASE_SERVICE_ROLE_KEY and the instagram_feed table.",
+      );
+    }
+  }
+
+  try {
+    writeInstagramFeedToFile(feed);
+    if (feed.savedUrls?.length) writeUrlsToLegacyFile(feed.savedUrls);
+  } catch (error) {
+    console.warn(
+      JSON.stringify({
+        level: "warn",
+        source: "instagram.feed",
+        message: "Skipped local file write (read-only filesystem)",
+        error: error instanceof Error ? error.message : String(error),
+      }),
+    );
+    if (!isSupabaseFeedConfigured()) {
+      throw new Error(
+        "Cannot save Instagram feed: filesystem is read-only and Supabase is not configured.",
+      );
+    }
+  }
+}
+
+export async function readInstagramPostUrls(): Promise<string[]> {
+  const feed = await readInstagramFeed();
+  if (feed.savedUrls?.length) return feed.savedUrls;
+  return readUrlsFromLegacyFile();
+}
+
+/** @deprecated Use feed.savedUrls via writeInstagramFeed */
+export function writeInstagramPostUrls(urls: string[]): void {
+  try {
+    writeUrlsToLegacyFile(urls);
+  } catch {
+    /* Vercel — URLs are stored in Supabase feed.savedUrls */
+  }
 }

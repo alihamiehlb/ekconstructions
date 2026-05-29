@@ -247,6 +247,20 @@ html[data-admin="true"] body {
   }
 }
 
+@keyframes adminStatPulse {
+  0%,
+  100% {
+    box-shadow: 0 0 0 0 rgba(59, 178, 184, 0);
+  }
+  50% {
+    box-shadow: 0 0 0 4px rgba(59, 178, 184, 0.12);
+  }
+}
+
+.admin-stat-card:hover {
+  animation: adminStatPulse 1.2s ease infinite;
+}
+
 .admin-topbar {
   position: sticky;
   top: 0;

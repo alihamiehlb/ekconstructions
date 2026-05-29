@@ -47,7 +47,8 @@ export function AdminInstagramManager({ initialFeed }: Props) {
       method: "POST",
       body: JSON.stringify({ urls }),
     });
-    const data = (await res.json()) as {
+
+    let data: {
       synced?: number;
       failed?: string[];
       error?: string;
@@ -58,10 +59,17 @@ export function AdminInstagramManager({ initialFeed }: Props) {
         caption?: string;
         title?: string;
         thumbnail: string;
-        imageCount?: number;
         isCarousel?: boolean;
       }[];
     };
+
+    try {
+      data = (await res.json()) as typeof data;
+    } catch {
+      setSyncing(false);
+      setMessage("Server error during sync — see Admin → Logs or Vercel Runtime Logs.");
+      return;
+    }
 
     setSyncing(false);
 
@@ -98,7 +106,8 @@ export function AdminInstagramManager({ initialFeed }: Props) {
     setMessage("Discovering posts from @ekconstructions…");
 
     const res = await secureJsonFetch("/api/admin/instagram-discover", { method: "POST" });
-    const data = (await res.json()) as {
+
+    let data: {
       synced?: number;
       discovered?: number;
       discoverError?: string;
@@ -115,10 +124,18 @@ export function AdminInstagramManager({ initialFeed }: Props) {
       error?: string;
     };
 
+    try {
+      data = (await res.json()) as typeof data;
+    } catch {
+      setDiscovering(false);
+      setMessage("Server error during discover — likely Vercel timeout or storage. Check Admin → Logs.");
+      return;
+    }
+
     setDiscovering(false);
 
     if (!res.ok) {
-      setMessage(data.error ?? "Discover failed.");
+      setMessage(data.error ?? data.discoverError ?? "Discover failed.");
       return;
     }
 

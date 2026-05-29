@@ -1,12 +1,25 @@
 import { AdminEnquiriesPanel } from "@/components/admin/AdminEnquiriesPanel";
+import { AdminInsightsPanel } from "@/components/admin/AdminInsightsPanel";
 import { AdminNav } from "@/components/admin/AdminNav";
 import { AdminPageHeader } from "@/components/admin/AdminPageHeader";
+import { AdminQuickActions } from "@/components/admin/AdminQuickActions";
 import { DashboardCharts } from "@/components/admin/DashboardCharts";
+import { getAdminInsights } from "@/lib/admin/insights";
 import { requireAdmin } from "@/lib/auth";
-import { readInstagramFeed } from "@/lib/instagram/feed";
-import { isSupabaseFeedConfigured } from "@/lib/instagram/supabase-feed";
 import { getAdminStats, getStorageMode } from "@/lib/store";
-import { BarChart3, Eye, Image, Inbox, Instagram, Percent, Shield, Terminal, TrendingUp } from "lucide-react";
+import {
+  BarChart3,
+  Eye,
+  Image,
+  Inbox,
+  Instagram,
+  Layers,
+  MessageSquare,
+  Percent,
+  Shield,
+  Terminal,
+  TrendingUp,
+} from "lucide-react";
 import Link from "next/link";
 
 export const metadata = { title: "Admin Dashboard" };
@@ -17,22 +30,28 @@ function StatCard({
   icon: Icon,
   hint,
   href,
+  accent,
 }: {
   label: string;
   value: string | number;
   icon: typeof Inbox;
   hint?: string;
   href?: string;
+  accent?: string;
 }) {
   const inner = (
-    <div className="rounded-2xl border border-ek-navy/10 bg-white p-6 shadow-sm transition hover:border-ek-teal/25 hover:shadow-md">
+    <div
+      className={`admin-stat-card rounded-2xl border border-ek-navy/10 bg-white p-5 shadow-sm transition hover:-translate-y-0.5 hover:border-ek-teal/25 hover:shadow-md sm:p-6 ${accent ?? ""}`}
+    >
       <div className="flex items-start justify-between">
         <div>
-          <p className="text-xs font-semibold tracking-wide text-ek-muted uppercase">{label}</p>
-          <p className="mt-2 text-3xl font-black text-ek-navy">{value}</p>
+          <p className="text-[10px] font-semibold tracking-wide text-ek-muted uppercase sm:text-xs">
+            {label}
+          </p>
+          <p className="mt-2 text-2xl font-black text-ek-navy sm:text-3xl">{value}</p>
           {hint && <p className="mt-1 text-xs text-ek-muted">{hint}</p>}
         </div>
-        <div className="rounded-xl bg-ek-teal/10 p-3 text-ek-teal">
+        <div className="rounded-xl bg-ek-teal/10 p-2.5 text-ek-teal sm:p-3">
           <Icon className="h-5 w-5" aria-hidden />
         </div>
       </div>
@@ -45,9 +64,9 @@ function StatCard({
 
 export default async function AdminDashboardPage() {
   await requireAdmin();
-  const [stats, feed] = await Promise.all([getAdminStats(), readInstagramFeed()]);
+  const [stats, insights] = await Promise.all([getAdminStats(), getAdminInsights()]);
   const storage = getStorageMode();
-  const igStorage = isSupabaseFeedConfigured();
+  const ig = insights.instagram;
 
   return (
     <div className="section-pad py-6 sm:py-10">
@@ -56,8 +75,8 @@ export default async function AdminDashboardPage() {
         badge={storage === "supabase" ? "Secure · Supabase" : "Local file mode"}
         description={
           storage === "supabase"
-            ? "Database, CMS, and Instagram feed use Supabase with RLS (server-only access)."
-            : "Running on local file storage — configure Supabase on Vercel for production."
+            ? "Full management hub — enquiries, Instagram gallery, logs, and site content."
+            : "Configure Supabase on Vercel for production persistence."
         }
       />
 
@@ -80,24 +99,36 @@ export default async function AdminDashboardPage() {
         />
       </div>
 
-      <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+      <div className="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6">
         <StatCard
-          label="Instagram posts"
-          value={feed.posts.length}
+          label="IG posts"
+          value={ig.postCount}
           icon={Instagram}
-          hint={igStorage ? "Synced to Supabase" : "File backup only"}
           href="/admin/instagram"
         />
-        <StatCard label="Gallery projects" value="CMS" icon={Image} href="/admin/projects" />
-        <StatCard label="Activity logs" value="Live" icon={Terminal} href="/admin/logs" />
-        <StatCard label="Security audit" value="Events" icon={Shield} href="/admin/security" />
+        <StatCard label="Carousels" value={ig.carouselCount} icon={Layers} />
+        <StatCard
+          label="Captions"
+          value={`${ig.captionCoverage}%`}
+          icon={MessageSquare}
+          hint={`${ig.withCaption} with text`}
+        />
+        <StatCard label="Gallery" value="CMS" icon={Image} href="/admin/projects" />
+        <StatCard label="Logs" value={insights.activity.logEvents24h} icon={Terminal} href="/admin/logs" hint="Last 24h" />
+        <StatCard label="Security" value="Audit" icon={Shield} href="/admin/security" />
       </div>
+
+      <div className="mt-8">
+        <AdminInsightsPanel insights={insights} />
+      </div>
+
+      <AdminQuickActions />
 
       <div className="mt-8">
         <DashboardCharts stats={stats} />
       </div>
 
-      <div className="mt-8 rounded-2xl border border-ek-navy/10 bg-white shadow-sm">
+      <div className="admin-card mt-8 rounded-2xl border border-ek-navy/10 bg-white shadow-sm">
         <div className="flex items-center gap-2 border-b border-ek-navy/8 px-6 py-4">
           <BarChart3 className="h-5 w-5 text-ek-teal" aria-hidden />
           <h2 className="text-sm font-bold tracking-wide text-ek-navy uppercase">

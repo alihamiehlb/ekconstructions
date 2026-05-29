@@ -7,6 +7,9 @@ import { guardMutation } from "@/lib/security/api-guard";
 import { NextResponse } from "next/server";
 import { z } from "zod";
 
+export const maxDuration = 60;
+export const dynamic = "force-dynamic";
+
 const bodySchema = z.object({
   urls: z
     .array(
@@ -27,7 +30,7 @@ export async function POST(request: Request) {
   const blocked = await guardMutation(request, {
     csrf: true,
     origin: true,
-    rateLimit: { key: "instagram-sync", max: 3, windowMs: 60 * 60 * 1000 },
+    rateLimit: { key: "instagram-sync", max: 5, windowMs: 60 * 60 * 1000 },
   });
   if (blocked) return blocked;
 
@@ -41,38 +44,51 @@ export async function POST(request: Request) {
   const parsed = bodySchema.safeParse(body);
   if (!parsed.success) {
     return NextResponse.json(
-      { error: "Provide 1–40 Instagram post URLs (one per line in the form)." },
+      { error: "Provide 1–50 Instagram post URLs (one per line in the form)." },
       { status: 400 },
     );
   }
 
-  const result = await syncInstagramFromUrls(parsed.data.urls);
+  try {
+    const result = await syncInstagramFromUrls(parsed.data.urls);
 
-  await logSecurityEvent({
-    type: "instagram_sync",
-    detail: `synced=${result.synced} failed=${result.failed.length}`,
-  });
+    await logSecurityEvent({
+      type: "instagram_sync",
+      detail: `synced=${result.synced} failed=${result.failed.length}`,
+    });
 
-  await logAppEvent({
-    level: result.failed.length ? "warn" : "info",
-    source: "instagram.sync.api",
-    message: "Admin triggered Instagram sync",
-    context: { synced: result.synced, failed: result.failed.length },
-  });
+    await logAppEvent({
+      level: result.failed.length ? "warn" : "info",
+      source: "instagram.sync.api",
+      message: "Admin triggered Instagram sync",
+      context: { synced: result.synced, failed: result.failed.length },
+    });
 
-  return NextResponse.json({
-    ok: result.ok,
-    synced: result.synced,
-    failed: result.failed,
-    syncedAt: result.feed.syncedAt,
-    posts: result.feed.posts.map((p) => ({
-      shortcode: p.shortcode,
-      permalink: p.permalink,
-      caption: p.caption,
-      title: p.title ?? titleFromCaption(p.caption),
-      imageCount: p.images.length,
-      isCarousel: p.isCarousel,
-      thumbnail: p.thumbnail,
-    })),
-  });
+    return NextResponse.json({
+      ok: result.ok,
+      synced: result.synced,
+      failed: result.failed,
+      syncedAt: result.feed.syncedAt,
+      posts: result.feed.posts.map((p) => ({
+        shortcode: p.shortcode,
+        permalink: p.permalink,
+        caption: p.caption,
+        title: p.title ?? titleFromCaption(p.caption),
+        imageCount: p.images.length,
+        isCarousel: p.isCarousel,
+        thumbnail: p.thumbnail,
+      })),
+    });
+  } catch (error) {
+    const message = error instanceof Error ? error.message : "Sync failed unexpectedly.";
+
+    await logAppEvent({
+      level: "error",
+      source: "instagram.sync.api",
+      message: "Sync route error",
+      context: { error: message },
+    });
+
+    return NextResponse.json({ ok: false, error: message, synced: 0, failed: parsed.data.urls }, { status: 500 });
+  }
 }

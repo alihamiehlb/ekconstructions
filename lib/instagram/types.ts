@@ -16,4 +16,6 @@ export type InstagramFeed = {
   profileUrl: string;
   syncedAt: string;
   posts: InstagramPost[];
+  /** Persisted post URLs (Supabase on Vercel — filesystem is read-only). */
+  savedUrls?: string[];
 };
