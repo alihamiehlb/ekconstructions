@@ -1,6 +1,7 @@
 "use client";
 
 import { ServiceIcon } from "@/components/icons/ServiceIcons";
+import { useSite } from "@/components/providers/SiteProvider";
 import { SectionReveal } from "@/components/ui/SectionReveal";
 import { StaggerItem, StaggerReveal } from "@/components/ui/StaggerReveal";
 import type { CmsWhyItem } from "@/lib/cms/types";
@@ -46,6 +47,7 @@ export function WhyChooseUs({
   items: CmsWhyItem[];
   projectsDelivered: string;
 }) {
+  const site = useSite();
   const projectCount = parseInt(projectsDelivered.replace(/\D/g, ""), 10) || 500;
 
   return (
@@ -79,12 +81,26 @@ export function WhyChooseUs({
 
           <SectionReveal delay={0.15}>
             <aside className="flex flex-col justify-center bg-ek-gray px-6 py-8 text-center sm:px-7 sm:py-9 lg:px-8 lg:py-10 lg:text-left">
-              <p className="text-[2.5rem] leading-none font-black text-ek-teal sm:text-[2.75rem] lg:text-[3rem]">
-                <AnimatedCounter target={projectCount} />
-              </p>
-              <p className="mt-3 text-[10px] font-bold tracking-[0.1em] text-ek-navy uppercase leading-snug">
-                Projects Successfully Delivered
-              </p>
+              <div className="grid grid-cols-2 items-start gap-4 sm:gap-6">
+                <div className="rounded-xl border-2 border-ek-orange/35 bg-white px-3 py-4 shadow-sm sm:px-4">
+                  <p className="text-[2rem] leading-none font-black text-ek-orange sm:text-[2.35rem] lg:text-[2.5rem]">
+                    {site.business.yearsExperience}
+                  </p>
+                  <p className="mt-2 text-[9px] font-bold tracking-[0.08em] text-ek-navy uppercase leading-snug">
+                    Years Experience
+                  </p>
+                </div>
+
+                <div className="rounded-xl border border-ek-teal/25 bg-white px-3 py-4 shadow-sm sm:px-4">
+                  <p className="text-[2rem] leading-none font-black text-ek-teal sm:text-[2.35rem] lg:text-[2.5rem]">
+                    <AnimatedCounter target={projectCount} />
+                  </p>
+                  <p className="mt-2 text-[9px] font-bold tracking-[0.08em] text-ek-navy uppercase leading-snug">
+                    Projects Delivered
+                  </p>
+                </div>
+              </div>
+
               <Link
                 href="/gallery"
                 className="btn-primary mt-6 inline-flex w-full justify-center shadow-sm lg:w-auto lg:justify-start"

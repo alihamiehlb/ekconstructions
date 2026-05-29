@@ -1,7 +1,7 @@
 "use client";
 
 import { useSite } from "@/components/providers/SiteProvider";
-import { HeroFloatingScene } from "@/components/hero/HeroFloatingScene";
+import { HeroFloatingScene, HeroMobileAccent } from "@/components/hero/HeroFloatingScene";
 import { HeroVisual } from "@/components/hero/HeroVisual";
 import { InstagramVideoModal } from "@/components/hero/InstagramVideoModal";
 import { motion, useMotionValueEvent, useScroll } from "framer-motion";
@@ -45,7 +45,7 @@ export function Hero() {
               </h1>
 
               <p className="mt-3 inline-flex w-fit items-center gap-2 rounded-full border border-ek-teal/25 bg-ek-teal/8 px-3 py-1 text-[10px] font-bold tracking-[0.14em] text-ek-teal uppercase">
-                {site.business.yearsExperience} years experience · Sydney
+                {site.location.area} · Sydney
               </p>
 
               <p className="mt-3 max-w-[400px] text-sm leading-[1.65] text-ek-muted sm:mt-5 sm:text-[15px]">
@@ -74,6 +74,10 @@ export function Hero() {
               <div className="hero-dot-grid pointer-events-none absolute top-0 right-2 z-10 hidden h-16 w-16 opacity-70 sm:block sm:right-4 sm:h-20 sm:w-20 lg:top-2 lg:right-6" />
               <HeroVisual scrollProgress={scrollProgress} />
             </div>
+          </div>
+
+          <div className="mt-2 flex justify-center sm:mt-4 lg:hidden">
+            <HeroMobileAccent scrollProgress={scrollProgress} />
           </div>
         </div>
       </section>
