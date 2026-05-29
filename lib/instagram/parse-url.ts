@@ -21,3 +21,11 @@ export function parseInstagramShortcode(input: string): string | null {
 export function instagramPermalink(shortcode: string): string {
   return `https://www.instagram.com/p/${shortcode}/`;
 }
+
+/** Strip query params and normalize to canonical permalink. */
+export function normalizeInstagramUrl(input: string): string {
+  const trimmed = input.trim();
+  const shortcode = parseInstagramShortcode(trimmed);
+  if (!shortcode) return trimmed;
+  return instagramPermalink(shortcode);
+}

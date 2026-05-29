@@ -68,6 +68,7 @@ export async function POST(request: Request) {
       ok: result.ok,
       synced: result.synced,
       failed: result.failed,
+      failedDetails: result.failedDetails,
       syncedAt: result.feed.syncedAt,
       posts: result.feed.posts.map((p) => ({
         shortcode: p.shortcode,

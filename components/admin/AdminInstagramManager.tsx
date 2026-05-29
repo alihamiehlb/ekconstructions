@@ -2,7 +2,7 @@
 
 import type { InstagramFeed, InstagramPost } from "@/lib/instagram/types";
 import { secureJsonFetch } from "@/lib/security/client-fetch";
-import { ExternalLink, Layers, RefreshCw, Search, Sparkles } from "lucide-react";
+import { ExternalLink, Layers, RefreshCw, Search, Sparkles, Trash2 } from "lucide-react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -11,6 +11,57 @@ type Props = {
   initialFeed: InstagramFeed;
 };
 
+type SyncResponse = {
+  synced?: number;
+  failed?: string[];
+  failedDetails?: { url: string; reason: string }[];
+  error?: string;
+  syncedAt?: string;
+  discoverError?: string;
+  method?: string;
+  discovered?: number;
+  posts?: {
+    shortcode: string;
+    permalink: string;
+    caption?: string;
+    title?: string;
+    thumbnail: string;
+    isCarousel?: boolean;
+    imageCount?: number;
+  }[];
+};
+
+function mapPostsFromApi(
+  apiPosts: SyncResponse["posts"],
+  syncedAt?: string,
+): InstagramPost[] {
+  if (!apiPosts?.length) return [];
+  return apiPosts.map((p) => ({
+    id: p.shortcode,
+    shortcode: p.shortcode,
+    permalink: p.permalink,
+    caption: p.caption ?? "",
+    title: p.title,
+    images: p.thumbnail ? [p.thumbnail] : [],
+    thumbnail: p.thumbnail,
+    isCarousel: p.isCarousel ?? false,
+    syncedAt: syncedAt ?? new Date().toISOString(),
+  }));
+}
+
+function formatSyncMessage(data: SyncResponse, prefix: string): string {
+  const parts = [prefix];
+  if (data.failedDetails?.length) {
+    parts.push(
+      data.failedDetails.map((f) => `${f.url.split("/p/")[1]?.replace("/", "") ?? "post"}: ${f.reason}`).join(" · "),
+    );
+  } else if (data.failed?.length) {
+    parts.push(`${data.failed.length} URL(s) failed`);
+  }
+  if (data.discoverError) parts.push(`Note: ${data.discoverError}`);
+  return parts.filter(Boolean).join(" — ");
+}
+
 export function AdminInstagramManager({ initialFeed }: Props) {
   const router = useRouter();
   const [urlsText, setUrlsText] = useState("");
@@ -18,7 +69,9 @@ export function AdminInstagramManager({ initialFeed }: Props) {
   const [syncedAt, setSyncedAt] = useState(initialFeed.syncedAt);
   const [syncing, setSyncing] = useState(false);
   const [discovering, setDiscovering] = useState(false);
+  const [deleting, setDeleting] = useState<string | null>(null);
   const [message, setMessage] = useState("");
+  const [messageTone, setMessageTone] = useState<"ok" | "warn" | "error">("ok");
 
   useEffect(() => {
     fetch("/api/admin/instagram-urls", { credentials: "same-origin" })
@@ -29,6 +82,11 @@ export function AdminInstagramManager({ initialFeed }: Props) {
       .catch(() => {});
   }, []);
 
+  function showMessage(text: string, tone: "ok" | "warn" | "error" = "ok") {
+    setMessage(text);
+    setMessageTone(tone);
+  }
+
   async function syncUrls() {
     const urls = urlsText
       .split(/\r?\n/)
@@ -36,7 +94,7 @@ export function AdminInstagramManager({ initialFeed }: Props) {
       .filter(Boolean);
 
     if (!urls.length) {
-      setMessage("Add at least one Instagram post URL.");
+      showMessage("Add at least one Instagram post URL.", "warn");
       return;
     }
 
@@ -48,129 +106,106 @@ export function AdminInstagramManager({ initialFeed }: Props) {
       body: JSON.stringify({ urls }),
     });
 
-    let data: {
-      synced?: number;
-      failed?: string[];
-      error?: string;
-      syncedAt?: string;
-      posts?: {
-        shortcode: string;
-        permalink: string;
-        caption?: string;
-        title?: string;
-        thumbnail: string;
-        isCarousel?: boolean;
-      }[];
-    };
-
+    let data: SyncResponse;
     try {
-      data = (await res.json()) as typeof data;
+      data = (await res.json()) as SyncResponse;
     } catch {
       setSyncing(false);
-      setMessage("Server error during sync — see Admin → Logs or Vercel Runtime Logs.");
+      showMessage("Server error during sync — see Admin → Logs.", "error");
       return;
     }
 
     setSyncing(false);
 
     if (!res.ok) {
-      setMessage(data.error ?? "Sync failed.");
+      showMessage(data.error ?? "Sync failed.", "error");
       return;
     }
 
-    if (data.posts?.length) {
-      setPosts(
-        data.posts.map((p) => ({
-          id: p.shortcode,
-          shortcode: p.shortcode,
-          permalink: p.permalink,
-          caption: p.caption ?? "",
-          title: p.title,
-          images: [p.thumbnail],
-          thumbnail: p.thumbnail,
-          isCarousel: p.isCarousel ?? false,
-          syncedAt: data.syncedAt ?? new Date().toISOString(),
-        })),
-      );
-    }
-
-    setMessage(
-      `Synced ${data.synced ?? 0} post(s)${data.failed?.length ? ` · ${data.failed.length} failed` : ""}. Carousel slides are grouped per post.`,
-    );
+    if (data.posts?.length) setPosts(mapPostsFromApi(data.posts, data.syncedAt));
     if (data.syncedAt) setSyncedAt(data.syncedAt);
+
+    const tone = (data.failed?.length ?? 0) > 0 ? "warn" : "ok";
+    showMessage(
+      formatSyncMessage(
+        data,
+        `Synced ${data.synced ?? 0} post(s)${data.failed?.length ? ` · ${data.failed.length} failed` : ""}. Existing posts kept.`,
+      ),
+      tone,
+    );
     router.refresh();
   }
 
   async function discoverAll() {
     setDiscovering(true);
-    setMessage("Discovering posts from @ekconstructions…");
+    showMessage("Discovering posts from @ekconstructions…", "ok");
 
     const res = await secureJsonFetch("/api/admin/instagram-discover", { method: "POST" });
 
-    let data: {
-      synced?: number;
-      discovered?: number;
-      discoverError?: string;
-      method?: string;
-      posts?: {
-        shortcode: string;
-        permalink: string;
-        caption?: string;
-        title?: string;
-        imageCount: number;
-        isCarousel: boolean;
-        thumbnail: string;
-      }[];
-      error?: string;
-    };
-
+    let data: SyncResponse;
     try {
-      data = (await res.json()) as typeof data;
+      data = (await res.json()) as SyncResponse;
     } catch {
       setDiscovering(false);
-      setMessage("Server error during discover — likely Vercel timeout or storage. Check Admin → Logs.");
+      showMessage("Server error during discover — check Admin → Logs.", "error");
       return;
     }
 
     setDiscovering(false);
 
     if (!res.ok) {
-      setMessage(data.error ?? data.discoverError ?? "Discover failed.");
+      showMessage(data.error ?? data.discoverError ?? "Discover failed.", "error");
       return;
     }
 
-    if (data.posts) {
-      setPosts(
-        data.posts.map((p) => ({
-          id: p.shortcode,
-          shortcode: p.shortcode,
-          permalink: p.permalink,
-          caption: p.caption ?? "",
-          title: p.title,
-          images: [p.thumbnail],
-          thumbnail: p.thumbnail,
-          isCarousel: p.isCarousel,
-          syncedAt: new Date().toISOString(),
-        })),
-      );
-    }
+    if (data.posts?.length) setPosts(mapPostsFromApi(data.posts, data.syncedAt));
+    if (data.syncedAt) setSyncedAt(data.syncedAt);
 
-    const parts = [
-      `Synced ${data.synced ?? 0} post(s)`,
-      data.discovered ? `from ${data.discovered} discovered links` : "",
-      data.method ? `(${data.method})` : "",
-    ].filter(Boolean);
-
-    setMessage(
-      `${parts.join(" ")}.${data.discoverError ? ` Note: ${data.discoverError}` : ""}`,
+    const tone = (data.synced ?? 0) === 0 ? "warn" : "ok";
+    showMessage(
+      formatSyncMessage(
+        data,
+        `Synced ${data.synced ?? 0} post(s)${data.discovered ? ` from ${data.discovered} discovered` : ""}${data.method ? ` (${data.method})` : ""}.`,
+      ),
+      tone,
     );
     router.refresh();
   }
 
+  async function deletePost(shortcode: string) {
+    if (!confirm(`Remove "${shortcode}" from the site gallery?`)) return;
+
+    setDeleting(shortcode);
+    const res = await secureJsonFetch("/api/admin/instagram-delete", {
+      method: "POST",
+      body: JSON.stringify({ shortcode }),
+    });
+
+    const data = (await res.json()) as SyncResponse & { error?: string; remaining?: number };
+
+    setDeleting(null);
+
+    if (!res.ok) {
+      showMessage(data.error ?? "Delete failed.", "error");
+      return;
+    }
+
+    if (data.posts) setPosts(mapPostsFromApi(data.posts));
+    showMessage(`Removed post. ${data.remaining ?? posts.length - 1} remaining in gallery.`, "ok");
+    router.refresh();
+  }
+
+  const messageClass =
+    messageTone === "error"
+      ? "border-red-200 bg-red-50 text-red-900"
+      : messageTone === "warn"
+        ? "border-amber-200 bg-amber-50 text-amber-950"
+        : "border-ek-teal/30 bg-ek-teal/10 text-ek-navy";
+
   return (
     <div className="space-y-8">
       <div className="grid gap-4 lg:grid-cols-2">
-        <section className="rounded-2xl border border-ek-teal/25 bg-gradient-to-br from-ek-teal/8 to-white p-6 shadow-sm">
+        <section className="admin-card rounded-2xl border border-ek-teal/25 bg-gradient-to-br from-ek-teal/8 to-white p-6 shadow-sm">
           <div className="flex items-start gap-3">
             <Sparkles className="h-6 w-6 shrink-0 text-ek-teal" aria-hidden />
             <div>
@@ -185,9 +220,7 @@ export function AdminInstagramManager({ initialFeed }: Props) {
                 >
                   @ekconstructions
                 </a>
-                . If blocked, add{" "}
-                <code className="rounded bg-white px-1 text-xs">INSTAGRAM_SESSION_ID</code> in
-                Vercel env (from browser cookies while logged in).
+                . If blocked, paste URLs on the right — sync merges with existing posts.
               </p>
               <button
                 type="button"
@@ -202,16 +235,16 @@ export function AdminInstagramManager({ initialFeed }: Props) {
           </div>
         </section>
 
-        <section className="rounded-2xl border border-ek-navy/10 bg-white p-6 shadow-sm">
+        <section className="admin-card rounded-2xl border border-ek-navy/10 bg-white p-6 shadow-sm">
           <h2 className="text-sm font-bold text-ek-navy uppercase">Manual post URLs</h2>
           <p className="mt-2 text-sm text-ek-muted">
-            Paste links (posts or reels). Multiple images in one post stay together as one gallery
-            project with slides.
+            Paste links (with or without ?img_index=). Sync adds/updates posts without removing
+            others.
           </p>
           <textarea
             rows={8}
             className="mt-3 w-full rounded-lg border border-ek-navy/15 px-3 py-2 font-mono text-xs"
-            placeholder={`https://www.instagram.com/p/DXJsOgwDysY/\nhttps://www.instagram.com/p/DW3rM9qmE-K/`}
+            placeholder={`https://www.instagram.com/p/DXJsOgwDysY/\nhttps://www.instagram.com/p/DBvod18tyd8/`}
             value={urlsText}
             onChange={(e) => setUrlsText(e.target.value)}
           />
@@ -228,16 +261,14 @@ export function AdminInstagramManager({ initialFeed }: Props) {
       </div>
 
       {message && (
-        <p className="rounded-lg border border-ek-teal/30 bg-ek-teal/10 px-4 py-3 text-sm text-ek-navy">
-          {message}
-        </p>
+        <p className={`rounded-lg border px-4 py-3 text-sm ${messageClass}`}>{message}</p>
       )}
 
-      <section className="rounded-2xl border border-ek-navy/10 bg-white shadow-sm">
+      <section className="admin-card rounded-2xl border border-ek-navy/10 bg-white shadow-sm">
         <div className="flex flex-wrap items-center justify-between gap-3 border-b border-ek-navy/8 px-6 py-4">
           <div>
             <h2 className="text-sm font-bold tracking-wide text-ek-navy uppercase">
-              Synced posts ({posts.length})
+              Gallery posts ({posts.length})
             </h2>
             {syncedAt && (
               <p className="mt-1 text-xs text-ek-muted">
@@ -245,14 +276,12 @@ export function AdminInstagramManager({ initialFeed }: Props) {
               </p>
             )}
           </div>
-          <p className="text-xs text-ek-muted">
-            Stored in Supabase + site gallery · direct Instagram CDN links
-          </p>
+          <p className="text-xs text-ek-muted">Delete removes from site gallery · Supabase + CDN</p>
         </div>
 
         {posts.length === 0 ? (
           <p className="px-6 py-12 text-center text-sm text-ek-muted">
-            No posts synced yet. Use Discover or paste URLs above.
+            No posts yet. Paste a URL and click Sync URLs.
           </p>
         ) : (
           <ul className="grid gap-4 p-6 sm:grid-cols-2 lg:grid-cols-3">
@@ -276,6 +305,15 @@ export function AdminInstagramManager({ initialFeed }: Props) {
                       {post.images.length} slides
                     </span>
                   )}
+                  <button
+                    type="button"
+                    disabled={deleting === post.shortcode}
+                    onClick={() => deletePost(post.shortcode)}
+                    className="absolute top-2 left-2 flex h-8 w-8 items-center justify-center rounded-full bg-red-600/90 text-white shadow-md transition hover:bg-red-700 disabled:opacity-60"
+                    title="Remove from gallery"
+                  >
+                    <Trash2 className="h-3.5 w-3.5" aria-hidden />
+                  </button>
                 </div>
                 <div className="space-y-2 p-3">
                   <p className="line-clamp-2 text-sm font-bold text-ek-navy">
@@ -285,26 +323,26 @@ export function AdminInstagramManager({ initialFeed }: Props) {
                     <p className="line-clamp-3 text-xs leading-relaxed text-ek-muted">{post.caption}</p>
                   )}
                   {!post.caption && (
-                    <p className="text-xs text-ek-orange">
-                      No caption — add INSTAGRAM_SESSION_ID or edit in post meta.
-                    </p>
+                    <p className="text-xs text-ek-orange">No caption yet</p>
                   )}
                   <p className="truncate font-mono text-[10px] text-ek-muted">{post.shortcode}</p>
-                  <a
-                    href={post.permalink}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-flex items-center gap-1 text-xs font-semibold text-ek-teal hover:underline"
-                  >
-                    View on Instagram
-                    <ExternalLink className="h-3 w-3" aria-hidden />
-                  </a>
-                  <a
-                    href={`/gallery/ig-${post.shortcode}`}
-                    className="block text-xs font-semibold text-ek-navy hover:text-ek-teal"
-                  >
-                    Open on site →
-                  </a>
+                  <div className="flex flex-wrap gap-3">
+                    <a
+                      href={post.permalink}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-1 text-xs font-semibold text-ek-teal hover:underline"
+                    >
+                      Instagram
+                      <ExternalLink className="h-3 w-3" aria-hidden />
+                    </a>
+                    <a
+                      href={`/gallery/ig-${post.shortcode}`}
+                      className="text-xs font-semibold text-ek-navy hover:text-ek-teal"
+                    >
+                      View on site →
+                    </a>
+                  </div>
                 </div>
               </li>
             ))}

@@ -1,6 +1,5 @@
 import { dedupeInstagramImages, isAllowedInstagramImageUrl } from "@/lib/instagram/image-utils";
 import {
-  descriptionFromCaption,
   parseInstagramOgDescription,
   titleFromCaption,
 } from "@/lib/instagram/caption-utils";
@@ -9,33 +8,40 @@ import type { InstagramPost } from "@/lib/instagram/types";
 
 const UA =
   "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36";
+const IG_APP_ID = "936619743392459";
+
+export type FetchPostResult = {
+  post: InstagramPost | null;
+  error?: string;
+};
 
 function sessionCookie(): string | undefined {
   const sessionId = process.env.INSTAGRAM_SESSION_ID?.trim();
   if (!sessionId) return undefined;
-  return `sessionid=${sessionId}`;
+  const igDid = process.env.INSTAGRAM_IG_DID?.trim();
+  return igDid ? `sessionid=${sessionId}; ig_did=${igDid}` : `sessionid=${sessionId}`;
 }
 
-function fetchHeaders(): HeadersInit {
+function fetchHeaders(extra?: Record<string, string>): HeadersInit {
   const headers: Record<string, string> = {
     "User-Agent": UA,
     Accept: "text/html,application/json",
     "Accept-Language": "en-AU,en;q=0.9",
+    "X-IG-App-ID": IG_APP_ID,
+    ...extra,
   };
   const cookie = sessionCookie();
   if (cookie) headers.Cookie = cookie;
   return headers;
 }
 
-/** Follow Instagram media redirect to CDN image URL. */
-export async function fetchInstagramMediaUrl(shortcode: string): Promise<string | null> {
-  const res = await fetch(`https://www.instagram.com/p/${shortcode}/media/?size=l`, {
-    headers: fetchHeaders(),
-    redirect: "follow",
-  });
-  if (!res.ok) return null;
-  const url = res.url;
-  return isAllowedInstagramImageUrl(url) ? url : null;
+function decodeJsonString(raw: string): string {
+  return raw
+    .replace(/\\n/g, "\n")
+    .replace(/\\u0026/g, "&")
+    .replace(/\\r/g, "\r")
+    .replace(/\\\//g, "/")
+    .replace(/\\"/g, '"');
 }
 
 function extractImagesFromHtml(html: string): string[] {
@@ -66,18 +72,15 @@ function extractImagesFromHtml(html: string): string[] {
     if (u.includes("cdninstagram") || u.includes("fbcdn.net")) raw.push(u);
   }
 
+  const ogImage = html.match(/property="og:image"\s+content="([^"]+)"/i);
+  if (ogImage?.[1]) {
+    const url = ogImage[1].replace(/&amp;/g, "&");
+    if (isAllowedInstagramImageUrl(url)) raw.push(url);
+  }
+
   return dedupeInstagramImages(
     raw.filter((u) => isAllowedInstagramImageUrl(u) && !u.includes("/rsrc.php")),
   );
-}
-
-function decodeJsonString(raw: string): string {
-  return raw
-    .replace(/\\n/g, "\n")
-    .replace(/\\u0026/g, "&")
-    .replace(/\\r/g, "\r")
-    .replace(/\\\//g, "/")
-    .replace(/\\"/g, '"');
 }
 
 function captionFromHtml(html: string): string {
@@ -108,67 +111,141 @@ function captionFromHtml(html: string): string {
     if (text) return text.slice(0, 2000);
   }
 
-  const ldJson = html.match(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/i);
-  if (ldJson?.[1]) {
-    try {
-      const data = JSON.parse(ldJson[1]) as { caption?: string; description?: string };
-      const text = data.caption ?? data.description;
-      if (text?.trim()) return text.trim().slice(0, 2000);
-    } catch {
-      /* skip */
-    }
-  }
-
   return "";
 }
 
-/** Pull carousel / single-post image URLs from public post HTML. */
-export async function fetchInstagramPostImages(shortcode: string): Promise<string[]> {
-  const res = await fetch(instagramPermalink(shortcode), {
+async function fetchInstagramMediaUrl(shortcode: string): Promise<string | null> {
+  const res = await fetch(`https://www.instagram.com/p/${shortcode}/media/?size=l`, {
     headers: fetchHeaders(),
+    redirect: "follow",
   });
+  if (!res.ok) return null;
+  const url = res.url;
+  return isAllowedInstagramImageUrl(url) ? url : null;
+}
 
-  if (res.ok) {
-    const html = await res.text();
-    const images = extractImagesFromHtml(html);
-    if (images.length > 0) return images.slice(0, 20);
+/** Public oEmbed — often works when HTML scrape is blocked on server IPs. */
+async function fetchViaOembed(permalink: string): Promise<{
+  thumbnail?: string;
+  title?: string;
+  caption?: string;
+} | null> {
+  const endpoints = [
+    `https://api.instagram.com/oembed?url=${encodeURIComponent(permalink)}&omitscript=true`,
+    `https://www.instagram.com/oembed?url=${encodeURIComponent(permalink)}&omitscript=true`,
+  ];
+
+  for (const endpoint of endpoints) {
+    try {
+      const res = await fetch(endpoint, {
+        headers: { "User-Agent": UA, Accept: "application/json" },
+      });
+      if (!res.ok) continue;
+      const data = (await res.json()) as {
+        thumbnail_url?: string;
+        title?: string;
+        author_name?: string;
+      };
+      if (data.thumbnail_url && isAllowedInstagramImageUrl(data.thumbnail_url)) {
+        return {
+          thumbnail: data.thumbnail_url,
+          title: data.title,
+          caption: data.title,
+        };
+      }
+    } catch {
+      /* try next */
+    }
   }
+  return null;
+}
 
-  const single = await fetchInstagramMediaUrl(shortcode);
-  return single ? [single] : [];
+async function fetchViaEmbedPage(shortcode: string): Promise<string[]> {
+  try {
+    const res = await fetch(`https://www.instagram.com/p/${shortcode}/embed/captioned/`, {
+      headers: fetchHeaders(),
+    });
+    if (!res.ok) return [];
+    const html = await res.text();
+    return extractImagesFromHtml(html);
+  } catch {
+    return [];
+  }
 }
 
 export async function fetchInstagramPost(input: string): Promise<InstagramPost | null> {
+  const result = await fetchInstagramPostDetailed(input);
+  return result.post;
+}
+
+export async function fetchInstagramPostDetailed(input: string): Promise<FetchPostResult> {
   const shortcode = parseInstagramShortcode(input);
-  if (!shortcode) return null;
-
-  const permalink = instagramPermalink(shortcode);
-  const res = await fetch(permalink, { headers: fetchHeaders() });
-
-  let caption = "";
-  let html = "";
-  if (res.ok) {
-    html = await res.text();
-    caption = captionFromHtml(html);
+  if (!shortcode) {
+    return { post: null, error: "Invalid Instagram URL — use a link like instagram.com/p/ABC123/" };
   }
 
-  const images =
-    html.length > 0 ? extractImagesFromHtml(html) : await fetchInstagramPostImages(shortcode);
+  const permalink = instagramPermalink(shortcode);
+  let caption = "";
+  let html = "";
+  let images: string[] = [];
 
-  if (images.length === 0) return null;
+  try {
+    const res = await fetch(permalink, { headers: fetchHeaders() });
+    if (res.ok) {
+      html = await res.text();
+      caption = captionFromHtml(html);
+      images = extractImagesFromHtml(html);
+    }
+  } catch {
+    /* fall through to other methods */
+  }
+
+  if (images.length === 0 && html.length > 0) {
+    images = await fetchViaEmbedPage(shortcode);
+  }
+
+  if (images.length === 0) {
+    const media = await fetchInstagramMediaUrl(shortcode);
+    if (media) images = [media];
+  }
+
+  if (images.length === 0) {
+    const oembed = await fetchViaOembed(permalink);
+    if (oembed?.thumbnail) {
+      images = [oembed.thumbnail];
+      if (!caption && oembed.caption) caption = oembed.caption;
+    }
+  }
+
+  if (images.length === 0) {
+    const hint = sessionCookie()
+      ? "Could not load images — post may be private or URL invalid."
+      : "Instagram blocked server access. Add INSTAGRAM_SESSION_ID in Vercel env, or try again.";
+    return { post: null, error: hint };
+  }
 
   const now = new Date().toISOString();
   const title = titleFromCaption(caption);
 
   return {
-    id: shortcode,
-    shortcode,
-    permalink,
-    caption,
-    title: title !== "EK Constructions project" ? title : undefined,
-    images,
-    thumbnail: images[0],
-    isCarousel: images.length > 1,
-    syncedAt: now,
+    post: {
+      id: shortcode,
+      shortcode,
+      permalink,
+      caption,
+      title: title !== "EK Constructions project" ? title : undefined,
+      images,
+      thumbnail: images[0],
+      isCarousel: images.length > 1,
+      syncedAt: now,
+    },
   };
+}
+
+/** @deprecated use fetchInstagramPostDetailed */
+export async function fetchInstagramPostImages(shortcode: string): Promise<string[]> {
+  const result = await fetchInstagramPostDetailed(
+    `https://www.instagram.com/p/${shortcode}/`,
+  );
+  return result.post?.images ?? [];
 }

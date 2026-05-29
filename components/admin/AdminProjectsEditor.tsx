@@ -4,6 +4,7 @@ import { ImageUploadField } from "@/components/admin/ImageUploadField";
 import type { Project } from "@/content/projects";
 import type { CmsData } from "@/lib/cms/types";
 import { secureJsonFetch } from "@/lib/security/client-fetch";
+import { Trash2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
@@ -25,6 +26,15 @@ export function AdminProjectsEditor() {
     const projects = [...data.projects];
     projects[i] = { ...projects[i], ...patch };
     setData({ ...data, projects });
+  }
+
+  function deleteProject(i: number) {
+    if (!data) return;
+    const project = data.projects[i];
+    if (!confirm(`Delete project "${project.title}"?`)) return;
+    const projects = data.projects.filter((_, idx) => idx !== i);
+    setData({ ...data, projects });
+    setMessage(`Removed "${project.title}" — click Save all projects to persist.`);
   }
 
   async function saveProjects() {
@@ -62,10 +72,20 @@ export function AdminProjectsEditor() {
       {data.projects.map((project, i) => (
         <section
           key={project.id}
-          className="rounded-2xl border border-ek-navy/10 bg-white p-6 shadow-sm"
+          className="relative rounded-2xl border border-ek-navy/10 bg-white p-6 shadow-sm"
         >
-          <h2 className="text-sm font-bold text-ek-navy uppercase">Project {i + 1}</h2>
-          <div className="mt-4 grid gap-3 md:grid-cols-2">
+          <div className="mb-4 flex items-center justify-between gap-3">
+            <h2 className="text-sm font-bold text-ek-navy uppercase">Project {i + 1}</h2>
+            <button
+              type="button"
+              onClick={() => deleteProject(i)}
+              className="inline-flex items-center gap-1.5 rounded-lg border border-red-200 bg-red-50 px-3 py-1.5 text-[10px] font-bold tracking-wide text-red-700 uppercase transition hover:bg-red-100"
+            >
+              <Trash2 className="h-3.5 w-3.5" aria-hidden />
+              Delete
+            </button>
+          </div>
+          <div className="grid gap-3 md:grid-cols-2">
             {(
               [
                 ["id", "ID"],

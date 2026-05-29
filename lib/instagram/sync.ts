@@ -1,5 +1,6 @@
 import { discoverProfilePostUrls } from "@/lib/instagram/discover-profile";
-import { fetchInstagramPost } from "@/lib/instagram/fetch-post";
+import { fetchInstagramPostDetailed } from "@/lib/instagram/fetch-post";
+import { normalizeInstagramUrl } from "@/lib/instagram/parse-url";
 import { titleFromCaption } from "@/lib/instagram/caption-utils";
 import {
   readInstagramFeed,
@@ -9,31 +10,52 @@ import {
 import type { InstagramFeed, InstagramPost } from "@/lib/instagram/types";
 import { logAppEvent } from "@/lib/logging/app-logger";
 
+export type SyncFailure = { url: string; reason: string };
+
 export type SyncInstagramResult = {
   ok: boolean;
   synced: number;
   failed: string[];
+  failedDetails: SyncFailure[];
   feed: InstagramFeed;
   discovered?: number;
 };
 
-const MAX_POSTS_PER_SYNC = 20;
+const MAX_POSTS_PER_SYNC = 25;
+
+function mergePosts(existing: InstagramPost[], incoming: InstagramPost[]): InstagramPost[] {
+  const map = new Map(existing.map((p) => [p.shortcode, p]));
+  for (const post of incoming) map.set(post.shortcode, post);
+  return [...map.values()];
+}
+
+function mergeUrls(existing: string[] | undefined, incoming: string[]): string[] {
+  const normalized = incoming.map(normalizeInstagramUrl).filter(Boolean);
+  return [...new Set([...(existing ?? []), ...normalized])];
+}
 
 export async function syncInstagramFromUrls(
   urls: string[],
   options?: { username?: string; profileUrl?: string },
 ): Promise<SyncInstagramResult> {
   const existing = await readInstagramFeed();
-  const posts: InstagramPost[] = [];
+  const incoming: InstagramPost[] = [];
   const failed: string[] = [];
+  const failedDetails: SyncFailure[] = [];
 
-  const uniqueUrls = [...new Set(urls.map((u) => u.trim()).filter(Boolean))].slice(
+  const uniqueUrls = [...new Set(urls.map((u) => normalizeInstagramUrl(u)).filter(Boolean))].slice(
     0,
     MAX_POSTS_PER_SYNC,
   );
 
   if (uniqueUrls.length === 0) {
-    return { ok: false, synced: 0, failed: [], feed: existing };
+    return {
+      ok: false,
+      synced: 0,
+      failed: [],
+      failedDetails: [],
+      feed: existing,
+    };
   }
 
   await logAppEvent({
@@ -45,9 +67,9 @@ export async function syncInstagramFromUrls(
 
   for (const url of uniqueUrls) {
     try {
-      const post = await fetchInstagramPost(url);
+      const { post, error } = await fetchInstagramPostDetailed(url);
       if (post) {
-        posts.push(post);
+        incoming.push(post);
         await logAppEvent({
           level: post.caption ? "info" : "warn",
           source: "instagram.sync",
@@ -62,31 +84,37 @@ export async function syncInstagramFromUrls(
         });
       } else {
         failed.push(url);
+        const reason = error ?? "No images returned";
+        failedDetails.push({ url, reason });
         await logAppEvent({
           level: "error",
           source: "instagram.sync",
-          message: "Post fetch returned no images",
-          context: { url },
+          message: "Post fetch failed",
+          context: { url, reason },
         });
       }
     } catch (error) {
       failed.push(url);
+      const reason = error instanceof Error ? error.message : "Unexpected error";
+      failedDetails.push({ url, reason });
       await logAppEvent({
         level: "error",
         source: "instagram.sync",
         message: "Post sync threw an error",
-        context: { url, error: error instanceof Error ? error.message : String(error) },
+        context: { url, error: reason },
       });
     }
-    await new Promise((r) => setTimeout(r, 300));
+    await new Promise((r) => setTimeout(r, 250));
   }
+
+  const posts = mergePosts(existing.posts, incoming);
 
   const feed: InstagramFeed = {
     username: options?.username ?? existing.username,
     profileUrl: options?.profileUrl ?? existing.profileUrl,
     syncedAt: new Date().toISOString(),
     posts,
-    savedUrls: uniqueUrls,
+    savedUrls: mergeUrls(existing.savedUrls, uniqueUrls),
   };
 
   await writeInstagramFeed(feed);
@@ -95,10 +123,42 @@ export async function syncInstagramFromUrls(
     level: failed.length ? "warn" : "info",
     source: "instagram.sync",
     message: "Instagram sync finished",
-    context: { synced: posts.length, failed: failed.length },
+    context: { synced: incoming.length, failed: failed.length, totalPosts: posts.length },
   });
 
-  return { ok: failed.length === 0 && posts.length > 0, synced: posts.length, failed, feed };
+  return {
+    ok: incoming.length > 0,
+    synced: incoming.length,
+    failed,
+    failedDetails,
+    feed,
+  };
+}
+
+export async function removeInstagramPost(shortcode: string): Promise<InstagramFeed> {
+  const existing = await readInstagramFeed();
+  const posts = existing.posts.filter((p) => p.shortcode !== shortcode);
+  const savedUrls = (existing.savedUrls ?? []).filter(
+    (u) => !u.includes(`/${shortcode}`) && !u.endsWith(`/${shortcode}/`),
+  );
+
+  const feed: InstagramFeed = {
+    ...existing,
+    posts,
+    savedUrls,
+    syncedAt: new Date().toISOString(),
+  };
+
+  await writeInstagramFeed(feed);
+
+  await logAppEvent({
+    level: "info",
+    source: "instagram.delete",
+    message: "Instagram post removed from gallery",
+    context: { shortcode, remaining: posts.length },
+  });
+
+  return feed;
 }
 
 export async function discoverAndSyncInstagram(username = "ekconstructions"): Promise<
@@ -106,7 +166,7 @@ export async function discoverAndSyncInstagram(username = "ekconstructions"): Pr
 > {
   const discovery = await discoverProfilePostUrls(username);
   const manual = await readInstagramPostUrls();
-  const merged = [...new Set([...discovery.urls, ...manual])];
+  const merged = [...new Set([...discovery.urls.map(normalizeInstagramUrl), ...manual])];
 
   await logAppEvent({
     level: "info",
@@ -128,6 +188,7 @@ export async function discoverAndSyncInstagram(username = "ekconstructions"): Pr
       ok: false,
       synced: 0,
       failed: [],
+      failedDetails: [],
       feed: existing,
       discovered: 0,
       discoverError:

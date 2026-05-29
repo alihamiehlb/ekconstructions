@@ -45,6 +45,7 @@ export async function POST(request: Request) {
       synced: result.synced,
       discovered: result.discovered ?? 0,
       failed: result.failed,
+      failedDetails: result.failedDetails,
       method: result.method,
       discoverError: result.discoverError,
       syncedAt: result.feed.syncedAt,
