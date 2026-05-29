@@ -1,4 +1,5 @@
 import type { Enquiry, EnquiryStatus } from "@/lib/store/types";
+import { isMissingSchemaError } from "@/lib/supabase/errors";
 import { createClient } from "@supabase/supabase-js";
 import { isSupabaseConfigured } from "@/lib/store/supabase-store";
 
@@ -34,7 +35,18 @@ export async function listEnquiries(limit = 100): Promise<Enquiry[]> {
       .select("*")
       .order("created_at", { ascending: false })
       .limit(limit);
-    if (error) throw error;
+    if (error) {
+      if (isMissingSchemaError(error)) {
+        const { data: legacy, error: legacyErr } = await client
+          .from("enquiries")
+          .select("id, created_at, name, email, phone, service, message, source_ip")
+          .order("created_at", { ascending: false })
+          .limit(limit);
+        if (legacyErr) throw legacyErr;
+        return (legacy ?? []).map((row) => mapRow({ ...row, status: "new" }));
+      }
+      throw error;
+    }
     return (data ?? []).map(mapRow);
   }
 
@@ -62,7 +74,12 @@ export async function updateEnquiry(
       .select("*")
       .single();
 
-    if (error) throw error;
+    if (error) {
+      if (isMissingSchemaError(error)) {
+        throw new Error("Run the Supabase migration for enquiry CRM fields (see Admin → Settings).");
+      }
+      throw error;
+    }
     return mapRow(data);
   }
 

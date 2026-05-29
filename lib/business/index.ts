@@ -6,6 +6,7 @@ import type {
   InvoiceStatus,
   OrderStatus,
 } from "@/lib/store/types";
+import { isMissingSchemaError } from "@/lib/supabase/errors";
 import { createClient } from "@supabase/supabase-js";
 import { isSupabaseConfigured } from "@/lib/store/supabase-store";
 
@@ -79,9 +80,18 @@ export async function getBusinessStats(): Promise<BusinessStats> {
     client.from("business_clients").select("id", { count: "exact", head: true }),
   ]);
 
-  if (ordersRes.error) throw ordersRes.error;
-  if (invoicesRes.error) throw invoicesRes.error;
-  if (clientsRes.error) throw clientsRes.error;
+  if (ordersRes.error) {
+    if (isMissingSchemaError(ordersRes.error)) return emptyStats();
+    throw ordersRes.error;
+  }
+  if (invoicesRes.error) {
+    if (isMissingSchemaError(invoicesRes.error)) return emptyStats();
+    throw invoicesRes.error;
+  }
+  if (clientsRes.error) {
+    if (isMissingSchemaError(clientsRes.error)) return emptyStats();
+    throw clientsRes.error;
+  }
 
   const orders = ordersRes.data ?? [];
   const invoices = invoicesRes.data ?? [];
@@ -150,7 +160,10 @@ export async function listOrders(): Promise<BusinessOrder[]> {
     .from("business_orders")
     .select("*")
     .order("created_at", { ascending: false });
-  if (error) throw error;
+  if (error) {
+    if (isMissingSchemaError(error)) return [];
+    throw error;
+  }
   return (data ?? []).map(mapOrder);
 }
 
@@ -165,7 +178,10 @@ export async function listInvoices(): Promise<BusinessInvoice[]> {
     .from("business_invoices")
     .select("*")
     .order("created_at", { ascending: false });
-  if (error) throw error;
+  if (error) {
+    if (isMissingSchemaError(error)) return [];
+    throw error;
+  }
   return (data ?? []).map(mapInvoice);
 }
 
@@ -214,7 +230,12 @@ export async function createOrder(input: {
     .select("*")
     .single();
 
-  if (error) throw error;
+  if (error) {
+    if (isMissingSchemaError(error)) {
+      throw new Error("Run the Supabase migration for business tables (see Admin → Settings).");
+    }
+    throw error;
+  }
   return mapOrder(data);
 }
 
@@ -256,7 +277,12 @@ export async function createInvoice(input: {
     .select("*")
     .single();
 
-  if (error) throw error;
+  if (error) {
+    if (isMissingSchemaError(error)) {
+      throw new Error("Run the Supabase migration for business tables (see Admin → Settings).");
+    }
+    throw error;
+  }
   return mapInvoice(data);
 }
 

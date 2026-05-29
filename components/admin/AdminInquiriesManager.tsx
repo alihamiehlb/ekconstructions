@@ -12,9 +12,14 @@ const STATUSES: EnquiryStatus[] = ["new", "contacted", "quoted", "won", "lost"];
 type Props = {
   initialEnquiries: Enquiry[];
   contactEmail: string;
+  crmReady?: boolean;
 };
 
-export function AdminInquiriesManager({ initialEnquiries, contactEmail }: Props) {
+export function AdminInquiriesManager({
+  initialEnquiries,
+  contactEmail,
+  crmReady = true,
+}: Props) {
   const router = useRouter();
   const [enquiries, setEnquiries] = useState(initialEnquiries);
   const [selected, setSelected] = useState<string | null>(
@@ -199,9 +204,9 @@ export function AdminInquiriesManager({ initialEnquiries, contactEmail }: Props)
             <label className="mt-4 block text-sm">
               <span className="font-semibold text-ek-navy">Status</span>
               <select
-                className="mt-1 w-full rounded-lg border border-ek-navy/15 px-3 py-2"
+                className="mt-1 w-full rounded-lg border border-ek-navy/15 px-3 py-2 disabled:opacity-60"
                 value={active.status ?? "new"}
-                disabled={saving}
+                disabled={saving || !crmReady}
                 onChange={(ev) => patch(active.id, { status: ev.target.value })}
               >
                 {STATUSES.map((s) => (
@@ -216,8 +221,9 @@ export function AdminInquiriesManager({ initialEnquiries, contactEmail }: Props)
               <span className="font-semibold text-ek-navy">Internal notes</span>
               <textarea
                 rows={4}
-                className="mt-1 w-full rounded-lg border border-ek-navy/15 px-3 py-2"
+                className="mt-1 w-full rounded-lg border border-ek-navy/15 px-3 py-2 disabled:opacity-60"
                 defaultValue={active.notes ?? ""}
+                disabled={!crmReady}
                 onBlur={(ev) => {
                   if (ev.target.value !== (active.notes ?? "")) {
                     patch(active.id, { notes: ev.target.value, markRead: true });

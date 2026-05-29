@@ -1,4 +1,5 @@
 import type { AdminUser } from "@/lib/store/types";
+import { isMissingSchemaError } from "@/lib/supabase/errors";
 import { createClient } from "@supabase/supabase-js";
 
 function getClient() {
@@ -33,7 +34,10 @@ export async function listAdminUsers(): Promise<AdminUser[]> {
     .select("id, created_at, email, name, role, active, last_login")
     .order("created_at", { ascending: true });
 
-  if (error) throw error;
+  if (error) {
+    if (isMissingSchemaError(error)) return [];
+    throw error;
+  }
   return (data ?? []).map(mapRow);
 }
 
@@ -48,7 +52,10 @@ export async function findAdminUserByEmail(email: string) {
     .eq("active", true)
     .maybeSingle();
 
-  if (error) throw error;
+  if (error) {
+    if (isMissingSchemaError(error)) return null;
+    throw error;
+  }
   return data as Record<string, unknown> | null;
 }
 

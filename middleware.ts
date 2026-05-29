@@ -11,16 +11,25 @@ export async function middleware(request: NextRequest) {
     return new NextResponse("Bad Request", { status: 400 });
   }
 
-  const response =
-    pathname.startsWith("/admin") && !pathname.startsWith("/admin/login")
-      ? await protectAdmin(request)
-      : NextResponse.next();
+  const isAdminLogin = pathname === "/admin/login" || pathname === "/api/admin/login";
+  const isAdminApi = pathname.startsWith("/api/admin/") && !isAdminLogin;
+  const isAdminPage = pathname.startsWith("/admin") && pathname !== "/admin/login";
+
+  let response: NextResponse;
+  if (isAdminApi) {
+    response = await protectAdmin(request, true);
+  } else if (isAdminPage) {
+    response = await protectAdmin(request, false);
+  } else {
+    response = NextResponse.next();
+  }
 
   response.headers.set("X-Content-Type-Options", "nosniff");
   response.headers.set("X-Frame-Options", "SAMEORIGIN");
   response.headers.set("Referrer-Policy", "strict-origin-when-cross-origin");
+  response.headers.set("Permissions-Policy", "camera=(), microphone=(), geolocation=()");
 
-  if (pathname.startsWith("/admin")) {
+  if (pathname.startsWith("/admin") || pathname.startsWith("/api/admin/")) {
     response.headers.set("Cache-Control", "no-store, no-cache, must-revalidate, proxy-revalidate");
     response.headers.set("Pragma", "no-cache");
   }
@@ -32,11 +41,14 @@ export async function middleware(request: NextRequest) {
   return response;
 }
 
-async function protectAdmin(request: NextRequest) {
+async function protectAdmin(request: NextRequest, api: boolean) {
   const token = request.cookies.get(ADMIN_COOKIE)?.value;
   const secret = process.env.ADMIN_SECRET;
 
-  if (!token || !secret) {
+  if (!token || !secret || secret.length < 32) {
+    if (api) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
     return NextResponse.redirect(new URL("/admin/login", request.url));
   }
 
@@ -44,6 +56,9 @@ async function protectAdmin(request: NextRequest) {
     await jwtVerify(token, new TextEncoder().encode(secret));
     return NextResponse.next();
   } catch {
+    if (api) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
     return NextResponse.redirect(new URL("/admin/login", request.url));
   }
 }
