@@ -1,0 +1,144 @@
+@import "tailwindcss";
+
+@theme {
+  --color-ek-teal: #3bb2b8;
+  --color-ek-teal-dark: #2f9da3;
+  --color-ek-orange: #ef6c00;
+  --color-ek-orange-dark: #d45f00;
+  --color-ek-black: #1a1a1a;
+  --color-ek-navy: #0b1d26;
+  --color-ek-navy-light: #122832;
+  --color-ek-gray: #f4f4f4;
+  --color-ek-muted: #6b7b84;
+  --font-sans: var(--font-montserrat), system-ui, sans-serif;
+}
+
+.logo-wordmark {
+  filter: drop-shadow(0 1px 0 rgba(26, 26, 26, 0.04));
+}
+
+html {
+  scroll-behavior: auto;
+}
+
+body {
+  font-family: var(--font-sans);
+  color: var(--color-ek-navy);
+  background: #fff;
+}
+
+::selection {
+  background: color-mix(in srgb, var(--color-ek-teal) 35%, white);
+}
+
+.landing-container {
+  @apply mx-auto w-full max-w-[1140px] px-5 md:px-8 lg:px-10;
+}
+
+.section-pad {
+  @apply mx-auto w-full max-w-[1140px] px-5 md:px-8 lg:px-10;
+}
+
+.hero-dot-grid {
+  background-image: radial-gradient(circle, rgba(11, 29, 38, 0.16) 1px, transparent 1px);
+  background-size: 12px 12px;
+}
+
+.hero-scene-blend {
+  -webkit-mask-image: radial-gradient(ellipse 72% 68% at 50% 46%, #000 18%, transparent 72%);
+  mask-image: radial-gradient(ellipse 72% 68% at 50% 46%, #000 18%, transparent 72%);
+}
+
+.hero-scene-blend::before {
+  content: "";
+  position: absolute;
+  inset: 10% 15% 20%;
+  z-index: -1;
+  border-radius: 50%;
+  background: radial-gradient(ellipse at center, rgba(59, 178, 184, 0.12) 0%, transparent 70%);
+  pointer-events: none;
+}
+
+.services-clip {
+  clip-path: polygon(0 18%, 100% 0, 100% 100%, 0 100%);
+}
+
+@media (min-width: 1024px) {
+  .services-clip {
+    clip-path: polygon(0 26%, 100% 0, 100% 100%, 0 100%);
+  }
+}
+
+.btn-primary {
+  @apply inline-flex items-center justify-center gap-2.5 rounded-[3px] bg-ek-teal px-6 py-3 text-[11px] font-bold tracking-[0.18em] text-white uppercase transition hover:bg-ek-teal-dark focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ek-teal sm:px-8 sm:py-3.5 sm:tracking-[0.2em];
+}
+
+.btn-play {
+  @apply inline-flex items-center gap-3 text-[11px] font-bold tracking-[0.2em] text-ek-navy uppercase transition hover:text-ek-teal focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ek-teal;
+}
+
+.template-hero-title {
+  letter-spacing: -0.02em;
+  line-height: 1.02;
+}
+
+.legal-prose {
+  @apply space-y-8 text-sm leading-relaxed text-ek-muted sm:text-[15px];
+}
+
+.legal-prose .legal-section {
+  @apply space-y-3;
+}
+
+.legal-prose h2 {
+  @apply text-base font-bold tracking-tight text-ek-navy sm:text-lg;
+}
+
+.legal-prose p {
+  @apply leading-relaxed;
+}
+
+.legal-prose ul {
+  @apply list-disc space-y-2 pl-5;
+}
+
+.legal-prose a {
+  @apply font-medium text-ek-teal underline decoration-ek-teal/30 underline-offset-2 hover:decoration-ek-teal;
+}
+
+.legal-prose strong {
+  @apply font-semibold text-ek-navy;
+}
+
+@keyframes logoBadge {
+  0% {
+    transform: scale(0.6);
+    opacity: 0;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+@keyframes logoText {
+  0% {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
