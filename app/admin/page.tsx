@@ -83,7 +83,7 @@ export default async function AdminDashboardPage() {
       <AdminNav />
 
       <div className="mt-8 grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
-        <StatCard label="Total enquiries" value={stats.enquiries.total} icon={Inbox} href="/admin" />
+        <StatCard label="Total enquiries" value={stats.enquiries.total} icon={Inbox} href="/admin/inquiries" />
         <StatCard
           label="This week"
           value={stats.enquiries.thisWeek}
@@ -129,11 +129,16 @@ export default async function AdminDashboardPage() {
       </div>
 
       <div className="admin-card mt-8 rounded-2xl border border-ek-navy/10 bg-white shadow-sm">
-        <div className="flex items-center gap-2 border-b border-ek-navy/8 px-6 py-4">
-          <BarChart3 className="h-5 w-5 text-ek-teal" aria-hidden />
-          <h2 className="text-sm font-bold tracking-wide text-ek-navy uppercase">
-            Recent enquiries
-          </h2>
+        <div className="flex flex-wrap items-center justify-between gap-3 border-b border-ek-navy/8 px-6 py-4">
+          <div className="flex items-center gap-2">
+            <BarChart3 className="h-5 w-5 text-ek-teal" aria-hidden />
+            <h2 className="text-sm font-bold tracking-wide text-ek-navy uppercase">
+              Recent enquiries
+            </h2>
+          </div>
+          <Link href="/admin/inquiries" className="text-xs font-semibold text-ek-teal uppercase hover:underline">
+            Manage all →
+          </Link>
         </div>
         <AdminEnquiriesPanel enquiries={stats.recentEnquiries} />
       </div>

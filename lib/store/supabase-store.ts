@@ -42,6 +42,9 @@ export async function supabaseSaveEnquiry(
     service: row.service ?? undefined,
     message: row.message,
     sourceIp: row.source_ip ?? undefined,
+    status: row.status ?? "new",
+    notes: row.notes ?? undefined,
+    readAt: row.read_at ?? undefined,
   };
 }
 
@@ -87,6 +90,9 @@ export async function supabaseGetStats(): Promise<AdminStats> {
     service: row.service ?? undefined,
     message: row.message,
     sourceIp: row.source_ip ?? undefined,
+    status: row.status ?? "new",
+    notes: row.notes ?? undefined,
+    readAt: row.read_at ?? undefined,
   }));
 
   const thisWeek = mapped.filter((e) => new Date(e.createdAt) >= weekAgo).length;
@@ -114,6 +120,14 @@ export async function supabaseGetStats(): Promise<AdminStats> {
   const views7d = last7Days.reduce((s, d) => s + d.count, 0);
   const enquiries7d = thisWeek;
 
+  const statusMap = new Map<string, number>();
+  let unread = 0;
+  for (const e of mapped) {
+    const st = e.status ?? "new";
+    statusMap.set(st, (statusMap.get(st) ?? 0) + 1);
+    if (!e.readAt) unread++;
+  }
+
   return {
     enquiries: {
       total: mapped.length,
@@ -122,6 +136,8 @@ export async function supabaseGetStats(): Promise<AdminStats> {
       byService: [...serviceMap.entries()]
         .map(([service, count]) => ({ service, count }))
         .sort((a, b) => b.count - a.count),
+      byStatus: [...statusMap.entries()].map(([status, count]) => ({ status, count })),
+      unread,
     },
     pageViews: {
       total: totalViews ?? 0,

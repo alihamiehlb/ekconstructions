@@ -2,6 +2,7 @@
 
 import { services } from "@/content/site";
 import { useSite } from "@/components/providers/SiteProvider";
+import { buildEnquiryEmailBody, buildGmailComposeUrl } from "@/lib/gmail-compose";
 import { secureJsonFetch } from "@/lib/security/client-fetch";
 import { useState } from "react";
 
@@ -19,7 +20,13 @@ export function ContactForm() {
 
     const form = e.currentTarget;
     const data = new FormData(form);
-    const payload = Object.fromEntries(data.entries());
+    const payload = Object.fromEntries(data.entries()) as {
+      name: string;
+      email: string;
+      phone?: string;
+      service?: string;
+      message: string;
+    };
 
     try {
       const res = await secureJsonFetch("/api/contact", {
@@ -32,8 +39,23 @@ export function ContactForm() {
         setStatus("error");
         return;
       }
+
+      const toEmail = site.contact.email || "hello@ekconstructions.com.au";
+      const gmailUrl = buildGmailComposeUrl({
+        to: toEmail,
+        subject: `Website enquiry — ${payload.name}${payload.service ? ` (${payload.service})` : ""}`,
+        body: buildEnquiryEmailBody({
+          name: payload.name,
+          email: payload.email,
+          phone: payload.phone,
+          service: payload.service,
+          message: payload.message,
+        }),
+      });
+
       setStatus("success");
       form.reset();
+      window.open(gmailUrl, "_blank", "noopener,noreferrer");
     } catch {
       setError("Network error. Please check your connection and try again.");
       setStatus("error");
@@ -132,7 +154,7 @@ export function ContactForm() {
           role="status"
           aria-live="polite"
         >
-          Thank you — we&apos;ll be in touch shortly.
+          Thank you — your enquiry was saved. Gmail should open so you can send it to us.
         </div>
       )}
 

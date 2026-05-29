@@ -129,7 +129,7 @@ export function AdminInstagramManager({ initialFeed }: Props) {
     showMessage(
       formatSyncMessage(
         data,
-        `Synced ${data.synced ?? 0} post(s)${data.failed?.length ? ` · ${data.failed.length} failed` : ""}. Existing posts kept.`,
+        `Synced ${data.synced ?? 0} post(s)${data.failed?.length ? ` · ${data.failed.length} failed` : ""}. Site gallery updated.`,
       ),
       tone,
     );

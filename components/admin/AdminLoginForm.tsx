@@ -6,6 +6,7 @@ import { useState } from "react";
 
 export function AdminLoginForm() {
   const router = useRouter();
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
@@ -18,7 +19,7 @@ export function AdminLoginForm() {
     try {
       const res = await secureJsonFetch("/api/admin/login", {
         method: "POST",
-        body: JSON.stringify({ password }),
+        body: JSON.stringify({ email: email.trim() || undefined, password }),
       });
 
       const json = await res.json();
@@ -47,8 +48,21 @@ export function AdminLoginForm() {
   return (
     <form onSubmit={onSubmit} className="w-full max-w-sm space-y-4">
       <div>
+        <label htmlFor="email" className="mb-1.5 block text-sm font-semibold text-ek-navy">
+          Email <span className="font-normal text-ek-muted">(optional for legacy login)</span>
+        </label>
+        <input
+          id="email"
+          type="email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          className="w-full rounded-lg border border-ek-navy/15 px-4 py-3 outline-none focus:border-ek-teal focus:ring-2 focus:ring-ek-teal/20"
+          autoComplete="username"
+        />
+      </div>
+      <div>
         <label htmlFor="password" className="mb-1.5 block text-sm font-semibold text-ek-navy">
-          Admin password
+          Password
         </label>
         <input
           id="password"

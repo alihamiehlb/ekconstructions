@@ -1,19 +1,20 @@
-import { createAdminSession, verifyAdminPassword } from "@/lib/auth";
+import { createAdminSession, verifyAdminCredentials } from "@/lib/auth";
 import { logSecurityEvent } from "@/lib/security/audit";
 import { guardMutation, getClientIp } from "@/lib/security/api-guard";
 import { hashForAudit } from "@/lib/security/csrf";
-import { sanitizeText } from "@/lib/security/sanitize";
+import { sanitizeEmail, sanitizeText } from "@/lib/security/sanitize";
 import { NextResponse } from "next/server";
 import { z } from "zod";
 
 const schema = z.object({
+  email: z.string().email().optional().or(z.literal("")),
   password: z.string().min(1).max(256),
 });
 
 export async function POST(request: Request) {
-  if (!process.env.ADMIN_PASSWORD || !process.env.ADMIN_SECRET) {
+  if (!process.env.ADMIN_SECRET) {
     return NextResponse.json(
-      { error: "Admin is not configured. Set ADMIN_PASSWORD and ADMIN_SECRET in .env.local" },
+      { error: "Admin is not configured. Set ADMIN_SECRET in environment variables." },
       { status: 503 },
     );
   }
@@ -39,22 +40,24 @@ export async function POST(request: Request) {
 
   const parsed = schema.safeParse(body);
   if (!parsed.success) {
-    return NextResponse.json({ error: "Password required" }, { status: 400 });
+    return NextResponse.json({ error: "Email and password required" }, { status: 400 });
   }
 
   const password = sanitizeText(parsed.data.password, 256);
+  const email = parsed.data.email ? sanitizeEmail(parsed.data.email) : undefined;
 
-  if (!verifyAdminPassword(password)) {
+  const user = await verifyAdminCredentials(email, password);
+  if (!user) {
     await logSecurityEvent({
       type: "login_failed",
       ip,
-      detail: hashForAudit(password),
+      detail: email ? hashForAudit(email) : hashForAudit(password),
     });
-    return NextResponse.json({ error: "Invalid password" }, { status: 401 });
+    return NextResponse.json({ error: "Invalid email or password" }, { status: 401 });
   }
 
   try {
-    await createAdminSession();
+    await createAdminSession(user);
   } catch (e) {
     console.error("createAdminSession:", e);
     return NextResponse.json(
@@ -65,7 +68,12 @@ export async function POST(request: Request) {
       { status: 503 },
     );
   }
-  await logSecurityEvent({ type: "login_success", ip });
 
-  return NextResponse.json({ ok: true });
+  await logSecurityEvent({
+    type: "login_success",
+    ip,
+    detail: user.email ?? "legacy",
+  });
+
+  return NextResponse.json({ ok: true, user: { name: user.name, email: user.email, role: user.role } });
 }

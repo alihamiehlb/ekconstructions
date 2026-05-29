@@ -165,16 +165,27 @@ export function AdminInsightsPanel({ insights }: { insights: AdminInsights }) {
         {!ig.sessionConfigured && (
           <p className="mt-5 rounded-lg bg-white/10 p-3 text-xs leading-relaxed text-white/80">
             Add <code className="text-ek-teal">INSTAGRAM_SESSION_ID</code> in Vercel env for
-            discover + captions.
+            discover + captions.{" "}
+            <Link href="/admin/settings" className="font-semibold underline">
+              Setup guide →
+            </Link>
           </p>
         )}
 
-        <Link
-          href="/admin/logs"
-          className="mt-5 inline-flex text-xs font-semibold tracking-wide text-ek-teal uppercase hover:underline"
-        >
-          View activity logs →
-        </Link>
+        <div className="mt-5 flex flex-wrap gap-4">
+          <Link
+            href="/admin/settings"
+            className="inline-flex text-xs font-semibold tracking-wide text-ek-teal uppercase hover:underline"
+          >
+            Settings →
+          </Link>
+          <Link
+            href="/admin/logs"
+            className="inline-flex text-xs font-semibold tracking-wide text-ek-teal uppercase hover:underline"
+          >
+            Activity logs →
+          </Link>
+        </div>
       </section>
     </div>
   );

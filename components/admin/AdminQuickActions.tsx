@@ -4,21 +4,45 @@ import { motion } from "framer-motion";
 import {
   ExternalLink,
   FileText,
+  Inbox,
   Instagram,
   LayoutDashboard,
   RefreshCw,
+  Settings,
   Shield,
   Terminal,
+  Wallet,
 } from "lucide-react";
 import Link from "next/link";
 
 const actions = [
+  {
+    href: "/admin/inquiries",
+    label: "Enquiries",
+    desc: "Leads, Gmail replies, status",
+    icon: Inbox,
+    accent: "from-ek-orange/10 to-white border-ek-orange/20",
+  },
+  {
+    href: "/admin/business",
+    label: "Business hub",
+    desc: "Orders, invoices, margin",
+    icon: Wallet,
+    accent: "from-ek-teal/15 to-ek-teal/5 border-ek-teal/25",
+  },
   {
     href: "/admin/instagram",
     label: "Sync Instagram",
     desc: "Discover or paste post URLs",
     icon: RefreshCw,
     accent: "from-ek-teal/15 to-ek-teal/5 border-ek-teal/25",
+  },
+  {
+    href: "/admin/settings",
+    label: "Instagram session",
+    desc: "How to set session ID",
+    icon: Settings,
+    accent: "from-ek-navy/8 to-white border-ek-navy/10",
   },
   {
     href: "/admin/content",

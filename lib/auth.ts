@@ -1,9 +1,18 @@
+import { findAdminUserByEmail, touchAdminLogin } from "@/lib/admin/users";
+import { verifyPassword } from "@/lib/admin/password";
 import { SignJWT, jwtVerify } from "jose";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { timingSafeEqual } from "crypto";
 
 export const ADMIN_COOKIE = "ek_admin_session";
+
+export type AdminSessionUser = {
+  id?: string;
+  email?: string;
+  name?: string;
+  role: "admin" | "editor" | "viewer";
+};
 
 function getSecret() {
   const secret = process.env.ADMIN_SECRET;
@@ -13,8 +22,13 @@ function getSecret() {
   return new TextEncoder().encode(secret);
 }
 
-export async function createAdminSession() {
-  const token = await new SignJWT({ role: "admin" })
+export async function createAdminSession(user: AdminSessionUser = { role: "admin" }) {
+  const token = await new SignJWT({
+    role: user.role,
+    sub: user.id,
+    email: user.email,
+    name: user.name,
+  })
     .setProtectedHeader({ alg: "HS256" })
     .setIssuedAt()
     .setExpirationTime("8h")
@@ -35,21 +49,37 @@ export async function clearAdminSession() {
   cookieStore.delete(ADMIN_COOKIE);
 }
 
-export async function verifyAdminSession(): Promise<boolean> {
+export async function getAdminSession(): Promise<AdminSessionUser | null> {
   const cookieStore = await cookies();
   const token = cookieStore.get(ADMIN_COOKIE)?.value;
-  if (!token) return false;
+  if (!token) return null;
   try {
-    await jwtVerify(token, getSecret());
-    return true;
+    const { payload } = await jwtVerify(token, getSecret());
+    return {
+      id: payload.sub as string | undefined,
+      email: payload.email as string | undefined,
+      name: payload.name as string | undefined,
+      role: (payload.role as AdminSessionUser["role"]) ?? "admin",
+    };
   } catch {
-    return false;
+    return null;
   }
+}
+
+export async function verifyAdminSession(): Promise<boolean> {
+  return (await getAdminSession()) !== null;
 }
 
 export async function requireAdmin() {
   const ok = await verifyAdminSession();
   if (!ok) redirect("/admin/login");
+}
+
+export async function requireAdminRole(roles: AdminSessionUser["role"][]) {
+  const session = await getAdminSession();
+  if (!session || !roles.includes(session.role)) {
+    redirect("/admin");
+  }
 }
 
 export function verifyAdminPassword(password: string): boolean {
@@ -60,4 +90,28 @@ export function verifyAdminPassword(password: string): boolean {
   const b = Buffer.from(expected);
   if (a.length !== b.length) return false;
   return timingSafeEqual(a, b);
+}
+
+export async function verifyAdminCredentials(
+  email: string | undefined,
+  password: string,
+): Promise<AdminSessionUser | null> {
+  if (email?.trim()) {
+    const user = await findAdminUserByEmail(email);
+    if (user && (await verifyPassword(password, user.password_hash as string))) {
+      await touchAdminLogin(user.id as string);
+      return {
+        id: user.id as string,
+        email: user.email as string,
+        name: user.name as string,
+        role: user.role as AdminSessionUser["role"],
+      };
+    }
+  }
+
+  if (verifyAdminPassword(password)) {
+    return { role: "admin", email: email?.trim() || undefined, name: "Legacy admin" };
+  }
+
+  return null;
 }
