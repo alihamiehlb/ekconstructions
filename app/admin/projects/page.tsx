@@ -16,7 +16,11 @@ export default async function AdminProjectsPage() {
           <p className="text-xs font-semibold tracking-[0.3em] text-ek-teal uppercase">Admin</p>
           <h1 className="text-2xl font-black text-ek-navy uppercase sm:text-3xl">Projects</h1>
           <p className="mt-1 text-sm text-ek-muted">
-            Manage gallery images, titles, categories and project details.
+            Optional manual projects. The live gallery uses{" "}
+            <Link href="/admin/instagram" className="font-semibold text-ek-teal hover:underline">
+              Instagram sync
+            </Link>
+            .
           </p>
         </div>
         <div className="flex items-center gap-3">

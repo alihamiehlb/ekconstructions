@@ -10,7 +10,11 @@ export const projectSchema = z.object({
   description: z.string().min(1),
   highlights: z.array(z.string()).optional(),
   objectPosition: z.string().optional(),
-  instagramUrl: z.string().max(300).optional(),
+  instagramUrl: z
+    .string()
+    .max(300)
+    .optional()
+    .transform((v) => (v?.trim() ? v.trim() : undefined)),
 });
 
 export const cmsSchema = z.object({

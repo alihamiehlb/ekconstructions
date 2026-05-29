@@ -1,6 +1,7 @@
 import { verifyAdminSession } from "@/lib/auth";
 import { titleFromCaption } from "@/lib/instagram/caption-utils";
 import { syncInstagramFromUrls } from "@/lib/instagram/sync";
+import { revalidateSiteGallery } from "@/lib/instagram/revalidate";
 import { logAppEvent } from "@/lib/logging/app-logger";
 import { logSecurityEvent } from "@/lib/security/audit";
 import { guardMutation } from "@/lib/security/api-guard";
@@ -63,6 +64,8 @@ export async function POST(request: Request) {
       message: "Admin triggered Instagram sync",
       context: { synced: result.synced, failed: result.failed.length },
     });
+
+    revalidateSiteGallery();
 
     return NextResponse.json({
       ok: result.ok,

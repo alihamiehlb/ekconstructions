@@ -1,5 +1,6 @@
 import { verifyAdminSession } from "@/lib/auth";
 import { discoverAndSyncInstagram } from "@/lib/instagram/sync";
+import { revalidateSiteGallery } from "@/lib/instagram/revalidate";
 import { titleFromCaption } from "@/lib/instagram/caption-utils";
 import { logAppEvent } from "@/lib/logging/app-logger";
 import { logSecurityEvent } from "@/lib/security/audit";
@@ -39,6 +40,8 @@ export async function POST(request: Request) {
         method: result.method ?? "none",
       },
     });
+
+    revalidateSiteGallery();
 
     return NextResponse.json({
       ok: result.ok,

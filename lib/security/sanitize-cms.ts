@@ -43,13 +43,9 @@ export function sanitizeCmsPayload(data: CmsPayload): CmsPayload {
       id: sanitizeText(p.id, 40),
       title: sanitizeText(p.title, 120),
       category: sanitizeText(p.category, 80),
-      src: sanitizeAssetPath(p.src) ?? sanitizeText(p.src, 500),
+      src: sanitizeRemoteOrAssetPath(p.src),
       images: p.images
-        ?.map((img) => {
-          const t = sanitizeText(img, 500);
-          if (t.startsWith("https://") && /cdninstagram\.com|fbcdn\.net/i.test(t)) return t;
-          return sanitizeAssetPath(img) ?? t;
-        })
+        ?.map((img) => sanitizeRemoteOrAssetPath(img))
         .filter(Boolean),
       alt: sanitizeText(p.alt, 200),
       description: sanitizeText(p.description, 2000),
@@ -58,4 +54,10 @@ export function sanitizeCmsPayload(data: CmsPayload): CmsPayload {
       highlights: p.highlights?.map((h) => sanitizeText(h, 120)),
     })),
   };
+}
+
+function sanitizeRemoteOrAssetPath(value: string): string {
+  const text = sanitizeText(value, 500);
+  if (text.startsWith("https://") || text.startsWith("http://")) return text;
+  return sanitizeAssetPath(text) ?? text;
 }

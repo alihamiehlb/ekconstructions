@@ -11,6 +11,8 @@ import { WhyChooseUs } from "@/components/sections/WhyChooseUs";
 import { readCms } from "@/lib/cms";
 import { getProjects } from "@/lib/projects";
 
+export const dynamic = "force-dynamic";
+
 export default async function HomePage() {
   const [projects, cms] = await Promise.all([getProjects(), readCms()]);
 

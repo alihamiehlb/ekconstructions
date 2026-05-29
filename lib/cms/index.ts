@@ -62,7 +62,9 @@ export async function writeCms(data: CmsData): Promise<void> {
 
 export async function getCmsProjects() {
   const cms = await readCms();
-  return cms.projects;
+  return cms.projects.filter(
+    (p) => !p.src.startsWith("/images/gallery/"),
+  );
 }
 
 export { buildSiteContext } from "@/lib/cms/public-site";

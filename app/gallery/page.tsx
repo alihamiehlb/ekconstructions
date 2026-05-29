@@ -4,6 +4,8 @@ import { GalleryGrid } from "@/components/gallery/GalleryGrid";
 import { getProjects } from "@/lib/projects";
 import type { Metadata } from "next";
 
+export const dynamic = "force-dynamic";
+
 export const metadata: Metadata = {
   title: "Project Gallery",
   description: "Explore aluminium, glass balustrade, steel, privacy screen and carpentry projects by EK Constructions across Sydney.",

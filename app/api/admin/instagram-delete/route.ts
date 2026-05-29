@@ -1,5 +1,6 @@
 import { verifyAdminSession } from "@/lib/auth";
 import { removeInstagramPost } from "@/lib/instagram/sync";
+import { revalidateSiteGallery } from "@/lib/instagram/revalidate";
 import { logAppEvent } from "@/lib/logging/app-logger";
 import { guardMutation } from "@/lib/security/api-guard";
 import { NextResponse } from "next/server";
@@ -34,6 +35,7 @@ export async function POST(request: Request) {
 
   try {
     const feed = await removeInstagramPost(parsed.data.shortcode);
+    revalidateSiteGallery();
     return NextResponse.json({
       ok: true,
       shortcode: parsed.data.shortcode,
