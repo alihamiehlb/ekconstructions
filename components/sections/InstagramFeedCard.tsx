@@ -7,6 +7,11 @@ import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 
+function imageSrc(post: InstagramPost, slide: number): string {
+  const images = post.images.length ? post.images : [post.thumbnail];
+  return images[slide] ?? post.thumbnail;
+}
+
 export function InstagramFeedCard({
   post,
   index,
@@ -17,7 +22,12 @@ export function InstagramFeedCard({
   const reduceMotion = useReducedMotion();
   const images = post.images.length ? post.images : [post.thumbnail];
   const [slide, setSlide] = useState(0);
+  const [src, setSrc] = useState(() => imageSrc(post, 0));
   const multi = images.length > 1;
+
+  useEffect(() => {
+    setSrc(imageSrc(post, slide));
+  }, [post, slide]);
 
   useEffect(() => {
     if (!multi || reduceMotion) return;
@@ -25,8 +35,8 @@ export function InstagramFeedCard({
     return () => window.clearInterval(id);
   }, [multi, reduceMotion, images.length]);
 
-  const src = images[slide] ?? post.thumbnail;
   const galleryHref = `/gallery/ig-${post.shortcode}`;
+  const fallbackSrc = `/api/instagram/image?shortcode=${encodeURIComponent(post.shortcode)}`;
 
   return (
     <motion.div
@@ -49,11 +59,14 @@ export function InstagramFeedCard({
       >
         <Image
           src={src}
-          alt={post.caption || "Instagram project photo"}
+          alt={post.caption || post.title || "EK Constructions project"}
           fill
           sizes="(max-width: 640px) 50vw, 25vw"
           className="object-cover transition-transform duration-700 group-hover:scale-105"
-          unoptimized={src.startsWith("http")}
+          unoptimized
+          onError={() => {
+            if (src !== fallbackSrc) setSrc(fallbackSrc);
+          }}
         />
       </motion.div>
 

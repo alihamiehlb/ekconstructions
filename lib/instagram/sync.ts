@@ -7,6 +7,7 @@ import {
   readInstagramPostUrls,
   writeInstagramFeed,
 } from "@/lib/instagram/feed";
+import { persistInstagramPost } from "@/lib/instagram/persist-images";
 import type { InstagramFeed, InstagramPost } from "@/lib/instagram/types";
 import { logAppEvent } from "@/lib/logging/app-logger";
 
@@ -69,17 +70,19 @@ export async function syncInstagramFromUrls(
     try {
       const { post, error } = await fetchInstagramPostDetailed(url);
       if (post) {
-        incoming.push(post);
+        const stored = await persistInstagramPost(post);
+        incoming.push(stored);
         await logAppEvent({
-          level: post.caption ? "info" : "warn",
+          level: stored.caption ? "info" : "warn",
           source: "instagram.sync",
-          message: post.caption ? "Post synced with caption" : "Post synced without caption",
+          message: stored.caption ? "Post synced with caption" : "Post synced without caption",
           context: {
-            shortcode: post.shortcode,
-            title: post.title ?? titleFromCaption(post.caption),
-            captionLength: post.caption.length,
-            imageCount: post.images.length,
-            isCarousel: post.isCarousel,
+            shortcode: stored.shortcode,
+            title: stored.title ?? titleFromCaption(stored.caption),
+            captionLength: stored.caption.length,
+            imageCount: stored.images.length,
+            persisted: stored.images.every((u) => u.includes(".supabase.co")),
+            isCarousel: stored.isCarousel,
           },
         });
       } else {

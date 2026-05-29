@@ -3,6 +3,7 @@ import {
   readInstagramFeedFromSupabase,
   writeInstagramFeedToSupabase,
 } from "@/lib/instagram/supabase-feed";
+import { refreshExpiringPosts } from "@/lib/instagram/persist-images";
 import type { InstagramFeed } from "@/lib/instagram/types";
 import fs from "fs";
 import path from "path";
@@ -62,18 +63,38 @@ export function getInstagramFeedPath(): string {
 
 /** Supabase (production) first, then committed JSON file (local / fallback). */
 export async function readInstagramFeed(): Promise<InstagramFeed> {
+  let feed: InstagramFeed;
+
   if (isSupabaseFeedConfigured()) {
     const remote = await readInstagramFeedFromSupabase();
     if (remote) {
       const fileFallback = readInstagramFeedFromFile();
-      return {
+      feed = {
         ...remote,
         savedUrls:
           remote.savedUrls?.length ? remote.savedUrls : fileFallback.savedUrls ?? [],
       };
+    } else {
+      feed = readInstagramFeedFromFile();
+    }
+  } else {
+    feed = readInstagramFeedFromFile();
+  }
+
+  if (feed.posts.length > 0 && isSupabaseFeedConfigured()) {
+    const refreshed = await refreshExpiringPosts(feed.posts);
+    const changed = refreshed.some((p, i) => p.thumbnail !== feed.posts[i]?.thumbnail);
+    if (changed) {
+      feed = { ...feed, posts: refreshed, syncedAt: new Date().toISOString() };
+      try {
+        await writeInstagramFeed(feed);
+      } catch {
+        /* still return refreshed posts for this request */
+      }
     }
   }
-  return readInstagramFeedFromFile();
+
+  return feed;
 }
 
 export function readInstagramFeedSync(): InstagramFeed {

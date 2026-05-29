@@ -238,8 +238,7 @@ export function AdminInstagramManager({ initialFeed }: Props) {
         <section className="admin-card rounded-2xl border border-ek-navy/10 bg-white p-6 shadow-sm">
           <h2 className="text-sm font-bold text-ek-navy uppercase">Manual post URLs</h2>
           <p className="mt-2 text-sm text-ek-muted">
-            Paste links (with or without ?img_index=). Sync adds/updates posts without removing
-            others.
+            Paste links (with or without ?img_index=). Sync saves images to Supabase so they never expire.
           </p>
           <textarea
             rows={8}
@@ -276,7 +275,7 @@ export function AdminInstagramManager({ initialFeed }: Props) {
               </p>
             )}
           </div>
-          <p className="text-xs text-ek-muted">Delete removes from site gallery · Supabase + CDN</p>
+          <p className="text-xs text-ek-muted">Delete removes from site · Images saved to Supabase Storage</p>
         </div>
 
         {posts.length === 0 ? (
