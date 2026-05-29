@@ -1,6 +1,10 @@
 import { projects as defaultProjects, type Project } from "@/content/projects";
 import { getCmsProjects } from "@/lib/cms";
-import { inferCategoryFromCaption, titleFromCaption } from "@/lib/instagram/categories";
+import {
+  descriptionFromCaption,
+  inferCategoryFromCaption,
+  titleFromCaption,
+} from "@/lib/instagram/caption-utils";
 import { readInstagramFeed } from "@/lib/instagram/feed";
 import { getInstagramPostMeta } from "@/lib/instagram/post-meta";
 import type { InstagramPost } from "@/lib/instagram/types";
@@ -24,14 +28,12 @@ function instagramPostToProject(post: InstagramPost): Project {
 
   return {
     id: `ig-${post.shortcode}`,
-    title: meta?.title ?? titleFromCaption(caption),
+    title: meta?.title ?? post.title ?? titleFromCaption(caption),
     category: meta?.category ?? inferCategoryFromCaption(caption),
     src: post.thumbnail,
     images: post.images,
-    alt: caption.slice(0, 120) || "EK Constructions project on Instagram",
-    description:
-      caption ||
-      "Completed work by EK Constructions — see more on our Instagram.",
+    alt: caption.slice(0, 120) || titleFromCaption(caption),
+    description: meta?.description ?? descriptionFromCaption(caption),
     instagramUrl: post.permalink,
     highlights: post.isCarousel ? [`${post.images.length} photos`] : undefined,
     objectPosition: "center",

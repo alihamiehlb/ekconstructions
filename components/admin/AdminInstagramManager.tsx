@@ -52,6 +52,15 @@ export function AdminInstagramManager({ initialFeed }: Props) {
       failed?: string[];
       error?: string;
       syncedAt?: string;
+      posts?: {
+        shortcode: string;
+        permalink: string;
+        caption?: string;
+        title?: string;
+        thumbnail: string;
+        imageCount?: number;
+        isCarousel?: boolean;
+      }[];
     };
 
     setSyncing(false);
@@ -59,6 +68,22 @@ export function AdminInstagramManager({ initialFeed }: Props) {
     if (!res.ok) {
       setMessage(data.error ?? "Sync failed.");
       return;
+    }
+
+    if (data.posts?.length) {
+      setPosts(
+        data.posts.map((p) => ({
+          id: p.shortcode,
+          shortcode: p.shortcode,
+          permalink: p.permalink,
+          caption: p.caption ?? "",
+          title: p.title,
+          images: [p.thumbnail],
+          thumbnail: p.thumbnail,
+          isCarousel: p.isCarousel ?? false,
+          syncedAt: data.syncedAt ?? new Date().toISOString(),
+        })),
+      );
     }
 
     setMessage(
@@ -81,6 +106,8 @@ export function AdminInstagramManager({ initialFeed }: Props) {
       posts?: {
         shortcode: string;
         permalink: string;
+        caption?: string;
+        title?: string;
         imageCount: number;
         isCarousel: boolean;
         thumbnail: string;
@@ -101,7 +128,8 @@ export function AdminInstagramManager({ initialFeed }: Props) {
           id: p.shortcode,
           shortcode: p.shortcode,
           permalink: p.permalink,
-          caption: "",
+          caption: p.caption ?? "",
+          title: p.title,
           images: [p.thumbnail],
           thumbnail: p.thumbnail,
           isCarousel: p.isCarousel,
@@ -233,6 +261,17 @@ export function AdminInstagramManager({ initialFeed }: Props) {
                   )}
                 </div>
                 <div className="space-y-2 p-3">
+                  <p className="line-clamp-2 text-sm font-bold text-ek-navy">
+                    {post.title || post.caption?.split("\n")[0] || post.shortcode}
+                  </p>
+                  {post.caption && (
+                    <p className="line-clamp-3 text-xs leading-relaxed text-ek-muted">{post.caption}</p>
+                  )}
+                  {!post.caption && (
+                    <p className="text-xs text-ek-orange">
+                      No caption — add INSTAGRAM_SESSION_ID or edit in post meta.
+                    </p>
+                  )}
                   <p className="truncate font-mono text-[10px] text-ek-muted">{post.shortcode}</p>
                   <a
                     href={post.permalink}

@@ -36,6 +36,12 @@ export default async function AdminSecurityPage() {
         </div>
         <div className="flex items-center gap-3">
           <Link
+            href="/admin/logs"
+            className="text-xs font-semibold tracking-wide text-ek-teal uppercase hover:underline"
+          >
+            Activity logs
+          </Link>
+          <Link
             href="/security"
             className="text-xs font-semibold tracking-wide text-ek-teal uppercase hover:underline"
           >

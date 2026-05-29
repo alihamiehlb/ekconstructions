@@ -1,5 +1,6 @@
 import { verifyAdminSession } from "@/lib/auth";
 import { discoverAndSyncInstagram } from "@/lib/instagram/sync";
+import { titleFromCaption } from "@/lib/instagram/caption-utils";
 import { logSecurityEvent } from "@/lib/security/audit";
 import { guardMutation } from "@/lib/security/api-guard";
 import { NextResponse } from "next/server";
@@ -33,6 +34,8 @@ export async function POST(request: Request) {
     posts: result.feed.posts.map((p) => ({
       shortcode: p.shortcode,
       permalink: p.permalink,
+      caption: p.caption,
+      title: p.title ?? titleFromCaption(p.caption),
       imageCount: p.images.length,
       isCarousel: p.isCarousel,
       thumbnail: p.thumbnail,

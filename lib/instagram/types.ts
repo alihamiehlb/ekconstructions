@@ -3,6 +3,8 @@ export type InstagramPost = {
   shortcode: string;
   permalink: string;
   caption: string;
+  /** First-line title derived from caption during sync. */
+  title?: string;
   images: string[];
   thumbnail: string;
   isCarousel: boolean;

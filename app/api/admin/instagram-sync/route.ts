@@ -1,5 +1,7 @@
 import { verifyAdminSession } from "@/lib/auth";
+import { titleFromCaption } from "@/lib/instagram/caption-utils";
 import { syncInstagramFromUrls } from "@/lib/instagram/sync";
+import { logAppEvent } from "@/lib/logging/app-logger";
 import { logSecurityEvent } from "@/lib/security/audit";
 import { guardMutation } from "@/lib/security/api-guard";
 import { NextResponse } from "next/server";
@@ -45,11 +47,17 @@ export async function POST(request: Request) {
   }
 
   const result = await syncInstagramFromUrls(parsed.data.urls);
-  // Persist to Supabase + content/instagram-feed.json
 
   await logSecurityEvent({
     type: "instagram_sync",
     detail: `synced=${result.synced} failed=${result.failed.length}`,
+  });
+
+  await logAppEvent({
+    level: result.failed.length ? "warn" : "info",
+    source: "instagram.sync.api",
+    message: "Admin triggered Instagram sync",
+    context: { synced: result.synced, failed: result.failed.length },
   });
 
   return NextResponse.json({
@@ -60,6 +68,8 @@ export async function POST(request: Request) {
     posts: result.feed.posts.map((p) => ({
       shortcode: p.shortcode,
       permalink: p.permalink,
+      caption: p.caption,
+      title: p.title ?? titleFromCaption(p.caption),
       imageCount: p.images.length,
       isCarousel: p.isCarousel,
       thumbnail: p.thumbnail,

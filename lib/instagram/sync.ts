@@ -1,5 +1,6 @@
 import { discoverProfilePostUrls } from "@/lib/instagram/discover-profile";
 import { fetchInstagramPost } from "@/lib/instagram/fetch-post";
+import { titleFromCaption } from "@/lib/instagram/caption-utils";
 import {
   readInstagramFeed,
   readInstagramPostUrls,
@@ -7,6 +8,7 @@ import {
   writeInstagramPostUrls,
 } from "@/lib/instagram/feed";
 import type { InstagramFeed, InstagramPost } from "@/lib/instagram/types";
+import { logAppEvent } from "@/lib/logging/app-logger";
 
 export type SyncInstagramResult = {
   ok: boolean;
@@ -26,13 +28,47 @@ export async function syncInstagramFromUrls(
 
   const uniqueUrls = [...new Set(urls.map((u) => u.trim()).filter(Boolean))];
 
+  await logAppEvent({
+    level: "info",
+    source: "instagram.sync",
+    message: "Instagram sync started",
+    context: { urlCount: uniqueUrls.length },
+  });
+
   for (const url of uniqueUrls) {
     try {
       const post = await fetchInstagramPost(url);
-      if (post) posts.push(post);
-      else failed.push(url);
-    } catch {
+      if (post) {
+        posts.push(post);
+        await logAppEvent({
+          level: post.caption ? "info" : "warn",
+          source: "instagram.sync",
+          message: post.caption ? "Post synced with caption" : "Post synced without caption",
+          context: {
+            shortcode: post.shortcode,
+            title: post.title ?? titleFromCaption(post.caption),
+            captionLength: post.caption.length,
+            imageCount: post.images.length,
+            isCarousel: post.isCarousel,
+          },
+        });
+      } else {
+        failed.push(url);
+        await logAppEvent({
+          level: "error",
+          source: "instagram.sync",
+          message: "Post fetch returned no images",
+          context: { url },
+        });
+      }
+    } catch (error) {
       failed.push(url);
+      await logAppEvent({
+        level: "error",
+        source: "instagram.sync",
+        message: "Post sync threw an error",
+        context: { url, error: error instanceof Error ? error.message : String(error) },
+      });
     }
     await new Promise((r) => setTimeout(r, 350));
   }
@@ -47,6 +83,13 @@ export async function syncInstagramFromUrls(
   await writeInstagramFeed(feed);
   writeInstagramPostUrls(uniqueUrls);
 
+  await logAppEvent({
+    level: failed.length ? "warn" : "info",
+    source: "instagram.sync",
+    message: "Instagram sync finished",
+    context: { synced: posts.length, failed: failed.length },
+  });
+
   return { ok: failed.length === 0, synced: posts.length, failed, feed };
 }
 
@@ -56,6 +99,18 @@ export async function discoverAndSyncInstagram(username = "ekconstructions"): Pr
   const discovery = await discoverProfilePostUrls(username);
   const manual = readInstagramPostUrls();
   const merged = [...new Set([...discovery.urls, ...manual])];
+
+  await logAppEvent({
+    level: "info",
+    source: "instagram.discover",
+    message: "Profile discover started",
+    context: {
+      username,
+      discovered: discovery.urls.length,
+      manual: manual.length,
+      method: discovery.method ?? "unknown",
+    },
+  });
 
   const result = await syncInstagramFromUrls(merged, {
     username,

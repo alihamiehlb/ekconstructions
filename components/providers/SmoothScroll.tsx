@@ -3,22 +3,35 @@
 import Lenis from "lenis";
 import "lenis/dist/lenis.css";
 import { useReducedMotion } from "framer-motion";
+import { usePathname } from "next/navigation";
 import { useEffect } from "react";
 
 function dispatchScroll() {
   window.dispatchEvent(new Event("scroll"));
 }
 
+function isAdminPath(pathname: string | null): boolean {
+  return Boolean(pathname?.startsWith("/admin"));
+}
+
 export function SmoothScroll({ children }: { children: React.ReactNode }) {
   const reduceMotion = useReducedMotion();
+  const pathname = usePathname();
+  const adminRoute = isAdminPath(pathname);
 
   useEffect(() => {
+    if (adminRoute) {
+      document.documentElement.classList.remove("lenis", "lenis-smooth");
+      document.body.style.overflow = "";
+      return;
+    }
+
     if (reduceMotion) return;
 
     let lenis: Lenis | null = null;
 
     const start = () => {
-      if (lenis) return;
+      if (lenis || isAdminPath(window.location.pathname)) return;
       document.body.style.overflow = "";
 
       lenis = new Lenis({
@@ -43,18 +56,21 @@ export function SmoothScroll({ children }: { children: React.ReactNode }) {
     } else {
       window.addEventListener("ek-brand-loader-done", onLoaderDone, { once: true });
       const fallback = window.setTimeout(start, 4000);
+
       return () => {
         window.clearTimeout(fallback);
         window.removeEventListener("ek-brand-loader-done", onLoaderDone);
         lenis?.destroy();
+        lenis = null;
       };
     }
 
     return () => {
       window.removeEventListener("ek-brand-loader-done", onLoaderDone);
       lenis?.destroy();
+      lenis = null;
     };
-  }, [reduceMotion]);
+  }, [reduceMotion, adminRoute, pathname]);
 
   return <>{children}</>;
 }

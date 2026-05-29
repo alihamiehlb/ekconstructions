@@ -6,7 +6,7 @@ import { requireAdmin } from "@/lib/auth";
 import { readInstagramFeed } from "@/lib/instagram/feed";
 import { isSupabaseFeedConfigured } from "@/lib/instagram/supabase-feed";
 import { getAdminStats, getStorageMode } from "@/lib/store";
-import { BarChart3, Eye, Image, Inbox, Instagram, Percent, Shield, TrendingUp } from "lucide-react";
+import { BarChart3, Eye, Image, Inbox, Instagram, Percent, Shield, Terminal, TrendingUp } from "lucide-react";
 import Link from "next/link";
 
 export const metadata = { title: "Admin Dashboard" };
@@ -80,7 +80,7 @@ export default async function AdminDashboardPage() {
         />
       </div>
 
-      <div className="mt-6 grid gap-4 sm:grid-cols-3">
+      <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
         <StatCard
           label="Instagram posts"
           value={feed.posts.length}
@@ -89,7 +89,8 @@ export default async function AdminDashboardPage() {
           href="/admin/instagram"
         />
         <StatCard label="Gallery projects" value="CMS" icon={Image} href="/admin/projects" />
-        <StatCard label="Security log" value="Audit" icon={Shield} href="/admin/security" />
+        <StatCard label="Activity logs" value="Live" icon={Terminal} href="/admin/logs" />
+        <StatCard label="Security audit" value="Events" icon={Shield} href="/admin/security" />
       </div>
 
       <div className="mt-8">

@@ -4,6 +4,7 @@ import path from "path";
 export type InstagramPostMeta = {
   category?: string;
   title?: string;
+  description?: string;
 };
 
 const META_PATH = path.join(process.cwd(), "content", "instagram-post-meta.json");

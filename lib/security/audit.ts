@@ -14,7 +14,10 @@ export type AuditEvent = {
     | "cms_upload"
     | "contact_spam"
     | "instagram_sync"
-    | "instagram_discover";
+    | "instagram_discover"
+    | "app_info"
+    | "app_warn"
+    | "app_error";
   ip?: string;
   detail?: string;
 };
