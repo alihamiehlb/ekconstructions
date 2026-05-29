@@ -25,3 +25,16 @@ export async function secureJsonFetch(url: string, init: RequestInit = {}): Prom
     headers,
   });
 }
+
+/** Multipart upload with CSRF (no JSON content-type). */
+export async function secureFormFetch(url: string, init: RequestInit = {}): Promise<Response> {
+  const token = await getCsrfToken();
+  const headers = new Headers(init.headers);
+  headers.set("X-CSRF-Token", token);
+
+  return fetch(url, {
+    ...init,
+    credentials: "same-origin",
+    headers,
+  });
+}

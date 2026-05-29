@@ -19,6 +19,12 @@ export function BrandLoader() {
   }, []);
 
   useEffect(() => {
+    if (phase === "exit" || phase === "done") {
+      document.body.style.overflow = "";
+    }
+  }, [phase]);
+
+  useEffect(() => {
     const start = performance.now();
     let frame: number;
 

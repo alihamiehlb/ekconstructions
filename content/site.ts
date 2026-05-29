@@ -17,7 +17,8 @@ export const siteConfig = {
   },
   business: {
     abn: "97 112 073 048",
-    memberSince: 2020,
+    memberSince: 1993,
+    yearsExperience: "30+",
     projectsDelivered: "500+",
   },
   contact: {
@@ -81,7 +82,8 @@ export const services = [
 export const whyChooseUs = [
   {
     title: "Expert Team",
-    description: "Skilled installers and glaziers with years of on-site experience across Sydney.",
+    description:
+      "Skilled installers and glaziers with 30+ years of combined on-site experience across Sydney.",
     icon: "team",
   },
   {
@@ -107,7 +109,7 @@ export const whyChooseUs = [
 ] as const;
 
 export const aboutParagraphs = [
-  "EK Constructions is a Sydney-based specialist in aluminium glazing, glass balustrades, steel work, privacy screens, and quality carpentry for residential and light commercial projects.",
+  "EK Constructions is a Sydney-based specialist in aluminium glazing, glass balustrades, steel work, privacy screens, and quality carpentry — backed by more than 30 years of hands-on trade experience.",
   "From frameless stair balustrades to full window replacements, we focus on precision installation, compliant products, and finishes that elevate your space.",
   "Follow our latest work on Instagram — real projects, real craftsmanship, across Greater Sydney.",
 ] as const;

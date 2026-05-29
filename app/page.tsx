@@ -18,7 +18,7 @@ export default async function HomePage() {
     <>
       <Header />
       <main id="main-content">
-        <div className="overflow-hidden bg-white">
+        <div className="bg-white">
           <Hero />
           <Services services={cms.services} />
           <WhyChooseUs

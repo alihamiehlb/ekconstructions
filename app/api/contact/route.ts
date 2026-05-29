@@ -58,40 +58,7 @@ export async function POST(request: Request) {
     );
   }
 
-  if (process.env.RESEND_API_KEY && process.env.CONTACT_TO_EMAIL) {
-    try {
-      await fetch("https://api.resend.com/emails", {
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${process.env.RESEND_API_KEY}`,
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          from: process.env.CONTACT_FROM_EMAIL ?? "onboarding@resend.dev",
-          to: process.env.CONTACT_TO_EMAIL,
-          subject: `New enquiry from ${data.name}`,
-          text: [
-            `Name: ${data.name}`,
-            `Email: ${data.email}`,
-            data.phone ? `Phone: ${data.phone}` : null,
-            data.service ? `Service: ${data.service}` : null,
-            "",
-            data.message,
-          ]
-            .filter(Boolean)
-            .join("\n"),
-        }),
-      });
-    } catch (e) {
-      console.error("Resend error:", e);
-      return NextResponse.json(
-        { error: "Could not send your message. Please email us directly." },
-        { status: 503 },
-      );
-    }
-  } else {
-    console.info("[contact enquiry]", JSON.stringify({ ...data, ip: "[redacted]" }));
-  }
+  console.info("[contact enquiry saved]", data.email);
 
   return NextResponse.json({ ok: true });
 }

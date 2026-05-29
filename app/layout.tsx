@@ -57,8 +57,8 @@ export default async function RootLayout({
   const cms = await readCms();
 
   return (
-    <html lang="en-AU" className={`${montserrat.variable} h-full scroll-smooth`}>
-      <body className="min-h-full antialiased">
+    <html lang="en-AU" className={montserrat.variable}>
+      <body className="min-h-dvh antialiased">
         <SiteProvider cms={cms}>
           <CsrfBootstrap />
           <SmoothScroll>

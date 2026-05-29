@@ -1,6 +1,6 @@
 "use client";
 
-import { secureJsonFetch } from "@/lib/security/client-fetch";
+import { secureFormFetch } from "@/lib/security/client-fetch";
 import { ImagePlus, Loader2 } from "lucide-react";
 import Image from "next/image";
 import { useRef, useState } from "react";
@@ -23,7 +23,7 @@ export function ImageUploadField({ label, value, onChange }: Props) {
     form.append("file", file);
 
     try {
-      const res = await secureJsonFetch("/api/admin/upload", { method: "POST", body: form });
+      const res = await secureFormFetch("/api/admin/upload", { method: "POST", body: form });
       const json = await res.json();
       if (!res.ok) {
         setError(json.error ?? "Upload failed");

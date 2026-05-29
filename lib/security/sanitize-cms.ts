@@ -44,9 +44,17 @@ export function sanitizeCmsPayload(data: CmsPayload): CmsPayload {
       title: sanitizeText(p.title, 120),
       category: sanitizeText(p.category, 80),
       src: sanitizeAssetPath(p.src) ?? sanitizeText(p.src, 500),
+      images: p.images
+        ?.map((img) => {
+          const t = sanitizeText(img, 500);
+          if (t.startsWith("https://") && /cdninstagram\.com|fbcdn\.net/i.test(t)) return t;
+          return sanitizeAssetPath(img) ?? t;
+        })
+        .filter(Boolean),
       alt: sanitizeText(p.alt, 200),
       description: sanitizeText(p.description, 2000),
       objectPosition: p.objectPosition ? sanitizeText(p.objectPosition, 80) : undefined,
+      instagramUrl: p.instagramUrl ? sanitizeText(p.instagramUrl, 300) : undefined,
       highlights: p.highlights?.map((h) => sanitizeText(h, 120)),
     })),
   };

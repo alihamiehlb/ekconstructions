@@ -85,10 +85,38 @@ export function AdminProjectsEditor() {
               </label>
             ))}
             <ImageUploadField
-              label="Project image"
+              label="Cover image"
               value={project.src}
               onChange={(url) => updateProject(i, { src: url })}
             />
+            <label className="block text-sm md:col-span-2">
+              <span className="font-medium text-ek-navy">
+                Extra images (one URL per line — carousel slides)
+              </span>
+              <textarea
+                rows={3}
+                className="mt-1 w-full rounded-lg border border-ek-navy/15 px-3 py-2 font-mono text-xs"
+                placeholder="/images/gallery/photo-2.jpg&#10;https://..."
+                value={(project.images ?? []).join("\n")}
+                onChange={(e) =>
+                  updateProject(i, {
+                    images: e.target.value
+                      .split(/\r?\n/)
+                      .map((s) => s.trim())
+                      .filter(Boolean),
+                  })
+                }
+              />
+            </label>
+            <label className="block text-sm md:col-span-2">
+              <span className="font-medium text-ek-navy">Instagram post URL (optional)</span>
+              <input
+                className="mt-1 w-full rounded-lg border border-ek-navy/15 px-3 py-2 text-sm"
+                value={project.instagramUrl ?? ""}
+                onChange={(e) => updateProject(i, { instagramUrl: e.target.value })}
+                placeholder="https://www.instagram.com/p/..."
+              />
+            </label>
             <label className="block text-sm md:col-span-2">
               <span className="font-medium text-ek-navy">Description</span>
               <textarea

@@ -5,10 +5,12 @@ export const projectSchema = z.object({
   title: z.string().min(1),
   category: z.string().min(1),
   src: z.string().min(1),
+  images: z.array(z.string().min(1)).optional(),
   alt: z.string().min(1),
   description: z.string().min(1),
   highlights: z.array(z.string()).optional(),
   objectPosition: z.string().optional(),
+  instagramUrl: z.string().max(300).optional(),
 });
 
 export const cmsSchema = z.object({
@@ -42,5 +44,5 @@ export const cmsSchema = z.object({
     }),
   ),
   materials: z.array(z.string().min(1)),
-  projects: z.array(projectSchema).min(1),
+  projects: z.array(projectSchema),
 });

@@ -1,6 +1,7 @@
 import { Footer } from "@/components/layout/Footer";
 import { Header } from "@/components/layout/Header";
 import { ProjectDetailScreen } from "@/components/projects/ProjectDetailScreen";
+import { getProjectImages } from "@/lib/project-images";
 import { getProjectById, getProjects } from "@/lib/projects";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
@@ -19,7 +20,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   return {
     title: project.title,
     description: project.description,
-    openGraph: { images: [{ url: project.src }] },
+    openGraph: { images: [{ url: getProjectImages(project)[0] }] },
   };
 }
 

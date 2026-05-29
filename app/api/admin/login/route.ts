@@ -53,7 +53,18 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "Invalid password" }, { status: 401 });
   }
 
-  await createAdminSession();
+  try {
+    await createAdminSession();
+  } catch (e) {
+    console.error("createAdminSession:", e);
+    return NextResponse.json(
+      {
+        error:
+          "Server misconfigured: ADMIN_SECRET must be at least 32 characters on Vercel.",
+      },
+      { status: 503 },
+    );
+  }
   await logSecurityEvent({ type: "login_success", ip });
 
   return NextResponse.json({ ok: true });

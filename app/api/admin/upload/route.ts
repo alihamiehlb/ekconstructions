@@ -14,6 +14,7 @@ export async function POST(request: Request) {
   const blocked = await guardMutation(request, {
     csrf: true,
     origin: true,
+    requireJson: false,
     rateLimit: { key: "admin-upload", max: 20, windowMs: 15 * 60 * 1000 },
   });
   if (blocked) return blocked;

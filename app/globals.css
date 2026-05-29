@@ -21,6 +21,11 @@ html {
   scroll-behavior: auto;
 }
 
+html.lenis,
+html.lenis body {
+  height: auto;
+}
+
 body {
   font-family: var(--font-sans);
   color: var(--color-ek-navy);
@@ -136,6 +141,67 @@ body {
     opacity: 1;
     transform: translateY(0);
   }
+}
+
+@keyframes floatSoft {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-6px);
+  }
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+@keyframes pulseRing {
+  0% {
+    transform: scale(0.92);
+    opacity: 0.5;
+  }
+  70% {
+    transform: scale(1.08);
+    opacity: 0;
+  }
+  100% {
+    transform: scale(1.08);
+    opacity: 0;
+  }
+}
+
+.carousel-nav-btn {
+  @apply flex h-10 w-10 items-center justify-center rounded-full border border-white/25 bg-black/35 text-white backdrop-blur-md transition hover:border-ek-teal hover:bg-ek-teal/25 hover:text-ek-teal focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ek-teal;
+}
+
+.ig-feed-card {
+  animation: floatSoft 6s ease-in-out infinite;
+}
+
+.ig-feed-card:nth-child(2n) {
+  animation-delay: -2s;
+}
+
+.ig-feed-card:nth-child(3n) {
+  animation-delay: -4s;
+}
+
+.animate-shimmer-line {
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    color-mix(in srgb, var(--color-ek-teal) 35%, transparent) 50%,
+    transparent 100%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 2.8s ease-in-out infinite;
 }
 
 @media (prefers-reduced-motion: reduce) {

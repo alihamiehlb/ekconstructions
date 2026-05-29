@@ -25,7 +25,14 @@ export function AdminLoginForm() {
       setLoading(false);
 
       if (!res.ok) {
-        setError(json.error ?? "Login failed");
+        const msg = json.error ?? "Login failed";
+        if (res.status === 403) {
+          setError(`${msg} Try again from your main site URL (not a preview link).`);
+        } else if (res.status === 503) {
+          setError(msg);
+        } else {
+          setError(msg);
+        }
         return;
       }
 

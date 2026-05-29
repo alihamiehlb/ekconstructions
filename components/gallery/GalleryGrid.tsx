@@ -1,10 +1,11 @@
 "use client";
 
+import { GalleryCardPreview } from "@/components/gallery/GalleryCardPreview";
 import { SectionReveal } from "@/components/ui/SectionReveal";
 import type { Project } from "@/content/projects";
+import { projectHasGallery } from "@/lib/project-images";
 import { motion } from "framer-motion";
-import { ArrowUpRight } from "lucide-react";
-import Image from "next/image";
+import { ArrowUpRight, Layers } from "lucide-react";
 import Link from "next/link";
 import { useMemo, useState } from "react";
 
@@ -35,33 +36,20 @@ function ProjectCard({
     >
       <Link
         href={`/gallery/${project.id}`}
-        className={`group flex h-full flex-col overflow-hidden rounded-2xl border border-ek-navy/8 bg-white shadow-sm transition-all duration-300 hover:-translate-y-1 hover:border-ek-teal/25 hover:shadow-[0_16px_40px_-20px_rgba(11,29,38,0.35)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ek-teal ${
+        className={`group relative flex h-full flex-col overflow-hidden rounded-2xl border border-ek-navy/8 bg-white shadow-sm transition-all duration-300 hover:-translate-y-1 hover:border-ek-teal/25 hover:shadow-[0_16px_40px_-20px_rgba(11,29,38,0.35)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ek-teal ${
           compact ? "p-2 sm:p-2.5" : "p-3 sm:p-4"
         }`}
       >
-        <div
-          className={`relative w-full overflow-hidden rounded-xl bg-ek-gray ${
-            compact ? "aspect-[4/3]" : "aspect-[4/3] sm:aspect-[5/4]"
-          }`}
-        >
-          <Image
-            src={project.src}
-            alt={project.alt}
-            fill
-            sizes={
-              compact
-                ? "(max-width: 768px) 50vw, 20vw"
-                : "(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-            }
-            className="object-cover transition-transform duration-700 group-hover:scale-[1.04]"
-            style={{ objectPosition: project.objectPosition ?? "center" }}
-            loading={index < 4 ? "eager" : "lazy"}
-            quality={88}
-          />
-          <span className="absolute top-3 right-3 flex h-9 w-9 items-center justify-center rounded-full bg-white text-ek-navy shadow-md opacity-0 transition-all duration-300 group-hover:opacity-100">
-            <ArrowUpRight className="h-4 w-4" aria-hidden />
+        <GalleryCardPreview project={project} index={index} compact={compact} />
+        <span className="absolute top-3 right-3 z-10 flex h-9 w-9 items-center justify-center rounded-full bg-white text-ek-navy shadow-md opacity-0 transition-all duration-300 group-hover:opacity-100">
+          <ArrowUpRight className="h-4 w-4" aria-hidden />
+        </span>
+        {projectHasGallery(project) && (
+          <span className="absolute top-3 left-3 z-10 flex items-center gap-1 rounded-full bg-ek-navy/80 px-2 py-1 text-[9px] font-bold text-white backdrop-blur-sm">
+            <Layers className="h-3 w-3" aria-hidden />
+            Slides
           </span>
-        </div>
+        )}
 
         <div className={`flex flex-1 flex-col ${compact ? "px-1 pt-3 pb-1" : "px-1 pt-4 pb-1"}`}>
           <p className="text-[9px] font-semibold tracking-[0.16em] text-ek-teal uppercase sm:text-[10px]">
@@ -119,8 +107,12 @@ export function GalleryGrid({
             </h2>
           </div>
         </SectionReveal>
-        {!compact && (
-          <div className="flex flex-wrap gap-2">
+        {categories.length > 1 && (
+          <div
+            className={`flex flex-wrap gap-2 ${compact ? "sm:max-w-md sm:justify-end" : ""}`}
+            role="group"
+            aria-label="Filter projects by category"
+          >
             {categories.map((cat) => (
               <button
                 key={cat}

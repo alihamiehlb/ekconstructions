@@ -17,9 +17,11 @@ export function SectionReveal({ children, className = "", delay = 0 }: Props) {
     <motion.div
       ref={ref}
       className={className}
-      initial={{ opacity: 0, y: 40, scale: 0.98 }}
-      animate={inView ? { opacity: 1, y: 0, scale: 1 } : {}}
-      transition={{ duration: 0.75, delay, ease: [0.22, 1, 0.36, 1] }}
+      initial={{ opacity: 0, y: 32, scale: 0.97, filter: "blur(6px)" }}
+      animate={
+        inView ? { opacity: 1, y: 0, scale: 1, filter: "blur(0px)" } : {}
+      }
+      transition={{ duration: 0.8, delay, ease: [0.22, 1, 0.36, 1] }}
     >
       {children}
     </motion.div>

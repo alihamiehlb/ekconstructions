@@ -44,6 +44,10 @@ export function Hero() {
                 <span className="text-ek-teal">{site.headlineAccent}</span>
               </h1>
 
+              <p className="mt-3 inline-flex w-fit items-center gap-2 rounded-full border border-ek-teal/25 bg-ek-teal/8 px-3 py-1 text-[10px] font-bold tracking-[0.14em] text-ek-teal uppercase">
+                {site.business.yearsExperience} years experience · Sydney
+              </p>
+
               <p className="mt-3 max-w-[400px] text-sm leading-[1.65] text-ek-muted sm:mt-5 sm:text-[15px]">
                 {site.tagline}
               </p>

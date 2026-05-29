@@ -23,8 +23,8 @@ export function About() {
         </div>
         <SectionReveal delay={0.35}>
           <p className="mt-8 text-xs font-semibold tracking-wide text-ek-navy/70 uppercase">
-            ABN {site.business.abn} · Serving {site.location.area} · Est.{" "}
-            {site.business.memberSince}
+            ABN {site.business.abn} · Serving {site.location.area} ·{" "}
+            {site.business.yearsExperience} years experience · Est. {site.business.memberSince}
           </p>
         </SectionReveal>
       </div>

@@ -71,12 +71,25 @@ Tracks:
 | `NEXT_PUBLIC_CONTACT_EMAIL` | Your business email |
 | `NEXT_PUBLIC_CONTACT_PHONE` | Optional phone number |
 | `NEXT_PUBLIC_INSTAGRAM_VIDEO_URL` | Full Instagram reel/post URL for hero video |
-| `RESEND_API_KEY` | Optional — [resend.com](https://resend.com) for enquiry emails |
-| `CONTACT_FROM_EMAIL` / `CONTACT_TO_EMAIL` | Optional — email routing with Resend |
 
-## Instagram photos
+## Instagram gallery
 
-Save your posts to `public/projects/` and update `content/projects.ts`.
+1. Open **Admin → Instagram** (`/admin/instagram`).
+2. Click **Discover & sync profile** or paste post URLs from [@ekconstructions](https://www.instagram.com/ekconstructions/).
+3. Images use **direct Instagram CDN links** (not downloaded). Carousel posts stay grouped as one gallery project with slides.
+
+Optional: set `INSTAGRAM_SESSION_ID` in Vercel env (from browser cookies while logged into Instagram) so “Discover” can load all profile posts.
+
+Feed is stored in **Supabase** (`instagram_feed` table) and `content/instagram-feed.json` for git backup.
+
+## Security (DB → Vercel)
+
+- Supabase tables `enquiries`, `page_views`, `cms_content`, `instagram_feed`, `security_audit` — RLS enabled, **deny all** for `anon` / `authenticated`; only `service_role` on the server.
+- Run migrations in `supabase/migrations/` in the Supabase SQL editor (including `20240529120000_instagram_feed_and_storage.sql`).
+- Admin: JWT session cookie, CSRF on mutations, origin allowlist (includes your Vercel URL), rate limits, input sanitization.
+- Contact form saves to DB only (no Resend). Enquiries visible in **Admin → Dashboard**.
+
+Contact form enquiries are saved in the admin dashboard (no third-party email API required).
 
 ## Tech stack
 

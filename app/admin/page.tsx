@@ -1,9 +1,12 @@
-import { AdminLogoutButton } from "@/components/admin/AdminLogoutButton";
+import { AdminEnquiriesPanel } from "@/components/admin/AdminEnquiriesPanel";
 import { AdminNav } from "@/components/admin/AdminNav";
+import { AdminPageHeader } from "@/components/admin/AdminPageHeader";
 import { DashboardCharts } from "@/components/admin/DashboardCharts";
 import { requireAdmin } from "@/lib/auth";
+import { readInstagramFeed } from "@/lib/instagram/feed";
+import { isSupabaseFeedConfigured } from "@/lib/instagram/supabase-feed";
 import { getAdminStats, getStorageMode } from "@/lib/store";
-import { BarChart3, Eye, Inbox, Percent, TrendingUp } from "lucide-react";
+import { BarChart3, Eye, Image, Inbox, Instagram, Percent, Shield, TrendingUp } from "lucide-react";
 import Link from "next/link";
 
 export const metadata = { title: "Admin Dashboard" };
@@ -13,14 +16,16 @@ function StatCard({
   value,
   icon: Icon,
   hint,
+  href,
 }: {
   label: string;
   value: string | number;
   icon: typeof Inbox;
   hint?: string;
+  href?: string;
 }) {
-  return (
-    <div className="rounded-2xl border border-ek-navy/10 bg-white p-6 shadow-sm">
+  const inner = (
+    <div className="rounded-2xl border border-ek-navy/10 bg-white p-6 shadow-sm transition hover:border-ek-teal/25 hover:shadow-md">
       <div className="flex items-start justify-between">
         <div>
           <p className="text-xs font-semibold tracking-wide text-ek-muted uppercase">{label}</p>
@@ -33,39 +38,33 @@ function StatCard({
       </div>
     </div>
   );
+
+  if (href) return <Link href={href}>{inner}</Link>;
+  return inner;
 }
 
 export default async function AdminDashboardPage() {
   await requireAdmin();
-  const stats = await getAdminStats();
+  const [stats, feed] = await Promise.all([getAdminStats(), readInstagramFeed()]);
   const storage = getStorageMode();
+  const igStorage = isSupabaseFeedConfigured();
 
   return (
     <div className="section-pad py-6 sm:py-10">
-      <div className="flex flex-wrap items-center justify-between gap-4">
-        <div className="min-w-0">
-          <p className="text-xs font-semibold tracking-[0.3em] text-ek-teal uppercase">Admin</p>
-          <h1 className="text-2xl font-black text-ek-navy uppercase sm:text-3xl">Dashboard</h1>
-          <p className="mt-1 text-sm text-ek-muted">
-            Storage: <span className="font-semibold text-ek-navy">{storage}</span>
-            {storage === "file" && " (local dev — use Supabase on Vercel)"}
-          </p>
-        </div>
-        <div className="flex items-center gap-3">
-          <Link
-            href="/"
-            className="text-xs font-semibold tracking-wide text-ek-teal uppercase hover:underline"
-          >
-            View site
-          </Link>
-          <AdminLogoutButton />
-        </div>
-      </div>
+      <AdminPageHeader
+        title="Dashboard"
+        badge={storage === "supabase" ? "Secure · Supabase" : "Local file mode"}
+        description={
+          storage === "supabase"
+            ? "Database, CMS, and Instagram feed use Supabase with RLS (server-only access)."
+            : "Running on local file storage — configure Supabase on Vercel for production."
+        }
+      />
 
       <AdminNav />
 
       <div className="mt-8 grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
-        <StatCard label="Total enquiries" value={stats.enquiries.total} icon={Inbox} />
+        <StatCard label="Total enquiries" value={stats.enquiries.total} icon={Inbox} href="/admin" />
         <StatCard
           label="This week"
           value={stats.enquiries.thisWeek}
@@ -81,6 +80,18 @@ export default async function AdminDashboardPage() {
         />
       </div>
 
+      <div className="mt-6 grid gap-4 sm:grid-cols-3">
+        <StatCard
+          label="Instagram posts"
+          value={feed.posts.length}
+          icon={Instagram}
+          hint={igStorage ? "Synced to Supabase" : "File backup only"}
+          href="/admin/instagram"
+        />
+        <StatCard label="Gallery projects" value="CMS" icon={Image} href="/admin/projects" />
+        <StatCard label="Security log" value="Audit" icon={Shield} href="/admin/security" />
+      </div>
+
       <div className="mt-8">
         <DashboardCharts stats={stats} />
       </div>
@@ -92,49 +103,7 @@ export default async function AdminDashboardPage() {
             Recent enquiries
           </h2>
         </div>
-        <div className="overflow-x-auto">
-          <table className="w-full min-w-[640px] text-left text-sm">
-            <thead>
-              <tr className="border-b border-ek-navy/8 text-xs tracking-wide text-ek-muted uppercase">
-                <th className="px-6 py-3 font-semibold">Date</th>
-                <th className="px-6 py-3 font-semibold">Name</th>
-                <th className="px-6 py-3 font-semibold">Service</th>
-                <th className="px-6 py-3 font-semibold">Contact</th>
-                <th className="px-6 py-3 font-semibold">Message</th>
-              </tr>
-            </thead>
-            <tbody>
-              {stats.recentEnquiries.length === 0 ? (
-                <tr>
-                  <td colSpan={5} className="px-6 py-10 text-center text-ek-muted">
-                    No enquiries yet. Submit the contact form on the site to test.
-                  </td>
-                </tr>
-              ) : (
-                stats.recentEnquiries.map((e) => (
-                  <tr key={e.id} className="border-b border-ek-navy/5 hover:bg-ek-gray/50">
-                    <td className="px-6 py-4 whitespace-nowrap text-ek-muted">
-                      {new Date(e.createdAt).toLocaleString("en-AU")}
-                    </td>
-                    <td className="px-6 py-4 font-medium text-ek-navy">{e.name}</td>
-                    <td className="px-6 py-4 text-ek-muted">{e.service ?? "—"}</td>
-                    <td className="px-6 py-4">
-                      <a href={`mailto:${e.email}`} className="text-ek-teal hover:underline">
-                        {e.email}
-                      </a>
-                      {e.phone && (
-                        <p className="text-xs text-ek-muted">{e.phone}</p>
-                      )}
-                    </td>
-                    <td className="max-w-xs truncate px-6 py-4 text-ek-muted" title={e.message}>
-                      {e.message}
-                    </td>
-                  </tr>
-                ))
-              )}
-            </tbody>
-          </table>
-        </div>
+        <AdminEnquiriesPanel enquiries={stats.recentEnquiries} />
       </div>
     </div>
   );

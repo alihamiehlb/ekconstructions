@@ -9,7 +9,12 @@ export type PublicSiteConfig = {
   locale: "en-AU";
   instagram: { handle: string; url: string };
   location: { area: string; suburb: string; state: string; country: string };
-  business: { abn: string; memberSince: number; projectsDelivered: string };
+  business: {
+    abn: string;
+    memberSince: number;
+    yearsExperience: string;
+    projectsDelivered: string;
+  };
   contact: { email: string; phone: string };
 };
 
@@ -35,7 +40,8 @@ export function buildSiteContext(cms: CmsData): SiteContextValue {
     },
     business: {
       abn: site.abn,
-      memberSince: 2020,
+      memberSince: 1993,
+      yearsExperience: "30+",
       projectsDelivered: site.projectsDelivered,
     },
     contact: { email: site.contactEmail, phone: site.contactPhone },
