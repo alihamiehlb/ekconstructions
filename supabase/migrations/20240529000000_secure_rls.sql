@@ -21,19 +21,28 @@ create table if not exists public.page_views (
   referrer text check (referrer is null or char_length(referrer) <= 2000)
 );
 
+create table if not exists public.cms_content (
+  id text primary key default 'main',
+  data jsonb not null,
+  updated_at timestamptz not null default now()
+);
+
 create index if not exists enquiries_created_at_idx on public.enquiries (created_at desc);
 create index if not exists page_views_created_at_idx on public.page_views (created_at desc);
 create index if not exists page_views_path_idx on public.page_views (path);
 
 alter table public.enquiries enable row level security;
 alter table public.page_views enable row level security;
+alter table public.cms_content enable row level security;
 
 -- Block browser / anon API access; server uses service_role only
 revoke all on table public.enquiries from anon, authenticated, public;
 revoke all on table public.page_views from anon, authenticated, public;
+revoke all on table public.cms_content from anon, authenticated, public;
 
 grant all on table public.enquiries to service_role;
 grant all on table public.page_views to service_role;
+grant all on table public.cms_content to service_role;
 
 -- Explicit deny policies (defense in depth if grants change)
 drop policy if exists "deny_all_enquiries" on public.enquiries;
@@ -44,6 +53,12 @@ create policy "deny_all_enquiries" on public.enquiries
 
 drop policy if exists "deny_all_page_views" on public.page_views;
 create policy "deny_all_page_views" on public.page_views
+  for all to anon, authenticated
+  using (false)
+  with check (false);
+
+drop policy if exists "deny_all_cms" on public.cms_content;
+create policy "deny_all_cms" on public.cms_content
   for all to anon, authenticated
   using (false)
   with check (false);

@@ -10,6 +10,7 @@ export type AuditEvent = {
     | "csrf_failed"
     | "origin_blocked"
     | "cms_update"
+    | "cms_upload"
     | "contact_spam";
   ip?: string;
   detail?: string;

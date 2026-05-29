@@ -1,5 +1,6 @@
 "use client";
 
+import { ImageUploadField } from "@/components/admin/ImageUploadField";
 import type { Project } from "@/content/projects";
 import type { CmsData } from "@/lib/cms/types";
 import { secureJsonFetch } from "@/lib/security/client-fetch";
@@ -54,10 +55,8 @@ export function AdminProjectsEditor() {
       )}
 
       <p className="text-sm text-ek-muted">
-        Image paths are relative to <code className="text-ek-navy">/public</code> (e.g.{" "}
-        <code className="text-ek-navy">/images/gallery/gallery-stairs.jpg</code>). Drop Instagram
-        photos in <code className="text-ek-navy">/public/instagram/</code> to auto-override on the
-        live site.
+        Upload images to Supabase Storage or paste a path under <code className="text-ek-navy">/public</code>{" "}
+        (e.g. <code className="text-ek-navy">/images/gallery/gallery-stairs.jpg</code>).
       </p>
 
       {data.projects.map((project, i) => (
@@ -72,7 +71,6 @@ export function AdminProjectsEditor() {
                 ["id", "ID"],
                 ["title", "Title"],
                 ["category", "Category"],
-                ["src", "Image path"],
                 ["alt", "Alt text"],
                 ["objectPosition", "Object position (CSS)"],
               ] as const
@@ -86,6 +84,11 @@ export function AdminProjectsEditor() {
                 />
               </label>
             ))}
+            <ImageUploadField
+              label="Project image"
+              value={project.src}
+              onChange={(url) => updateProject(i, { src: url })}
+            />
             <label className="block text-sm md:col-span-2">
               <span className="font-medium text-ek-navy">Description</span>
               <textarea
