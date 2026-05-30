@@ -59,10 +59,11 @@ export function BeforeAfterShowcase({ section, items }: Props) {
           </div>
         </SectionReveal>
 
-        <div className="relative mx-auto mt-10 max-w-4xl lg:mt-12">
+        <div className="relative mx-auto mt-10 w-full max-w-4xl lg:mt-12">
           <AnimatePresence mode="wait" initial={false}>
             <motion.div
               key={active.id}
+              className="w-full"
               initial={reduceMotion ? false : { opacity: 0, y: 18, scale: 0.98 }}
               animate={{ opacity: 1, y: 0, scale: 1 }}
               exit={reduceMotion ? undefined : { opacity: 0, y: -12, scale: 0.99 }}
@@ -85,7 +86,7 @@ export function BeforeAfterShowcase({ section, items }: Props) {
               <button
                 type="button"
                 onClick={() => go(-1)}
-                className="carousel-nav-btn absolute top-[38%] left-0 z-10 -translate-x-1/2 -translate-y-1/2 sm:left-2 sm:translate-x-0"
+                className="carousel-nav-btn absolute top-1/2 left-0 z-10 -translate-x-1/2 -translate-y-1/2 sm:left-2 sm:translate-x-0"
                 aria-label="Previous transformation"
               >
                 <ChevronLeft className="h-5 w-5" aria-hidden />
@@ -93,7 +94,7 @@ export function BeforeAfterShowcase({ section, items }: Props) {
               <button
                 type="button"
                 onClick={() => go(1)}
-                className="carousel-nav-btn absolute top-[38%] right-0 z-10 translate-x-1/2 -translate-y-1/2 sm:right-2 sm:translate-x-0"
+                className="carousel-nav-btn absolute top-1/2 right-0 z-10 translate-x-1/2 -translate-y-1/2 sm:right-2 sm:translate-x-0"
                 aria-label="Next transformation"
               >
                 <ChevronRight className="h-5 w-5" aria-hidden />

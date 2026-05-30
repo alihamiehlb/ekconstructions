@@ -34,7 +34,7 @@ export function HeroTrustBar({ className = "" }: Props) {
   ];
 
   return (
-    <div className={`relative z-10 mt-8 lg:mt-12 ${className}`.trim()}>
+    <div className={`relative z-10 ${className}`.trim()}>
       <div className="hero-trust-bar hero-trust-bar--mobile grid grid-cols-2 gap-x-2.5 gap-y-3 px-2.5 py-3 sm:grid-cols-4 sm:gap-4 sm:px-6 sm:py-5 lg:grid-cols-4">
         {items.map(({ icon: Icon, label, sublabel }) => (
           <div key={label} className="flex items-start gap-2 sm:gap-3">

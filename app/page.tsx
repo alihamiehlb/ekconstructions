@@ -3,7 +3,7 @@ import { Header } from "@/components/layout/Header";
 import { About } from "@/components/sections/About";
 import { BeforeAfterShowcase } from "@/components/sections/BeforeAfterShowcase";
 import { Contact } from "@/components/sections/Contact";
-import { Hero, HeroTrustBarMobile } from "@/components/sections/Hero";
+import { Hero } from "@/components/sections/Hero";
 import { Materials } from "@/components/sections/Materials";
 import { ProjectGallery } from "@/components/sections/ProjectGallery";
 import { Services } from "@/components/sections/Services";
@@ -22,7 +22,6 @@ export default async function HomePage() {
       <main id="main-content" className="pb-20 lg:pb-0">
         <Hero />
         <Services services={cms.services} />
-        <HeroTrustBarMobile />
         <div className="bg-white">
           <WhyChooseUs
             items={cms.whyChooseUs}

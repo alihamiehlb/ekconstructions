@@ -16,6 +16,8 @@ type Props = {
   priority?: boolean;
 };
 
+const imageFit = "object-cover object-center";
+
 function isRemote(src: string) {
   return src.startsWith("http://") || src.startsWith("https://");
 }
@@ -96,16 +98,18 @@ export function BeforeAfterCompare({
         role="img"
         aria-label={`${title} before and after comparison. Drag to compare.`}
       >
-        <Image
-          src={afterSrc}
-          alt={afterAlt}
-          fill
-          priority={priority}
-          quality={75}
-          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 896px"
-          className="object-cover object-center"
-          unoptimized={isRemote(afterSrc)}
-        />
+        <div className="absolute inset-0">
+          <Image
+            src={afterSrc}
+            alt={afterAlt}
+            fill
+            priority={priority}
+            quality={75}
+            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 896px"
+            className={imageFit}
+            unoptimized={isRemote(afterSrc)}
+          />
+        </div>
 
         <div
           className="absolute inset-0 overflow-hidden"
@@ -118,7 +122,7 @@ export function BeforeAfterCompare({
             quality={75}
             loading={priority ? undefined : "lazy"}
             sizes="(max-width: 768px) 100vw, (max-width: 1200px) 896px"
-            className="object-cover object-center"
+            className={imageFit}
             unoptimized={isRemote(beforeSrc)}
           />
         </div>
@@ -136,8 +140,8 @@ export function BeforeAfterCompare({
         <span className="before-after-label before-after-label--after">After</span>
       </div>
 
-      <figcaption className="mt-4 flex flex-col gap-1 sm:flex-row sm:items-end sm:justify-between">
-        <div>
+      <figcaption className="mt-4 flex flex-col items-start gap-2 sm:flex-row sm:items-center sm:justify-between">
+        <div className="text-left">
           <h3 className="text-sm font-black tracking-tight text-ek-navy uppercase sm:text-base">
             {title}
           </h3>

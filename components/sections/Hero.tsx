@@ -30,8 +30,8 @@ export function Hero() {
     >
       <HeroVisual />
 
-      <div className="landing-container relative z-10 pb-4 lg:pb-12">
-        <div className="hero-content-enter max-w-[600px] pt-3 lg:pt-14 xl:pt-16">
+      <div className="landing-container relative z-10 flex min-h-[calc(100dvh-3.5rem)] flex-col pb-4 lg:min-h-0 lg:block lg:pb-12">
+        <div className="hero-content-enter flex flex-1 flex-col max-w-[600px] pt-3 lg:block lg:max-w-[600px] lg:flex-none lg:pt-14 xl:pt-16">
           <p className="inline-flex items-center gap-1.5 text-[9px] font-bold tracking-[0.2em] text-white/80 uppercase lg:text-[10px] lg:tracking-[0.22em] lg:text-white/90">
             <span className="h-2.5 w-0.5 rounded-full bg-ek-teal lg:h-3" aria-hidden />
             {site.location.area}
@@ -43,7 +43,7 @@ export function Hero() {
             <span className="text-ek-teal">Precision.</span>
           </h1>
 
-          <h1 className="mt-4 hidden text-[1.65rem] font-black leading-[1.02] tracking-tight text-white uppercase sm:text-[2.15rem] md:text-[2.35rem] lg:block lg:text-[2.55rem] xl:text-[2.75rem]">
+          <h1 className="mt-4 hidden font-black leading-[1.02] tracking-tight text-white uppercase lg:block lg:text-[2.55rem] xl:text-[2.75rem]">
             {site.headline}
             <br />
             <span className="relative inline-block text-ek-teal">
@@ -95,7 +95,7 @@ export function Hero() {
             </div>
           </div>
 
-          <div className="mt-6 hidden flex-row flex-wrap items-center gap-3 sm:mt-8 lg:flex">
+          <div className="mt-6 hidden items-center gap-3 lg:flex lg:mt-8">
             <Link
               href="#contact"
               className="btn-primary justify-center shadow-lg shadow-ek-teal/25"
@@ -124,18 +124,8 @@ export function Hero() {
           </div>
         </div>
 
-        <HeroTrustBar className="hidden lg:block" />
+        <HeroTrustBar className="mt-auto pt-3 lg:mt-12" />
       </div>
     </section>
-  );
-}
-
-export function HeroTrustBarMobile() {
-  return (
-    <div className="bg-ek-navy lg:hidden">
-      <div className="landing-container pb-4 pt-1">
-        <HeroTrustBar />
-      </div>
-    </div>
   );
 }

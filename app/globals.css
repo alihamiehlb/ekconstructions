@@ -58,6 +58,7 @@ body {
 
 .hero-cinematic {
   background-color: #0a0a0a;
+  min-height: 100dvh;
 }
 
 @media (min-width: 1024px) {
@@ -72,54 +73,56 @@ body {
   letter-spacing: -0.02em;
 }
 
-.hero-mobile-ctas {
-  display: flex;
-  width: 100%;
-  max-width: 14.5rem;
-  flex-direction: column;
-  gap: 0.375rem;
-}
+@media (max-width: 1023px) {
+  .hero-mobile-ctas {
+    display: flex;
+    width: 100%;
+    max-width: 14.5rem;
+    flex-direction: column;
+    gap: 0.375rem;
+  }
 
-.hero-mobile-ctas-secondary {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 0.375rem;
-}
+  .hero-mobile-ctas-secondary {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.375rem;
+  }
 
-.hero-btn-primary,
-.hero-btn-secondary {
-  display: inline-flex;
-  width: 100%;
-  min-height: 2.75rem;
-  align-items: center;
-  border-radius: 4px;
-  font-size: 9px;
-  font-weight: 700;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  color: white;
-}
+  .hero-btn-primary,
+  .hero-btn-secondary {
+    display: inline-flex;
+    width: 100%;
+    min-height: 2.75rem;
+    align-items: center;
+    border-radius: 4px;
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: white;
+  }
 
-.hero-btn-primary {
-  justify-content: space-between;
-  padding: 0.5rem 0.875rem;
-  background: #db2022;
-  box-shadow: 0 4px 14px rgba(219, 32, 34, 0.28);
-}
+  .hero-btn-primary {
+    justify-content: space-between;
+    padding: 0.5rem 0.875rem;
+    background: #db2022;
+    box-shadow: 0 4px 14px rgba(219, 32, 34, 0.28);
+  }
 
-.hero-btn-secondary {
-  justify-content: center;
-  min-height: 2.375rem;
-  padding: 0.45rem 0.5rem;
-  font-size: 8px;
-  letter-spacing: 0.1em;
-  border: 1px solid rgba(255, 255, 255, 0.38);
-  background: rgba(0, 0, 0, 0.18);
-}
+  .hero-btn-secondary {
+    justify-content: center;
+    min-height: 2.375rem;
+    padding: 0.45rem 0.5rem;
+    font-size: 8px;
+    letter-spacing: 0.1em;
+    border: 1px solid rgba(255, 255, 255, 0.38);
+    background: rgba(0, 0, 0, 0.18);
+  }
 
-.hero-btn-secondary--accent {
-  border-color: rgba(219, 32, 34, 0.55);
-  color: rgba(255, 255, 255, 0.92);
+  .hero-btn-secondary--accent {
+    border-color: rgba(219, 32, 34, 0.55);
+    color: rgba(255, 255, 255, 0.92);
+  }
 }
 
 .hero-trust-bar--mobile {
