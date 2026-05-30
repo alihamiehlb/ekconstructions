@@ -3,13 +3,14 @@ import { LogoWordmark } from "@/components/brand/LogoWordmark";
 
 type Props = {
   className?: string;
-  size?: "header" | "loader";
+  size?: "header" | "headerCompact" | "loader";
   asLink?: boolean;
   variant?: "light" | "dark";
 };
 
 const heights = {
   header: 34,
+  headerCompact: 28,
   loader: 52,
 } as const;
 

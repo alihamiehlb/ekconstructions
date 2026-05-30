@@ -26,18 +26,18 @@ export function Hero() {
   return (
     <section
       id="home"
-      className="hero-cinematic relative overflow-hidden bg-ek-navy pt-16 lg:pt-[72px]"
+      className="hero-cinematic relative overflow-hidden bg-ek-navy pt-14 lg:pt-[72px]"
     >
       <HeroVisual />
 
-      <div className="landing-container relative z-10 pb-6 lg:pb-12">
-        <div className="hero-content-enter max-w-[600px] pt-5 lg:pt-14 xl:pt-16">
-          <p className="inline-flex items-center gap-2 text-[10px] font-bold tracking-[0.22em] text-white/90 uppercase">
-            <span className="h-3 w-0.5 rounded-full bg-ek-teal" aria-hidden />
+      <div className="landing-container relative z-10 pb-4 lg:pb-12">
+        <div className="hero-content-enter max-w-[600px] pt-3 lg:pt-14 xl:pt-16">
+          <p className="inline-flex items-center gap-1.5 text-[9px] font-bold tracking-[0.2em] text-white/80 uppercase lg:text-[10px] lg:tracking-[0.22em] lg:text-white/90">
+            <span className="h-2.5 w-0.5 rounded-full bg-ek-teal lg:h-3" aria-hidden />
             {site.location.area}
           </p>
 
-          <h1 className="hero-mobile-title mt-4 font-black uppercase text-white lg:hidden">
+          <h1 className="hero-mobile-title mt-2 font-black uppercase text-white lg:hidden">
             Built With
             <br />
             <span className="text-ek-teal">Precision.</span>
@@ -66,33 +66,33 @@ export function Hero() {
             </span>
           </h1>
 
-          <p className="mt-3 max-w-[19rem] text-[13px] leading-[1.6] text-white/85 lg:hidden">
+          <p className="mt-2 max-w-[16.5rem] text-[11px] leading-snug text-white/75 lg:hidden">
             Premium aluminium, glass, steel and carpentry solutions.
           </p>
           <p className="mt-4 hidden max-w-[440px] text-[15px] leading-[1.65] text-white/78 lg:block">
             {site.tagline}
           </p>
 
-          <div className="hero-mobile-ctas mt-5 lg:hidden">
+          <div className="hero-mobile-ctas mt-3.5 lg:hidden">
             <Link href="#contact" className="hero-btn-primary">
               <span>Get a Quote</span>
-              <ArrowRight className="h-4 w-4 shrink-0" aria-hidden />
+              <ArrowRight className="h-3.5 w-3.5 shrink-0" aria-hidden />
             </Link>
-            <Link href="/gallery" className="hero-btn-outline">
-              <span>View Our Work</span>
-              <ArrowUpRight className="h-4 w-4 shrink-0" aria-hidden />
-            </Link>
-            {whatsappUrl ? (
-              <a
-                href={whatsappUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="hero-btn-whatsapp"
-              >
-                <WhatsAppIcon className="h-4 w-4 shrink-0 text-ek-teal" />
-                <span>WhatsApp</span>
-              </a>
-            ) : null}
+            <div className="hero-mobile-ctas-secondary">
+              <Link href="/gallery" className="hero-btn-secondary">
+                Our Work
+              </Link>
+              {whatsappUrl ? (
+                <a
+                  href={whatsappUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="hero-btn-secondary hero-btn-secondary--accent"
+                >
+                  WhatsApp
+                </a>
+              ) : null}
+            </div>
           </div>
 
           <div className="mt-6 hidden flex-row flex-wrap items-center gap-3 sm:mt-8 lg:flex">
@@ -133,7 +133,7 @@ export function Hero() {
 export function HeroTrustBarMobile() {
   return (
     <div className="bg-ek-navy lg:hidden">
-      <div className="landing-container pb-6 pt-2">
+      <div className="landing-container pb-4 pt-1">
         <HeroTrustBar />
       </div>
     </div>

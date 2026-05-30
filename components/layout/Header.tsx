@@ -96,21 +96,15 @@ export function Header() {
             : "border-transparent bg-white"
       }`}
     >
-      <div className="landing-container flex h-16 items-center justify-between gap-3 sm:gap-4 lg:h-[72px]">
+      <div className="landing-container flex h-14 items-center justify-between gap-2 sm:gap-4 lg:h-[72px]">
         <motion.div
           initial={{ opacity: 0, x: -10 }}
           animate={logoReady ? { opacity: 1, x: 0 } : { opacity: 0, x: -10 }}
           transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
           className="min-w-0 shrink-0"
         >
-          {heroOverlay ? (
-            <>
-              <Logo variant="dark" className="lg:hidden" />
-              <Logo variant="light" className="hidden lg:inline-flex" />
-            </>
-          ) : (
-            <Logo variant="light" />
-          )}
+          <Logo variant={heroOverlay ? "dark" : "light"} size="headerCompact" className="lg:hidden" />
+          <Logo variant="light" size="header" className="hidden lg:inline-flex" />
         </motion.div>
 
         <nav className="hidden min-w-0 flex-1 justify-center lg:flex" aria-label="Main">
@@ -140,16 +134,18 @@ export function Header() {
         <div className="flex shrink-0 items-center gap-2 sm:gap-3">
           <Link
             href={quoteHref()}
-            className="btn-primary inline-flex px-3 py-2 text-[9px] tracking-[0.14em] sm:px-4 sm:py-2.5 sm:text-[10px] sm:tracking-[0.16em] xl:px-5"
+            className={`btn-primary px-2.5 py-1.5 text-[8px] tracking-[0.12em] sm:px-4 sm:py-2.5 sm:text-[10px] sm:tracking-[0.16em] xl:px-5 ${
+              heroOverlay ? "hidden sm:inline-flex" : "inline-flex"
+            }`}
             onClick={() => setOpen(false)}
           >
             Get Quote
-            <ArrowRight className="h-3.5 w-3.5" aria-hidden />
+            <ArrowRight className="h-3 w-3 sm:h-3.5 sm:w-3.5" aria-hidden />
           </Link>
 
           <button
             type="button"
-            className={`inline-flex h-10 w-10 items-center justify-center rounded-md border transition lg:hidden ${
+            className={`inline-flex h-9 w-9 items-center justify-center rounded-md border transition lg:hidden ${
               heroOverlay
                 ? "border-white/25 bg-white text-ek-navy hover:bg-white/90"
                 : "border-ek-navy/10 text-ek-navy hover:border-ek-teal/30 hover:bg-ek-gray"
@@ -172,7 +168,7 @@ export function Header() {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              className="fixed inset-0 top-16 z-40 bg-ek-navy/45 backdrop-blur-[2px] lg:hidden"
+              className="fixed inset-0 top-14 z-40 bg-ek-navy/45 backdrop-blur-[2px] lg:hidden"
               aria-label="Close menu"
               onClick={() => setOpen(false)}
             />
