@@ -10,8 +10,6 @@
     "sync:instagram": "node scripts/sync-instagram.mjs"
   },
   "dependencies": {
-    "@react-three/drei": "^10.0.6",
-    "@react-three/fiber": "^9.1.2",
     "@supabase/supabase-js": "^2.49.8",
     "framer-motion": "^12.9.2",
     "jose": "^6.0.11",
@@ -21,7 +19,6 @@
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
     "recharts": "^2.15.3",
-    "three": "^0.176.0",
     "zod": "^3.25.28"
   },
   "devDependencies": {
@@ -30,7 +27,6 @@
     "@types/node": "^22.15.21",
     "@types/react": "^19.1.4",
     "@types/react-dom": "^19.1.5",
-    "@types/three": "^0.176.0",
     "eslint": "^9.27.0",
     "eslint-config-next": "^15.3.2",
     "sharp": "^0.34.5",

@@ -8,7 +8,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 
-const sectionIds = ["home", "about", "services", "transformations", "materials", "contact"] as const;
+const sectionIds = ["home", "about", "services", "materials", "contact"] as const;
 
 export function Header() {
   const pathname = usePathname();

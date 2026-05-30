@@ -1,14 +1,12 @@
 "use client";
 
-import { HeroStatsBand } from "@/components/hero/HeroStatsBand";
 import { HeroTrustBar } from "@/components/hero/HeroTrustBar";
 import { HeroVisual } from "@/components/hero/HeroVisual";
 import { useSite } from "@/components/providers/SiteProvider";
-import { buildWhatsAppChatUrl, displayPhone } from "@/lib/whatsapp";
-import { motion, useMotionValueEvent, useScroll } from "framer-motion";
+import { buildWhatsAppChatUrl } from "@/lib/whatsapp";
 import { ArrowRight, ArrowUpRight } from "lucide-react";
 import Link from "next/link";
-import { useMemo, useRef, useState } from "react";
+import { useMemo } from "react";
 
 function WhatsAppIcon({ className }: { className?: string }) {
   return (
@@ -20,35 +18,20 @@ function WhatsAppIcon({ className }: { className?: string }) {
 
 export function Hero() {
   const site = useSite();
-  const sectionRef = useRef<HTMLElement>(null);
-  const { scrollYProgress } = useScroll({
-    target: sectionRef,
-    offset: ["start start", "end start"],
-  });
-  const [scrollProgress, setScrollProgress] = useState(0);
   const whatsappUrl = useMemo(
     () => buildWhatsAppChatUrl(site.contact.phone),
     [site.contact.phone],
   );
-  const phoneDisplay = displayPhone(site.contact.phone);
-
-  useMotionValueEvent(scrollYProgress, "change", (v) => setScrollProgress(v));
 
   return (
     <section
-      ref={sectionRef}
       id="home"
       className="hero-cinematic relative overflow-hidden bg-ek-navy pt-16 lg:pt-[72px]"
     >
-      <HeroVisual scrollProgress={scrollProgress} />
+      <HeroVisual />
 
-      <div className="landing-container relative z-10">
-        <motion.div
-          initial={{ opacity: 0, y: 32 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
-          className="relative max-w-[540px] pb-8 pt-8 sm:pb-10 sm:pt-10 lg:max-w-[580px] lg:pb-14 lg:pt-16 xl:pt-20"
-        >
+      <div className="landing-container relative z-10 pb-8 sm:pb-10 lg:pb-12">
+        <div className="hero-content-enter relative max-w-[560px] pt-8 sm:pt-10 lg:max-w-[600px] lg:pt-14 xl:pt-16">
           <p className="inline-flex items-center gap-2 text-[10px] font-bold tracking-[0.22em] text-white/85 uppercase">
             <span className="h-3 w-0.5 rounded-full bg-ek-teal" aria-hidden />
             {site.location.area}
@@ -77,7 +60,7 @@ export function Hero() {
             </span>
           </h1>
 
-          <p className="mt-4 max-w-[420px] text-sm leading-[1.7] text-white/78 sm:mt-5 sm:text-[15px]">
+          <p className="mt-4 max-w-[440px] text-sm leading-[1.7] text-white/78 sm:mt-5 sm:text-[15px]">
             {site.tagline}
           </p>
 
@@ -96,44 +79,22 @@ export function Hero() {
               View Our Work
               <ArrowUpRight className="h-4 w-4" aria-hidden />
             </Link>
-          </div>
-        </motion.div>
-      </div>
-
-      <HeroTrustBar />
-
-      {whatsappUrl ? (
-        <div className="relative z-20 px-4 pb-2 sm:px-6">
-          <div className="landing-container">
-            <motion.a
-              href={whatsappUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              initial={{ opacity: 0, y: 16 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.75, duration: 0.5 }}
-              className="hero-whatsapp-bar mx-auto flex max-w-xl items-center gap-3 rounded-2xl border border-ek-navy/8 bg-white px-4 py-3.5 shadow-[0_12px_40px_rgba(10,10,10,0.12)] sm:gap-4 sm:px-5 sm:py-4"
-            >
-              <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-ek-teal text-white shadow-sm sm:h-12 sm:w-12">
-                <WhatsAppIcon className="h-5 w-5" />
-              </span>
-              <span className="min-w-0 flex-1">
-                <span className="block text-[10px] font-bold tracking-[0.2em] text-ek-navy uppercase">
-                  Chat on WhatsApp
-                </span>
-                {phoneDisplay ? (
-                  <span className="mt-0.5 block truncate text-sm font-semibold text-ek-muted">
-                    {phoneDisplay}
-                  </span>
-                ) : null}
-              </span>
-              <ArrowRight className="h-4 w-4 shrink-0 text-ek-teal" aria-hidden />
-            </motion.a>
+            {whatsappUrl ? (
+              <a
+                href={whatsappUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex w-full items-center justify-center gap-2 rounded-md border border-ek-teal/40 bg-ek-teal/10 px-5 py-3.5 text-[11px] font-bold tracking-[0.16em] text-white uppercase transition hover:bg-ek-teal/20 sm:w-auto"
+              >
+                <WhatsAppIcon className="h-4 w-4 text-ek-teal" />
+                WhatsApp
+              </a>
+            ) : null}
           </div>
         </div>
-      ) : null}
 
-      <HeroStatsBand />
+        <HeroTrustBar />
+      </div>
     </section>
   );
 }

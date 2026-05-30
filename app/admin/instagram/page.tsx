@@ -1,5 +1,4 @@
 import { AdminInstagramManager } from "@/components/admin/AdminInstagramManager";
-import { AdminNav } from "@/components/admin/AdminNav";
 import { AdminPageHeader } from "@/components/admin/AdminPageHeader";
 import { requireAdmin } from "@/lib/auth";
 import { readInstagramFeed } from "@/lib/instagram/feed";
@@ -19,7 +18,6 @@ export default async function AdminInstagramPage() {
         badge={storage}
         description="Sync @ekconstructions into the site gallery. Carousel posts keep all slides together on one project page."
       />
-      <AdminNav />
       <div className="mt-8">
         <AdminInstagramManager initialFeed={feed} />
       </div>

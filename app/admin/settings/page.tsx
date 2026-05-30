@@ -1,4 +1,3 @@
-import { AdminNav } from "@/components/admin/AdminNav";
 import { AdminPageHeader } from "@/components/admin/AdminPageHeader";
 import { AdminSettingsPanel } from "@/components/admin/AdminSettingsPanel";
 import { getAdminInsights } from "@/lib/admin/insights";
@@ -18,7 +17,6 @@ export default async function AdminSettingsPage() {
         title="Settings"
         description="Instagram session setup, environment variables, and integration guides."
       />
-      <AdminNav />
       <div className="mt-8">
         <AdminSettingsPanel
           sessionConfigured={insights.instagram.sessionConfigured}

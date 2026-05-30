@@ -1,5 +1,4 @@
 import { AdminLogsPanel } from "@/components/admin/AdminLogsPanel";
-import { AdminNav } from "@/components/admin/AdminNav";
 import { AdminPageHeader } from "@/components/admin/AdminPageHeader";
 import { requireAdmin } from "@/lib/auth";
 import { readSecurityAudit } from "@/lib/security/audit";
@@ -19,8 +18,6 @@ export default async function AdminLogsPage() {
         badge="Live"
         description="Activity from Instagram sync, admin actions, security events, and errors. Mirrored to Vercel Runtime Logs as structured JSON."
       />
-
-      <AdminNav />
 
       <section className="admin-card mt-8 rounded-2xl border border-ek-teal/20 bg-gradient-to-br from-ek-teal/5 to-white p-5 sm:p-6">
         <h2 className="text-sm font-bold tracking-wide text-ek-navy uppercase">Vercel runtime logs</h2>

@@ -1,6 +1,5 @@
 import { AdminInquiriesManager } from "@/components/admin/AdminInquiriesManager";
 import { AdminMigrationBanner } from "@/components/admin/AdminMigrationBanner";
-import { AdminNav } from "@/components/admin/AdminNav";
 import { AdminPageHeader } from "@/components/admin/AdminPageHeader";
 import { readCms } from "@/lib/cms";
 import { requireAdmin } from "@/lib/auth";
@@ -33,7 +32,6 @@ export default async function AdminInquiriesPage() {
         title="Enquiries"
         description="Manage contact form leads, reply via Gmail, track status, and create quotes."
       />
-      <AdminNav />
       <div className="mt-8 space-y-6">
         {loadError && (
           <div className="rounded-2xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-900">

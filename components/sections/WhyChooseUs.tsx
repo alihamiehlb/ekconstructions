@@ -5,8 +5,6 @@ import { SectionReveal } from "@/components/ui/SectionReveal";
 import { StaggerItem, StaggerReveal } from "@/components/ui/StaggerReveal";
 import type { CmsWhyItem } from "@/lib/cms/types";
 import { motion } from "framer-motion";
-import { ArrowRight } from "lucide-react";
-import Link from "next/link";
 
 export function WhyChooseUs({
   items,
@@ -44,15 +42,6 @@ export function WhyChooseUs({
             </StaggerItem>
           ))}
         </StaggerReveal>
-
-        <SectionReveal delay={0.15}>
-          <div className="mt-8 flex justify-center lg:justify-start">
-            <Link href="/gallery" className="btn-primary inline-flex shadow-sm">
-              View Our Work
-              <ArrowRight className="h-4 w-4" aria-hidden />
-            </Link>
-          </div>
-        </SectionReveal>
       </div>
     </section>
   );

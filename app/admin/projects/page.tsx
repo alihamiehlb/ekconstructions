@@ -1,4 +1,3 @@
-import { AdminNav } from "@/components/admin/AdminNav";
 import { AdminProjectsEditor } from "@/components/admin/AdminProjectsEditor";
 import { AdminLogoutButton } from "@/components/admin/AdminLogoutButton";
 import { requireAdmin } from "@/lib/auth";
@@ -33,7 +32,6 @@ export default async function AdminProjectsPage() {
           <AdminLogoutButton />
         </div>
       </div>
-      <AdminNav />
       <div className="mt-8">
         <AdminProjectsEditor />
       </div>

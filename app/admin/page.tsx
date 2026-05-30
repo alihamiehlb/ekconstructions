@@ -1,23 +1,14 @@
 import { AdminEnquiriesPanel } from "@/components/admin/AdminEnquiriesPanel";
 import { AdminInsightsPanel } from "@/components/admin/AdminInsightsPanel";
-import { AdminNav } from "@/components/admin/AdminNav";
 import { AdminPageHeader } from "@/components/admin/AdminPageHeader";
-import { AdminQuickActions } from "@/components/admin/AdminQuickActions";
 import { DashboardCharts } from "@/components/admin/DashboardCharts";
 import { getAdminInsights } from "@/lib/admin/insights";
 import { requireAdmin } from "@/lib/auth";
 import { getAdminStats, getStorageMode } from "@/lib/store";
 import {
-  BarChart3,
   Eye,
-  Image,
   Inbox,
-  Instagram,
-  Layers,
-  MessageSquare,
   Percent,
-  Shield,
-  Terminal,
   TrendingUp,
 } from "lucide-react";
 import Link from "next/link";
@@ -108,7 +99,6 @@ export default async function AdminDashboardPage() {
   }
 
   const storage = getStorageMode();
-  const ig = insights.instagram;
 
   return (
     <div className="section-pad py-6 sm:py-10">
@@ -121,8 +111,6 @@ export default async function AdminDashboardPage() {
             : "Configure Supabase on Vercel for production persistence."
         }
       />
-
-      <AdminNav />
 
       {loadError && (
         <div className="mt-6 rounded-2xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-950">
@@ -147,30 +135,9 @@ export default async function AdminDashboardPage() {
         />
       </div>
 
-      <div className="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6">
-        <StatCard
-          label="IG posts"
-          value={ig.postCount}
-          icon={Instagram}
-          href="/admin/instagram"
-        />
-        <StatCard label="Carousels" value={ig.carouselCount} icon={Layers} />
-        <StatCard
-          label="Captions"
-          value={`${ig.captionCoverage}%`}
-          icon={MessageSquare}
-          hint={`${ig.withCaption} with text`}
-        />
-        <StatCard label="Gallery" value="CMS" icon={Image} href="/admin/projects" />
-        <StatCard label="Logs" value={insights.activity.logEvents24h} icon={Terminal} href="/admin/logs" hint="Last 24h" />
-        <StatCard label="Security" value="Audit" icon={Shield} href="/admin/security" />
-      </div>
-
       <div className="mt-8">
         <AdminInsightsPanel insights={insights} />
       </div>
-
-      <AdminQuickActions />
 
       <div className="mt-8">
         <DashboardCharts stats={stats} />
@@ -179,7 +146,7 @@ export default async function AdminDashboardPage() {
       <div className="admin-card mt-8 rounded-2xl border border-ek-navy/10 bg-white shadow-sm">
         <div className="flex flex-wrap items-center justify-between gap-3 border-b border-ek-navy/8 px-6 py-4">
           <div className="flex items-center gap-2">
-            <BarChart3 className="h-5 w-5 text-ek-teal" aria-hidden />
+            <Inbox className="h-5 w-5 text-ek-teal" aria-hidden />
             <h2 className="text-sm font-bold tracking-wide text-ek-navy uppercase">
               Recent enquiries
             </h2>

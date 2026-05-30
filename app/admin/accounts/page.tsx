@@ -1,6 +1,5 @@
 import { AdminAccountsManager } from "@/components/admin/AdminAccountsManager";
 import { AdminMigrationBanner } from "@/components/admin/AdminMigrationBanner";
-import { AdminNav } from "@/components/admin/AdminNav";
 import { AdminPageHeader } from "@/components/admin/AdminPageHeader";
 import { requireAdmin } from "@/lib/auth";
 import { isAdminUsersDbConfigured, listAdminUsers } from "@/lib/admin/users";
@@ -31,7 +30,6 @@ export default async function AdminAccountsPage() {
         title="Accounts"
         description="Create additional admin logins with email and password. Requires Supabase migration."
       />
-      <AdminNav />
       <div className="mt-8 space-y-6">
         {loadError && (
           <div className="rounded-2xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-900">

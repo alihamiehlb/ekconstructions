@@ -1,5 +1,4 @@
 import { AdminLogoutButton } from "@/components/admin/AdminLogoutButton";
-import { AdminNav } from "@/components/admin/AdminNav";
 import { requireAdmin } from "@/lib/auth";
 import { readSecurityAudit } from "@/lib/security/audit";
 import Link from "next/link";
@@ -50,8 +49,6 @@ export default async function AdminSecurityPage() {
           <AdminLogoutButton />
         </div>
       </div>
-
-      <AdminNav />
 
       <div className="mt-8 grid gap-6 lg:grid-cols-2">
         <section className="rounded-2xl border border-ek-navy/10 bg-white p-6 shadow-sm">

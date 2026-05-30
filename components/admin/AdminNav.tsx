@@ -21,7 +21,7 @@ export function AdminNav() {
   const pathname = usePathname();
 
   return (
-    <nav className="mt-6 flex flex-wrap gap-2" aria-label="Admin sections">
+    <nav className="flex flex-wrap gap-2" aria-label="Admin sections">
       {links.map((link) => {
         const active = pathname === link.href || (link.href !== "/admin" && pathname.startsWith(`${link.href}/`));
         return (
