@@ -54,17 +54,20 @@ export function Header() {
 
   const heroOverlay = pathname === "/" && !scrolled;
   const mobileDark = immersiveMobile;
+  const mobileTransparent = pathname === "/" && (mobileDark || heroOverlay);
 
   return (
     <header
       className={`fixed inset-x-0 top-0 z-50 border-b transition-[transform,background-color,border-color,box-shadow] duration-300 ${
         headerHidden ? "-translate-y-full lg:translate-y-0" : "translate-y-0"
       } ${
-        mobileDark
-          ? "border-white/10 bg-ek-navy/45 backdrop-blur-md lg:border-ek-navy/10 lg:bg-white/95 lg:shadow-sm"
-          : scrolled
-            ? "border-ek-navy/10 bg-white/95 shadow-sm backdrop-blur-md"
-            : "border-transparent bg-white"
+        mobileTransparent
+          ? "border-transparent bg-transparent lg:border-ek-navy/10 lg:bg-white/95 lg:shadow-sm"
+          : mobileDark
+            ? "border-white/10 bg-ek-navy/45 backdrop-blur-md lg:border-ek-navy/10 lg:bg-white/95 lg:shadow-sm"
+            : scrolled
+              ? "border-ek-navy/10 bg-white/95 shadow-sm backdrop-blur-md"
+              : "border-transparent bg-white"
       } ${heroOverlay ? "lg:border-transparent lg:bg-white" : ""}`}
     >
       <div className="landing-container flex h-14 items-center justify-between gap-2 sm:gap-4 lg:h-[72px]">
@@ -75,7 +78,7 @@ export function Header() {
           className="min-w-0 shrink-0"
         >
           <Logo
-            variant={mobileDark ? "dark" : "light"}
+            variant={mobileTransparent || mobileDark ? "dark" : "light"}
             size="headerCompact"
             className="lg:hidden"
           />
@@ -119,7 +122,7 @@ export function Header() {
           <button
             type="button"
             className={`inline-flex h-9 w-9 items-center justify-center rounded-md border transition lg:hidden ${
-              mobileDark || open
+              mobileTransparent || mobileDark || open
                 ? "border-white/25 bg-white text-ek-navy hover:bg-white/90"
                 : "border-ek-navy/10 text-ek-navy hover:border-ek-teal/30 hover:bg-ek-gray"
             }`}
