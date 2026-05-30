@@ -39,40 +39,35 @@ export const services = [
   {
     id: "aluminium",
     title: "Aluminium Windows & Doors",
-    description:
-      "Supply and installation of aluminium windows, sliding doors, bi-fold, casement, and double-glazed systems.",
+    description: "Sleek, durable and energy efficient solutions.",
     icon: "window",
     iconSrc: "/images/icon-window.png",
   },
   {
     id: "balustrade",
     title: "Glass Balustrade",
-    description:
-      "Frameless glass balustrades for stairs, balconies, voids, and pool areas — clean lines and compliant fixings.",
+    description: "Frameless or semi-frameless for a modern look.",
     icon: "balustrade",
     iconSrc: "/images/icon-balustrade.png",
   },
   {
     id: "steel",
     title: "Steel Work",
-    description:
-      "Structural and decorative steel for gates, screens, handrails, and custom architectural features.",
+    description: "Engineered for strength. Built for longevity.",
     icon: "steel",
     iconSrc: "/images/icon-steel.png",
   },
   {
     id: "privacy",
     title: "Privacy Screens & Gates",
-    description:
-      "Aluminium slat screens, automated gates, and secure entries designed for privacy without blocking light.",
+    description: "Stylish, functional and built to last.",
     icon: "fence",
     iconSrc: "/images/icon-fence.png",
   },
   {
     id: "carpentry",
     title: "Carpentry",
-    description:
-      "Custom timber and composite work for interiors, facades, and finishing details on residential builds.",
+    description: "Custom carpentry with precision and care.",
     icon: "hammer",
     iconSrc: "/images/icon-hammer.png",
   },
