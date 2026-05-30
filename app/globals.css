@@ -79,6 +79,48 @@ body {
   line-height: 1.55;
 }
 
+.hero-headline-mark {
+  display: inline-block;
+  width: 0.45em;
+  height: 0.45em;
+  margin-left: 0.12em;
+  vertical-align: baseline;
+  background: #db2022;
+}
+
+.hero-hotspot {
+  position: absolute;
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  transform: translate(-50%, -50%);
+}
+
+.hero-hotspot-dot {
+  width: 7px;
+  height: 7px;
+  flex-shrink: 0;
+  border-radius: 999px;
+  background: #db2022;
+  box-shadow: 0 0 0 3px rgba(219, 32, 34, 0.35);
+}
+
+.hero-hotspot-line {
+  width: 18px;
+  height: 1px;
+  background: rgba(255, 255, 255, 0.55);
+}
+
+.hero-hotspot-label {
+  max-width: 5.5rem;
+  font-size: 7px;
+  font-weight: 700;
+  line-height: 1.25;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.92);
+}
+
 @media (max-width: 1023px) {
   .hero-mobile-ctas {
     display: flex;
@@ -122,26 +164,6 @@ body {
     padding: 0.7rem 1rem;
     border: 1px solid rgba(219, 32, 34, 0.72);
     background: rgba(0, 0, 0, 0.28);
-  }
-
-  .hero-mobile-services {
-    padding-top: 0.5rem;
-  }
-
-  .hero-mobile-services-track {
-    scrollbar-width: none;
-  }
-
-  .hero-mobile-services-track::-webkit-scrollbar {
-    display: none;
-  }
-
-  .hero-mobile-service-card {
-    position: relative;
-    height: 6.75rem;
-    width: 6.5rem;
-    border-radius: 3px;
-    border: 1px solid rgba(255, 255, 255, 0.12);
   }
 
   .hero-trust-bar--hero {

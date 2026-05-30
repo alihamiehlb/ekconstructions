@@ -20,7 +20,7 @@ export default async function HomePage() {
     <>
       <Header />
       <main id="main-content" className="pb-20 lg:pb-0">
-        <Hero services={cms.services} />
+        <Hero />
         <Services services={cms.services} />
         <div className="bg-white">
           <WhyChooseUs

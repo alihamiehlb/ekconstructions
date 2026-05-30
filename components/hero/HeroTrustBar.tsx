@@ -73,9 +73,7 @@ export function HeroTrustBar({ className = "", variant = "default" }: Props) {
               </p>
               <p
                 className={`mt-0.5 leading-snug text-white/55 ${
-                  isHero
-                    ? "text-[5px] sm:text-[10px]"
-                    : "hidden text-[10px] sm:block"
+                  isHero ? "hidden" : "hidden text-[10px] sm:block"
                 }`}
               >
                 {sublabel}

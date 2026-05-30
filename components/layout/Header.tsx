@@ -109,18 +109,18 @@ export function Header() {
         <div className="flex shrink-0 items-center gap-2 sm:gap-3">
           <Link
             href={quoteHref()}
-            className="btn-primary hidden px-4 py-2.5 text-[10px] tracking-[0.16em] lg:inline-flex xl:px-5"
+            className="btn-primary inline-flex px-2.5 py-1.5 text-[8px] tracking-[0.12em] sm:px-3 sm:py-2 sm:text-[9px] lg:px-4 lg:py-2.5 lg:text-[10px] lg:tracking-[0.16em] xl:px-5"
             onClick={() => setOpen(false)}
           >
             Get Quote
-            <ArrowRight className="h-3.5 w-3.5" aria-hidden />
+            <ArrowRight className="h-3 w-3 sm:h-3.5 sm:w-3.5" aria-hidden />
           </Link>
 
           <button
             type="button"
             className={`inline-flex h-9 w-9 items-center justify-center rounded-md border transition lg:hidden ${
-              mobileDark
-                ? "border-white/20 bg-white/10 text-white hover:bg-white/20"
+              mobileDark || open
+                ? "border-white/25 bg-white text-ek-navy hover:bg-white/90"
                 : "border-ek-navy/10 text-ek-navy hover:border-ek-teal/30 hover:bg-ek-gray"
             }`}
             aria-expanded={open}
@@ -184,16 +184,6 @@ export function Header() {
                   );
                 })}
               </ul>
-              <div className={`border-t px-4 py-4 sm:px-6 ${mobileDark ? "border-white/10" : "border-ek-navy/8"}`}>
-                <Link
-                  href={quoteHref()}
-                  className="btn-primary flex w-full justify-center"
-                  onClick={() => setOpen(false)}
-                >
-                  Get a Quote
-                  <ArrowRight className="h-4 w-4" aria-hidden />
-                </Link>
-              </div>
             </motion.nav>
           </>
         )}
