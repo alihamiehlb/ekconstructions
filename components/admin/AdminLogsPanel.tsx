@@ -11,7 +11,7 @@ const LEVEL_STYLES: Record<string, { icon: typeof Info; className: string; label
   app_error: { icon: AlertCircle, className: "text-red-600 bg-red-50", label: "Error" },
   instagram_sync: { icon: CheckCircle2, className: "text-ek-teal bg-ek-teal/10", label: "Sync" },
   instagram_discover: { icon: CheckCircle2, className: "text-ek-teal bg-ek-teal/10", label: "Discover" },
-  login_success: { icon: CheckCircle2, className: "text-emerald-600 bg-emerald-50", label: "Login" },
+  login_success: { icon: CheckCircle2, className: "text-ek-navy bg-ek-gray", label: "Login" },
   login_failed: { icon: AlertCircle, className: "text-red-600 bg-red-50", label: "Failed login" },
 };
 

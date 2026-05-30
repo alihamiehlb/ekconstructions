@@ -103,7 +103,7 @@ function WireBuilding({
 
   return (
     <group ref={group}>
-      <Line points={edges} color="#3bb2b8" lineWidth={variant === "float" ? 1.5 : 2} transparent opacity={lineOpacity} />
+      <Line points={edges} color="#db2022" lineWidth={variant === "float" ? 1.5 : 2} transparent opacity={lineOpacity} />
       <group ref={innerGlow}>
         <Line points={accentEdges} color="#ffffff" lineWidth={1} transparent opacity={0.35 + reveal * 0.25} />
       </group>
@@ -112,14 +112,14 @@ function WireBuilding({
         <mesh key={i} position={panel.pos} rotation={[0, panel.rotY, 0]}>
           <planeGeometry args={panel.size} />
           <meshPhysicalMaterial
-            color="#7fd8d0"
+            color="#db2022"
             transparent
             opacity={0.08 + reveal * 0.42}
             metalness={0.35}
             roughness={0.08}
             transmission={0.72}
             thickness={0.35}
-            emissive="#1eb8a8"
+            emissive="#db2022"
             emissiveIntensity={0.08 + reveal * 0.12}
           />
         </mesh>
@@ -127,7 +127,7 @@ function WireBuilding({
 
       <mesh position={[0, floors * floorHeight * 0.5, 0]}>
         <boxGeometry args={[width * 1.03, floors * floorHeight, depth * 1.03]} />
-        <meshStandardMaterial color="#0b1d26" transparent opacity={0.06 + reveal * 0.08} wireframe />
+        <meshStandardMaterial color="#0a0a0a" transparent opacity={0.06 + reveal * 0.08} wireframe />
       </mesh>
     </group>
   );
@@ -180,8 +180,8 @@ function Scene({
       <CameraRig scrollProgress={scrollProgress} variant={variant} />
       <ambientLight intensity={isFloat ? 0.65 : 0.55} />
       <directionalLight position={[6, 10, 6]} intensity={isFloat ? 1.1 : 1.35} color="#ffffff" />
-      <directionalLight position={[-5, 3, -4]} intensity={isFloat ? 0.7 : 0.55} color="#3bb2b8" />
-      <pointLight position={[0, 3, 2]} intensity={isFloat ? 0.55 : 0.4} color="#3bb2b8" distance={12} />
+      <directionalLight position={[-5, 3, -4]} intensity={isFloat ? 0.7 : 0.55} color="#db2022" />
+      <pointLight position={[0, 3, 2]} intensity={isFloat ? 0.55 : 0.4} color="#db2022" distance={12} />
       {!isFloat && (
         <Grid
           args={[12, 12]}
@@ -191,8 +191,8 @@ function Scene({
           sectionThickness={0.6}
           fadeDistance={14}
           fadeStrength={1.2}
-          cellColor="#c8e8ea"
-          sectionColor="#3bb2b8"
+          cellColor="#2a2a2a"
+          sectionColor="#db2022"
           position={[0, -0.01, 0]}
           rotation={[0, 0, 0]}
         />
@@ -206,8 +206,8 @@ function Scene({
           sectionThickness={0.35}
           fadeDistance={5}
           fadeStrength={2}
-          cellColor="#d4eef0"
-          sectionColor="#3bb2b8"
+          cellColor="#2a2a2a"
+          sectionColor="#db2022"
           position={[0, -0.01, 0]}
           rotation={[0, 0, 0]}
         />

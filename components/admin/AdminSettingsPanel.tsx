@@ -41,7 +41,7 @@ export function AdminSettingsPanel({ sessionConfigured, siteUrl }: Props) {
               Configured
             </span>
           ) : (
-            <span className="rounded-full bg-amber-100 px-2 py-0.5 text-[10px] font-bold text-amber-800 uppercase">
+            <span className="rounded-full bg-ek-teal/10 px-2 py-0.5 text-[10px] font-bold text-ek-teal uppercase">
               Not set
             </span>
           )}

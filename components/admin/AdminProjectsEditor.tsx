@@ -118,7 +118,7 @@ export function AdminProjectsEditor() {
     messageTone === "error"
       ? "border-red-200 bg-red-50 text-red-900"
       : messageTone === "warn"
-        ? "border-amber-200 bg-amber-50 text-amber-950"
+        ? "border-ek-teal/40 bg-ek-teal/5 text-ek-navy"
         : "border-ek-teal/30 bg-ek-teal/10 text-ek-navy";
 
   return (
@@ -134,8 +134,8 @@ export function AdminProjectsEditor() {
       </div>
 
       {hiddenExamples > 0 && (
-        <div className="flex flex-wrap items-center justify-between gap-3 rounded-xl border border-amber-200 bg-amber-50 px-4 py-3">
-          <p className="text-sm text-amber-950">
+        <div className="flex flex-wrap items-center justify-between gap-3 rounded-xl border border-ek-teal/30 bg-ek-teal/5 px-4 py-3">
+          <p className="text-sm text-ek-navy">
             {hiddenExamples} example project{hiddenExamples === 1 ? "" : "s"} still stored
             (placeholder images). They are hidden from this list but can block saves on the old
             editor.
@@ -144,7 +144,7 @@ export function AdminProjectsEditor() {
             type="button"
             disabled={saving}
             onClick={removeExamples}
-            className="rounded-lg bg-amber-900 px-4 py-2 text-xs font-bold tracking-wide text-white uppercase disabled:opacity-60"
+            className="rounded-lg bg-ek-teal px-4 py-2 text-xs font-bold tracking-wide text-white uppercase disabled:opacity-60"
           >
             Remove examples
           </button>

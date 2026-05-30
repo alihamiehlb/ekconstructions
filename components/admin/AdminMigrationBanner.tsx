@@ -10,7 +10,7 @@ export function AdminMigrationBanner({ missing = ["business", "adminUsers", "enq
   };
 
   return (
-    <div className="rounded-2xl border border-amber-300 bg-amber-50 p-5 text-sm text-amber-950">
+    <div className="rounded-2xl border border-ek-teal/30 bg-ek-teal/5 p-5 text-sm text-ek-navy">
       <p className="font-bold">Database migration required</p>
       <p className="mt-2 leading-relaxed">
         New admin features need tables in Supabase that are not created yet. Open{" "}

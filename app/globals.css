@@ -1,15 +1,16 @@
 @import "tailwindcss";
 
 @theme {
-  --color-ek-teal: #3bb2b8;
-  --color-ek-teal-dark: #2f9da3;
-  --color-ek-orange: #ef6c00;
-  --color-ek-orange-dark: #d45f00;
-  --color-ek-black: #1a1a1a;
-  --color-ek-navy: #0b1d26;
-  --color-ek-navy-light: #122832;
-  --color-ek-gray: #f4f4f4;
-  --color-ek-muted: #6b7b84;
+  /* EK Constructions — palette extracted from the logo. Black · White · Architectural Red. */
+  --color-ek-teal: #db2022; /* accent (was teal) → Architectural Red */
+  --color-ek-teal-dark: #b81a1c; /* red hover */
+  --color-ek-orange: #db2022; /* consolidated to red */
+  --color-ek-orange-dark: #b81a1c;
+  --color-ek-black: #0a0a0a;
+  --color-ek-navy: #0a0a0a; /* dark surface + primary text → Deep Black */
+  --color-ek-navy-light: #161616; /* lifted black for cards on dark */
+  --color-ek-gray: #f4f4f4; /* neutral light surface */
+  --color-ek-muted: #6e6e6e; /* neutral gray text (de-tinted) */
   --font-sans: var(--font-montserrat), system-ui, sans-serif;
 }
 
@@ -51,7 +52,7 @@ body {
 }
 
 .hero-dot-grid {
-  background-image: radial-gradient(circle, rgba(11, 29, 38, 0.16) 1px, transparent 1px);
+  background-image: radial-gradient(circle, rgba(10, 10, 10, 0.16) 1px, transparent 1px);
   background-size: 12px 12px;
 }
 
@@ -66,7 +67,7 @@ body {
   inset: 10% 15% 20%;
   z-index: -1;
   border-radius: 50%;
-  background: radial-gradient(ellipse at center, rgba(59, 178, 184, 0.12) 0%, transparent 70%);
+  background: radial-gradient(ellipse at center, rgba(219, 32, 34, 0.1) 0%, transparent 70%);
   pointer-events: none;
 }
 
@@ -230,8 +231,8 @@ html[data-admin="true"] body {
 }
 
 .admin-shell {
-  background-image: radial-gradient(circle at 20% 0%, rgba(59, 178, 184, 0.06), transparent 45%),
-    radial-gradient(circle at 80% 100%, rgba(11, 29, 38, 0.04), transparent 40%);
+  background-image: radial-gradient(circle at 20% 0%, rgba(219, 32, 34, 0.05), transparent 45%),
+    radial-gradient(circle at 80% 100%, rgba(10, 10, 10, 0.04), transparent 40%);
 }
 
 .admin-card {
@@ -256,10 +257,10 @@ html[data-admin="true"] body {
 @keyframes adminStatPulse {
   0%,
   100% {
-    box-shadow: 0 0 0 0 rgba(59, 178, 184, 0);
+    box-shadow: 0 0 0 0 rgba(219, 32, 34, 0);
   }
   50% {
-    box-shadow: 0 0 0 4px rgba(59, 178, 184, 0.12);
+    box-shadow: 0 0 0 4px rgba(219, 32, 34, 0.12);
   }
 }
 

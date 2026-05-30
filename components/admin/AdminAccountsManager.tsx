@@ -52,7 +52,7 @@ export function AdminAccountsManager({ initialUsers, dbConfigured }: Props) {
 
   if (!dbConfigured) {
     return (
-      <div className="admin-card rounded-2xl border border-amber-200 bg-amber-50 p-6 text-sm text-amber-950">
+      <div className="admin-card rounded-2xl border border-ek-teal/30 bg-ek-teal/5 p-6 text-sm text-ek-navy">
         <p className="font-bold">Supabase migration required</p>
         <p className="mt-2 leading-relaxed">
           Run the SQL migration{" "}

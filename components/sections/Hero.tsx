@@ -76,7 +76,7 @@ export function Hero() {
                     rel="noopener noreferrer"
                     className="btn-play w-full justify-center sm:w-auto"
                   >
-                    <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-[#25D366]/35 bg-[#25D366]/10 text-[#128C7E]">
+                    <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-ek-teal/35 bg-ek-teal/10 text-ek-teal">
                       <WhatsAppIcon className="h-4 w-4" />
                     </span>
                     <span className="text-left leading-tight">

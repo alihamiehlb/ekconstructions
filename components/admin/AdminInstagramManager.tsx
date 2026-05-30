@@ -199,7 +199,7 @@ export function AdminInstagramManager({ initialFeed }: Props) {
     messageTone === "error"
       ? "border-red-200 bg-red-50 text-red-900"
       : messageTone === "warn"
-        ? "border-amber-200 bg-amber-50 text-amber-950"
+        ? "border-ek-teal/40 bg-ek-teal/5 text-ek-navy"
         : "border-ek-teal/30 bg-ek-teal/10 text-ek-navy";
 
   return (

@@ -28,11 +28,11 @@ export function DashboardCharts({ stats }: { stats: AdminStats }) {
         <div className="mt-4 h-64">
           <ResponsiveContainer width="100%" height="100%">
             <BarChart data={viewsData}>
-              <CartesianGrid strokeDasharray="3 3" stroke="#e8ecef" />
+              <CartesianGrid strokeDasharray="3 3" stroke="#ececec" />
               <XAxis dataKey="label" tick={{ fontSize: 12 }} />
               <YAxis allowDecimals={false} tick={{ fontSize: 12 }} />
               <Tooltip />
-              <Bar dataKey="views" fill="#1eb8a8" radius={[6, 6, 0, 0]} />
+              <Bar dataKey="views" fill="#db2022" radius={[6, 6, 0, 0]} />
             </BarChart>
           </ResponsiveContainer>
         </div>
@@ -50,7 +50,7 @@ export function DashboardCharts({ stats }: { stats: AdminStats }) {
           ) : (
             <ResponsiveContainer width="100%" height="100%">
               <BarChart data={serviceData} layout="vertical">
-                <CartesianGrid strokeDasharray="3 3" stroke="#e8ecef" />
+                <CartesianGrid strokeDasharray="3 3" stroke="#ececec" />
                 <XAxis type="number" allowDecimals={false} tick={{ fontSize: 12 }} />
                 <YAxis
                   type="category"
@@ -59,7 +59,7 @@ export function DashboardCharts({ stats }: { stats: AdminStats }) {
                   tick={{ fontSize: 11 }}
                 />
                 <Tooltip />
-                <Bar dataKey="count" fill="#0f1f26" radius={[0, 6, 6, 0]} />
+                <Bar dataKey="count" fill="#0a0a0a" radius={[0, 6, 6, 0]} />
               </BarChart>
             </ResponsiveContainer>
           )}

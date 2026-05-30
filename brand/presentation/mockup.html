@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>EK Constructions — Brand</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700;800;900&display=swap" rel="stylesheet" />
+<style>
+  /* Palette locked: #0A0A0A · #FFFFFF · #DB2022. Tones via rgba opacity only. */
+  :root {
+    --black: #0A0A0A;
+    --white: #FFFFFF;
+    --red:   #DB2022;
+    --ink-12: rgba(10,10,10,0.12);
+    --ink-06: rgba(10,10,10,0.06);
+    --ink-40: rgba(10,10,10,0.40);
+    --paper-72: rgba(255,255,255,0.72);
+    --paper-40: rgba(255,255,255,0.40);
+    --paper-12: rgba(255,255,255,0.12);
+    --font: "Montserrat","Arial Black",Arial,system-ui,sans-serif;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body { font-family: var(--font); background: var(--white); color: var(--black); -webkit-font-smoothing: antialiased; line-height: 1.5; }
+  .wrap { max-width: 1120px; margin: 0 auto; padding: 0 24px; }
+  .micro { font-size: 11px; font-weight: 600; letter-spacing: 0.34em; text-transform: uppercase; color: var(--red); }
+
+  .hero { background: var(--black); color: var(--white); min-height: 78vh; display: flex; flex-direction: column; justify-content: space-between; padding: 40px 0 56px; }
+  .hero-top { display: flex; justify-content: space-between; align-items: baseline; }
+  .hero-top .micro { color: var(--paper-72); }
+  .hero-top .micro b { color: var(--red); font-weight: 600; }
+  .hero-mark { flex: 1; display: flex; align-items: center; padding: 48px 0; }
+  .hero-mark img { width: min(72vw, 560px); height: auto; }
+  .hero h1 { font-size: clamp(40px, 9vw, 132px); font-weight: 900; letter-spacing: -0.03em; line-height: 0.92; }
+  .hero h1 .accent { color: var(--red); }
+  .hero-sub { color: var(--paper-72); max-width: 46ch; margin-top: 20px; font-weight: 600; }
+
+  section { padding: 88px 0; }
+  .sec-head { display: flex; gap: 16px; align-items: baseline; margin-bottom: 40px; }
+  .sec-head .n { color: var(--red); font-weight: 900; font-size: 13px; letter-spacing: 0.1em; }
+  .sec-head h2 { font-size: clamp(26px, 4vw, 44px); font-weight: 900; letter-spacing: -0.02em; }
+
+  .grid { display: grid; gap: 16px; grid-template-columns: 1fr; }
+  @media (min-width: 720px) { .grid-2 { grid-template-columns: 1fr 1fr; } }
+  .plate { border: 1px solid var(--ink-12); display: flex; align-items: center; justify-content: center; min-height: 220px; padding: 48px; position: relative; }
+  .plate img { width: min(80%, 380px); height: auto; }
+  .plate.dark { background: var(--black); border-color: var(--paper-12); }
+  .plate .tag { position: absolute; top: 14px; left: 14px; font-size: 10px; font-weight: 700; letter-spacing: 0.18em; text-transform: uppercase; color: var(--ink-40); }
+  .plate.dark .tag { color: var(--paper-40); }
+
+  .scale { display: flex; align-items: flex-end; gap: 32px; flex-wrap: wrap; padding: 8px 0; }
+  .scale .col span { display: block; margin-top: 10px; font-size: 11px; color: var(--ink-40); letter-spacing: 0.1em; text-align: center; }
+
+  .swatches { display: grid; gap: 16px; grid-template-columns: 1fr; }
+  @media (min-width: 720px) { .swatches { grid-template-columns: repeat(3,1fr); } }
+  .swatch { border: 1px solid var(--ink-12); }
+  .swatch .chip { height: 160px; }
+  .swatch .meta { padding: 16px; display: flex; justify-content: space-between; align-items: baseline; }
+  .swatch .meta .name { font-weight: 800; }
+  .swatch .meta .hex { font-size: 13px; color: rgba(10,10,10,0.64); font-weight: 600; }
+  .chip.k { background: var(--black); }
+  .chip.w { background: var(--white); border-bottom: 1px solid var(--ink-12); }
+  .chip.r { background: var(--red); }
+
+  .type-row { border-top: 1px solid var(--ink-12); padding: 24px 0; display: flex; justify-content: space-between; align-items: baseline; gap: 24px; flex-wrap: wrap; }
+  .type-row .spec { font-size: 12px; color: var(--ink-40); letter-spacing: 0.08em; white-space: nowrap; }
+  .t-display { font-size: clamp(40px,8vw,88px); font-weight: 900; letter-spacing: -0.03em; line-height: 1; }
+  .t-micro { font-size: 14px; font-weight: 600; letter-spacing: 0.34em; }
+
+  .dd { display: grid; gap: 16px; grid-template-columns: 1fr; }
+  @media (min-width: 720px) { .dd { grid-template-columns: 1fr 1fr; } }
+  .dd ul { list-style: none; }
+  .dd li { padding: 12px 0; border-bottom: 1px solid var(--ink-12); font-weight: 600; display: flex; gap: 12px; }
+  .dd .mark { font-weight: 900; }
+  .dd .do .mark { color: var(--red); }
+  .dd .dont .mark { color: var(--ink-40); }
+  .dd .card-h { font-weight: 900; font-size: 18px; margin-bottom: 8px; }
+
+  footer { background: var(--black); color: var(--paper-72); padding: 56px 0; }
+  footer img { width: 200px; height: auto; margin-bottom: 24px; }
+  footer .micro { color: var(--paper-40); }
+
+  .reveal { opacity: 0; transform: translateY(18px); transition: opacity .7s ease, transform .7s ease; }
+  .reveal.in { opacity: 1; transform: none; }
+  @media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+    .reveal { opacity: 1; transform: none; transition: none; }
+  }
+</style>
+</head>
+<body>
+  <header class="hero">
+    <div class="wrap hero-top">
+      <span class="micro">EK&nbsp;Constructions</span>
+      <span class="micro">Brand&nbsp;Guidelines&nbsp;<b>/ 01</b></span>
+    </div>
+    <div class="wrap hero-mark">
+      <img src="../logo/ek-logo-ondark.png" alt="EK Constructions logo" />
+    </div>
+    <div class="wrap">
+      <h1>WE TURN IDEAS<br />INTO <span class="accent">ICONIC SPACES.</span></h1>
+      <p class="hero-sub">A locked, three-tone identity. Deep Black, Pure White, and one Architectural Red — extracted straight from the mark.</p>
+    </div>
+  </header>
+
+  <section>
+    <div class="wrap">
+      <div class="sec-head reveal"><span class="n">01</span><h2>The Mark</h2></div>
+      <div class="grid grid-2">
+        <div class="plate reveal"><span class="tag">On Light</span><img src="../logo/ek-logo-onlight.png" alt="EK logo on light" /></div>
+        <div class="plate dark reveal"><span class="tag">On Dark</span><img src="../logo/ek-logo-ondark.png" alt="EK logo on dark" /></div>
+      </div>
+    </div>
+  </section>
+
+  <section style="padding-top:0">
+    <div class="wrap">
+      <div class="sec-head reveal"><span class="n">02</span><h2>Scales Crisp</h2></div>
+      <div class="scale reveal">
+        <div class="col"><img src="../logo/ek-logo-onlight.png" width="120" alt="" /><span>120px</span></div>
+        <div class="col"><img src="../logo/ek-logo-onlight.png" width="240" alt="" /><span>240px</span></div>
+        <div class="col"><img src="../logo/ek-logo-onlight.png" width="420" alt="" /><span>420px</span></div>
+      </div>
+    </div>
+  </section>
+
+  <section style="background:var(--ink-06)">
+    <div class="wrap">
+      <div class="sec-head reveal"><span class="n">03</span><h2>Three Tones. No Fourth.</h2></div>
+      <div class="swatches">
+        <div class="swatch reveal"><div class="chip k"></div><div class="meta"><span class="name">Deep Black</span><span class="hex">#0A0A0A</span></div></div>
+        <div class="swatch reveal"><div class="chip w"></div><div class="meta"><span class="name">Pure White</span><span class="hex">#FFFFFF</span></div></div>
+        <div class="swatch reveal"><div class="chip r"></div><div class="meta"><span class="name">Architectural Red</span><span class="hex">#DB2022</span></div></div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="wrap">
+      <div class="sec-head reveal"><span class="n">04</span><h2>Montserrat</h2></div>
+      <div class="type-row reveal"><div class="t-display">EK</div><div class="spec">900 · DISPLAY</div></div>
+      <div class="type-row reveal"><div class="t-micro" style="color:var(--red)">CONSTRUCTIONS</div><div class="spec">600 · TRACKED LABEL</div></div>
+    </div>
+  </section>
+
+  <section style="background:var(--ink-06)">
+    <div class="wrap">
+      <div class="sec-head reveal"><span class="n">05</span><h2>Hold The Line</h2></div>
+      <div class="dd">
+        <div class="do reveal"><div class="card-h">Do</div><ul>
+          <li><span class="mark">/</span> Use the supplied artwork unaltered.</li>
+          <li><span class="mark">/</span> One red moment per composition.</li>
+          <li><span class="mark">/</span> Black or white plate over photos.</li>
+        </ul></div>
+        <div class="dont reveal"><div class="card-h">Don't</div><ul>
+          <li><span class="mark">×</span> Gradient, shadow, or 3D the mark.</li>
+          <li><span class="mark">×</span> Re-letter or stretch it.</li>
+          <li><span class="mark">×</span> Introduce any fourth color.</li>
+        </ul></div>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <div class="wrap">
+      <img src="../logo/ek-logo-ondark.png" alt="EK Constructions" />
+      <p class="micro">EK Constructions · Brand Kit · Deep Black / Pure White / Architectural Red</p>
+    </div>
+  </footer>
+
+  <script>
+    const io = new IntersectionObserver((es) => { for (const e of es) if (e.isIntersecting) { e.target.classList.add("in"); io.unobserve(e.target); } }, { threshold: 0.12 });
+    document.querySelectorAll(".reveal").forEach((el) => io.observe(el));
+  </script>
+</body>
+</html>

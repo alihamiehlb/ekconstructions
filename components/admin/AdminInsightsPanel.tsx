@@ -50,7 +50,7 @@ function StatusPill({ ok, label }: { ok: boolean; label: string }) {
   return (
     <span
       className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-[10px] font-bold tracking-wide uppercase ${
-        ok ? "bg-emerald-50 text-emerald-700" : "bg-amber-50 text-amber-800"
+        ok ? "bg-ek-gray text-ek-navy" : "bg-ek-teal/10 text-ek-teal"
       }`}
     >
       {ok ? <CheckCircle2 className="h-3 w-3" /> : <AlertTriangle className="h-3 w-3" />}
