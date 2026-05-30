@@ -1,6 +1,5 @@
 "use client";
 
-import { HeroHotspots } from "@/components/hero/HeroHotspots";
 import { HeroVisual } from "@/components/hero/HeroVisual";
 import { HeroTrustBar } from "@/components/hero/HeroTrustBar";
 import { useSite } from "@/components/providers/SiteProvider";
@@ -30,24 +29,20 @@ export function Hero() {
       className="hero-cinematic relative overflow-hidden bg-ek-navy pt-16 lg:pt-[72px]"
     >
       <HeroVisual />
-      <HeroHotspots />
 
-      <div className="landing-container relative z-10 flex min-h-[calc(100dvh-4rem)] flex-col pb-3 lg:min-h-0 lg:block lg:pb-12">
-        <div className="hero-content-enter flex flex-1 flex-col pt-5 lg:max-w-[600px] lg:pt-14 xl:pt-16">
+      <div className="landing-container relative z-10 pb-6 lg:pb-12">
+        <div className="hero-content-enter max-w-[600px] pt-5 lg:pt-14 xl:pt-16">
           <p className="inline-flex items-center gap-2 text-[10px] font-bold tracking-[0.22em] text-white/90 uppercase">
             <span className="h-3 w-0.5 rounded-full bg-ek-teal" aria-hidden />
             {site.location.area}
           </p>
 
-          {/* Mobile headline — mockup */}
           <h1 className="hero-mobile-title mt-4 font-black uppercase text-white lg:hidden">
-            WE BUILD{" "}
-            <span className="text-ek-teal">DETAILS</span>
-            {" "}THAT LAST
-            <span className="hero-headline-mark" aria-hidden />
+            Built With
+            <br />
+            <span className="text-ek-teal">Precision.</span>
           </h1>
 
-          {/* Desktop headline — CMS */}
           <h1 className="mt-4 hidden text-[1.65rem] font-black leading-[1.02] tracking-tight text-white uppercase sm:text-[2.15rem] md:text-[2.35rem] lg:block lg:text-[2.55rem] xl:text-[2.75rem]">
             {site.headline}
             <br />
@@ -71,34 +66,35 @@ export function Hero() {
             </span>
           </h1>
 
-          <p className="mt-4 max-w-[340px] text-[13px] leading-[1.65] text-white/82 sm:max-w-[440px] sm:text-[15px] lg:text-white/78">
+          <p className="mt-3 max-w-[19rem] text-[13px] leading-[1.6] text-white/85 lg:hidden">
+            Premium aluminium, glass, steel and carpentry solutions.
+          </p>
+          <p className="mt-4 hidden max-w-[440px] text-[15px] leading-[1.65] text-white/78 lg:block">
             {site.tagline}
           </p>
 
-          {/* Mobile CTAs — stacked full width */}
-          <div className="mt-5 flex flex-col gap-2.5 lg:hidden">
-            <Link href="#contact" className="hero-btn-primary w-full">
-              Get a Quote
-              <ArrowRight className="h-4 w-4" aria-hidden />
+          <div className="hero-mobile-ctas mt-5 lg:hidden">
+            <Link href="#contact" className="hero-btn-primary">
+              <span>Get a Quote</span>
+              <ArrowRight className="h-4 w-4 shrink-0" aria-hidden />
             </Link>
-            <Link href="/gallery" className="hero-btn-outline w-full">
-              View Our Work
-              <ArrowUpRight className="h-4 w-4" aria-hidden />
+            <Link href="/gallery" className="hero-btn-outline">
+              <span>View Our Work</span>
+              <ArrowUpRight className="h-4 w-4 shrink-0" aria-hidden />
             </Link>
             {whatsappUrl ? (
               <a
                 href={whatsappUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="hero-btn-whatsapp w-full"
+                className="hero-btn-whatsapp"
               >
-                <WhatsAppIcon className="h-4 w-4 text-ek-teal" />
-                WhatsApp
+                <WhatsAppIcon className="h-4 w-4 shrink-0 text-ek-teal" />
+                <span>WhatsApp</span>
               </a>
             ) : null}
           </div>
 
-          {/* Desktop CTAs — row */}
           <div className="mt-6 hidden flex-row flex-wrap items-center gap-3 sm:mt-8 lg:flex">
             <Link
               href="#contact"
@@ -128,8 +124,18 @@ export function Hero() {
           </div>
         </div>
 
-        <HeroTrustBar />
+        <HeroTrustBar className="hidden lg:block" />
       </div>
     </section>
+  );
+}
+
+export function HeroTrustBarMobile() {
+  return (
+    <div className="bg-ek-navy lg:hidden">
+      <div className="landing-container pb-6 pt-2">
+        <HeroTrustBar />
+      </div>
+    </div>
   );
 }
