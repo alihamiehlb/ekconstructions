@@ -1,4 +1,5 @@
 import { getDefaultCms } from "@/lib/cms/defaults";
+import { mergeCmsWithDefaults } from "@/lib/cms/merge";
 import {
   isSupabaseCmsConfigured,
   readCmsFromSupabase,
@@ -12,21 +13,12 @@ import path from "path";
 const CMS_PATH = path.join(process.cwd(), "data", "cms.json");
 
 async function readCmsFromFile(): Promise<CmsData> {
-  const defaults = getDefaultCms();
   try {
     const raw = await fs.readFile(CMS_PATH, "utf-8");
     const parsed = JSON.parse(raw) as Partial<CmsData>;
-    return {
-      ...defaults,
-      ...parsed,
-      site: { ...defaults.site, ...parsed.site },
-      services: parsed.services?.length ? parsed.services : defaults.services,
-      whyChooseUs: parsed.whyChooseUs?.length ? parsed.whyChooseUs : defaults.whyChooseUs,
-      materials: parsed.materials?.length ? parsed.materials : defaults.materials,
-      projects: parsed.projects?.length ? parsed.projects : defaults.projects,
-    };
+    return mergeCmsWithDefaults(parsed);
   } catch {
-    return defaults;
+    return getDefaultCms();
   }
 }
 

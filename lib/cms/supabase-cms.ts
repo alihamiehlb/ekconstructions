@@ -1,4 +1,5 @@
 import { getDefaultCms } from "@/lib/cms/defaults";
+import { mergeCmsWithDefaults } from "@/lib/cms/merge";
 import type { CmsData } from "@/lib/cms/types";
 import { cmsSchema } from "@/lib/cms/schema";
 import { createClient } from "@supabase/supabase-js";
@@ -29,16 +30,13 @@ export async function readCmsFromSupabase(): Promise<CmsData | null> {
   if (error) throw error;
   if (!row?.data) return null;
 
-  const defaults = getDefaultCms();
   const parsed = cmsSchema.safeParse(row.data);
-  if (!parsed.success) return defaults;
+  if (!parsed.success) return getDefaultCms();
 
-  return {
-    ...defaults,
+  return mergeCmsWithDefaults({
     ...parsed.data,
-    site: { ...defaults.site, ...parsed.data.site },
-    updatedAt: row.updated_at ?? defaults.updatedAt,
-  };
+    updatedAt: row.updated_at ?? undefined,
+  });
 }
 
 export async function writeCmsToSupabase(data: CmsData): Promise<void> {

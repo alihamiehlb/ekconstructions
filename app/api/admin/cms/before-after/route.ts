@@ -1,7 +1,7 @@
 import { verifyAdminSession } from "@/lib/auth";
 import { readCms, writeCms } from "@/lib/cms";
 import { mergeCmsWithDefaults } from "@/lib/cms/merge";
-import { projectSchema } from "@/lib/cms/schema";
+import { beforeAfterItemSchema, beforeAfterSectionSchema } from "@/lib/cms/schema";
 import { logSecurityEvent } from "@/lib/security/audit";
 import { guardMutation, getClientIp } from "@/lib/security/api-guard";
 import { sanitizeCmsPayload } from "@/lib/security/sanitize-cms";
@@ -9,7 +9,8 @@ import { NextResponse } from "next/server";
 import { z } from "zod";
 
 const bodySchema = z.object({
-  projects: z.array(projectSchema),
+  section: beforeAfterSectionSchema,
+  items: z.array(beforeAfterItemSchema),
 });
 
 export async function GET() {
@@ -17,13 +18,9 @@ export async function GET() {
   if (!ok) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
   const cms = await readCms();
-  const hiddenExampleCount = cms.projects.filter((p) =>
-    p.src.startsWith("/images/gallery/"),
-  ).length;
-
   return NextResponse.json({
-    projects: cms.projects.filter((p) => !p.src.startsWith("/images/gallery/")),
-    hiddenExampleCount,
+    section: cms.beforeAfterSection,
+    items: cms.beforeAfterItems,
   });
 }
 
@@ -34,7 +31,7 @@ export async function PUT(request: Request) {
   const blocked = await guardMutation(request, {
     csrf: true,
     origin: true,
-    rateLimit: { key: "admin-cms-projects", max: 30, windowMs: 15 * 60 * 1000 },
+    rateLimit: { key: "admin-cms-before-after", max: 30, windowMs: 15 * 60 * 1000 },
   });
   if (blocked) return blocked;
 
@@ -48,7 +45,7 @@ export async function PUT(request: Request) {
   const parsed = bodySchema.safeParse(body);
   if (!parsed.success) {
     return NextResponse.json(
-      { error: "Invalid project data", details: parsed.error.flatten() },
+      { error: "Invalid before/after data", details: parsed.error.flatten() },
       { status: 400 },
     );
   }
@@ -58,7 +55,8 @@ export async function PUT(request: Request) {
     const merged = mergeCmsWithDefaults(
       sanitizeCmsPayload({
         ...cms,
-        projects: parsed.data.projects,
+        beforeAfterSection: parsed.data.section,
+        beforeAfterItems: parsed.data.items,
       }),
     );
 
@@ -67,10 +65,10 @@ export async function PUT(request: Request) {
     await logSecurityEvent({
       type: "cms_update",
       ip: getClientIp(request),
-      detail: `Projects updated (${merged.projects.length} items)`,
+      detail: `Before/after updated (${merged.beforeAfterItems.length} slides)`,
     });
 
-    return NextResponse.json({ ok: true, count: merged.projects.length });
+    return NextResponse.json({ ok: true, count: merged.beforeAfterItems.length });
   } catch (error) {
     const message = error instanceof Error ? error.message : "Save failed";
     return NextResponse.json({ error: message }, { status: 500 });

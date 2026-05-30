@@ -63,10 +63,13 @@ export function AdminSiteEditor() {
               ["contactEmail", "Contact email"],
               ["contactPhone", "Phone"],
               ["projectsDelivered", "Projects stat (e.g. 500+)"],
+              ["yearsExperience", "Years experience (e.g. 30+)"],
+              ["memberSince", "Member since year"],
               ["abn", "ABN"],
               ["instagramHandle", "Instagram handle"],
               ["instagramUrl", "Instagram URL"],
               ["locationArea", "Service area"],
+              ["suburb", "Suburb"],
             ] as const
           ).map(([key, label]) => (
             <label key={key} className="block text-sm">

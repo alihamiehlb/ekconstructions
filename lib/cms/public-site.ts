@@ -34,14 +34,14 @@ export function buildSiteContext(cms: CmsData): SiteContextValue {
     instagram: { handle: site.instagramHandle, url: site.instagramUrl },
     location: {
       area: site.locationArea,
-      suburb: "North Ryde",
+      suburb: site.suburb,
       state: "NSW",
       country: "Australia",
     },
     business: {
       abn: site.abn,
-      memberSince: 1993,
-      yearsExperience: "30+",
+      memberSince: parseInt(site.memberSince, 10) || 1993,
+      yearsExperience: site.yearsExperience,
       projectsDelivered: site.projectsDelivered,
     },
     contact: { email: site.contactEmail, phone: site.contactPhone },

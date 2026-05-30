@@ -1,5 +1,6 @@
 import { verifyAdminSession } from "@/lib/auth";
 import { readCms, writeCms } from "@/lib/cms";
+import { mergeCmsWithDefaults } from "@/lib/cms/merge";
 import { cmsSchema } from "@/lib/cms/schema";
 import { logSecurityEvent } from "@/lib/security/audit";
 import { guardMutation, getClientIp } from "@/lib/security/api-guard";
@@ -40,7 +41,8 @@ export async function PUT(request: Request) {
   }
 
   const sanitized = sanitizeCmsPayload(parsed.data);
-  await writeCms({ ...sanitized, updatedAt: new Date().toISOString() });
+  const merged = mergeCmsWithDefaults(sanitized);
+  await writeCms({ ...merged, updatedAt: new Date().toISOString() });
 
   await logSecurityEvent({
     type: "cms_update",

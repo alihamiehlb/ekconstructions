@@ -1,3 +1,4 @@
+import { defaultBeforeAfterItems, defaultBeforeAfterSection } from "@/content/before-after";
 import { projects as defaultProjects } from "@/content/projects";
 import {
   aboutParagraphs,
@@ -18,10 +19,13 @@ export function getDefaultCms(): CmsData {
       contactEmail: siteConfig.contact.email,
       contactPhone: siteConfig.contact.phone,
       projectsDelivered: siteConfig.business.projectsDelivered,
+      yearsExperience: siteConfig.business.yearsExperience,
+      memberSince: String(siteConfig.business.memberSince),
       abn: siteConfig.business.abn,
       instagramHandle: siteConfig.instagram.handle,
       instagramUrl: siteConfig.instagram.url,
       locationArea: siteConfig.location.area,
+      suburb: siteConfig.location.suburb,
       aboutParagraphs: [...aboutParagraphs],
     },
     services: services.map((s) => ({
@@ -37,6 +41,8 @@ export function getDefaultCms(): CmsData {
     })),
     materials: [...materials],
     projects: defaultProjects.map((p) => ({ ...p })),
+    beforeAfterSection: { ...defaultBeforeAfterSection },
+    beforeAfterItems: defaultBeforeAfterItems.map((item) => ({ ...item })),
     updatedAt: new Date().toISOString(),
   };
 }

@@ -1,6 +1,7 @@
 import { Footer } from "@/components/layout/Footer";
 import { Header } from "@/components/layout/Header";
 import { About } from "@/components/sections/About";
+import { BeforeAfterShowcase } from "@/components/sections/BeforeAfterShowcase";
 import { Contact } from "@/components/sections/Contact";
 import { Hero } from "@/components/sections/Hero";
 import { Materials } from "@/components/sections/Materials";
@@ -30,6 +31,10 @@ export default async function HomePage() {
         </div>
 
         <About />
+        <BeforeAfterShowcase
+          section={cms.beforeAfterSection}
+          items={cms.beforeAfterItems}
+        />
         <Materials materials={cms.materials} />
         <Contact />
       </main>

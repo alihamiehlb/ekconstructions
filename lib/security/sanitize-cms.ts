@@ -20,10 +20,13 @@ export function sanitizeCmsPayload(data: CmsPayload): CmsPayload {
       contactEmail: sanitizeEmail(data.site.contactEmail),
       contactPhone: sanitizeText(data.site.contactPhone, 30),
       projectsDelivered: sanitizeText(data.site.projectsDelivered, 20),
+      yearsExperience: sanitizeText(data.site.yearsExperience, 20),
+      memberSince: sanitizeText(data.site.memberSince, 10),
       abn: sanitizeText(data.site.abn, 20),
       instagramHandle: sanitizeText(data.site.instagramHandle, 60),
       instagramUrl: sanitizeText(data.site.instagramUrl, 300),
       locationArea: sanitizeText(data.site.locationArea, 120),
+      suburb: sanitizeText(data.site.suburb, 80),
       aboutParagraphs: data.site.aboutParagraphs.map((p) => sanitizeText(p, 2000)),
     },
     services: data.services.map((s) => ({
@@ -52,6 +55,22 @@ export function sanitizeCmsPayload(data: CmsPayload): CmsPayload {
       objectPosition: p.objectPosition ? sanitizeText(p.objectPosition, 80) : undefined,
       instagramUrl: p.instagramUrl ? sanitizeText(p.instagramUrl, 300) : undefined,
       highlights: p.highlights?.map((h) => sanitizeText(h, 120)),
+    })),
+    beforeAfterSection: data.beforeAfterSection
+      ? {
+          eyebrow: sanitizeText(data.beforeAfterSection.eyebrow, 80),
+          title: sanitizeText(data.beforeAfterSection.title, 120),
+          subtitle: sanitizeText(data.beforeAfterSection.subtitle, 300),
+        }
+      : undefined,
+    beforeAfterItems: data.beforeAfterItems?.map((item) => ({
+      id: sanitizeText(item.id, 40),
+      title: sanitizeText(item.title, 120),
+      location: sanitizeText(item.location, 120),
+      beforeSrc: sanitizeRemoteOrAssetPath(item.beforeSrc),
+      afterSrc: sanitizeRemoteOrAssetPath(item.afterSrc),
+      beforeAlt: sanitizeText(item.beforeAlt, 200),
+      afterAlt: sanitizeText(item.afterAlt, 200),
     })),
   };
 }

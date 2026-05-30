@@ -88,6 +88,9 @@ export function Services({ services }: { services: CmsService[] }) {
                     <h3 className="mt-3 max-w-[8.75rem] text-[9px] leading-[1.35] font-bold tracking-[0.06em] text-white uppercase sm:text-[10px]">
                       {service.title}
                     </h3>
+                    <p className="mt-2 hidden max-w-[11rem] text-[9px] leading-snug text-white/55 sm:block lg:max-w-[9.5rem]">
+                      {service.description}
+                    </p>
                   </motion.article>
                 </StaggerItem>
               );

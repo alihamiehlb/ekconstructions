@@ -74,6 +74,9 @@ export function WhyChooseUs({
                   <h3 className="max-w-[7.5rem] text-[9px] leading-[1.35] font-bold tracking-[0.05em] text-ek-navy uppercase sm:text-[10px]">
                     {item.title}
                   </h3>
+                  <p className="mt-2 hidden max-w-[9rem] text-[8px] leading-snug text-ek-muted sm:block lg:max-w-[7.5rem]">
+                    {item.description}
+                  </p>
                 </motion.div>
               </StaggerItem>
             ))}

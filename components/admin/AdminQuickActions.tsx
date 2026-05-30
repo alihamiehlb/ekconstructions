@@ -4,6 +4,7 @@ import { motion } from "framer-motion";
 import {
   ExternalLink,
   FileText,
+  Images,
   Inbox,
   Instagram,
   LayoutDashboard,
@@ -28,6 +29,13 @@ const actions = [
     label: "Business hub",
     desc: "Orders, invoices, margin",
     icon: Wallet,
+    accent: "from-ek-teal/15 to-ek-teal/5 border-ek-teal/25",
+  },
+  {
+    href: "/admin/before-after",
+    label: "Before & After",
+    desc: "Homepage comparison slider",
+    icon: Images,
     accent: "from-ek-teal/15 to-ek-teal/5 border-ek-teal/25",
   },
   {

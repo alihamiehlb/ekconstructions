@@ -13,6 +13,22 @@ export type CmsWhyItem = {
   icon: string;
 };
 
+export type CmsBeforeAfterSection = {
+  eyebrow: string;
+  title: string;
+  subtitle: string;
+};
+
+export type CmsBeforeAfterItem = {
+  id: string;
+  title: string;
+  location: string;
+  beforeSrc: string;
+  afterSrc: string;
+  beforeAlt: string;
+  afterAlt: string;
+};
+
 export type SiteContent = {
   name: string;
   tagline: string;
@@ -21,10 +37,13 @@ export type SiteContent = {
   contactEmail: string;
   contactPhone: string;
   projectsDelivered: string;
+  yearsExperience: string;
+  memberSince: string;
   abn: string;
   instagramHandle: string;
   instagramUrl: string;
   locationArea: string;
+  suburb: string;
   aboutParagraphs: string[];
 };
 
@@ -34,5 +53,7 @@ export type CmsData = {
   whyChooseUs: CmsWhyItem[];
   materials: string[];
   projects: Project[];
+  beforeAfterSection: CmsBeforeAfterSection;
+  beforeAfterItems: CmsBeforeAfterItem[];
   updatedAt: string;
 };
