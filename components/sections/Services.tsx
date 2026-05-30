@@ -64,12 +64,12 @@ export function Services({ services }: { services: CmsService[] }) {
       <div className="services-clip bg-ek-navy pb-10 pt-[4.5rem] sm:pb-11 sm:pt-20 md:pb-12 md:pt-[5.5rem] lg:pt-24">
         <div className="landing-container">
           <SectionReveal>
-            <h2 className="text-lg font-black tracking-[0.22em] text-white uppercase sm:text-xl">
-              Services
-            </h2>
-            <p className="mt-1 text-[10px] font-semibold tracking-[0.28em] text-white/55 uppercase">
+            <p className="text-[10px] font-semibold tracking-[0.28em] text-ek-teal uppercase">
               What we build
             </p>
+            <h2 className="mt-1 text-lg font-black tracking-[0.22em] text-white uppercase sm:text-xl">
+              Services
+            </h2>
           </SectionReveal>
 
           <StaggerReveal className="mt-6 grid grid-cols-2 gap-x-2 gap-y-7 sm:mt-7 sm:grid-cols-3 sm:gap-y-8 lg:grid-cols-5 lg:gap-3">

@@ -1,11 +1,12 @@
 "use client";
 
-import { useSite } from "@/components/providers/SiteProvider";
-import { HeroFloatingScene, HeroMobileAccent } from "@/components/hero/HeroFloatingScene";
+import { HeroStatsBand } from "@/components/hero/HeroStatsBand";
+import { HeroTrustBar } from "@/components/hero/HeroTrustBar";
 import { HeroVisual } from "@/components/hero/HeroVisual";
+import { useSite } from "@/components/providers/SiteProvider";
 import { buildWhatsAppChatUrl, displayPhone } from "@/lib/whatsapp";
 import { motion, useMotionValueEvent, useScroll } from "framer-motion";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, ArrowUpRight } from "lucide-react";
 import Link from "next/link";
 import { useMemo, useRef, useState } from "react";
 
@@ -34,75 +35,105 @@ export function Hero() {
   useMotionValueEvent(scrollYProgress, "change", (v) => setScrollProgress(v));
 
   return (
-    <>
-      <section
-        ref={sectionRef}
-        id="home"
-        className="relative overflow-hidden bg-white pt-16 lg:pt-[72px]"
-      >
-        <div className="landing-container relative pb-4 sm:pb-8 lg:pb-10">
-          <HeroFloatingScene scrollProgress={scrollProgress} />
+    <section
+      ref={sectionRef}
+      id="home"
+      className="hero-cinematic relative overflow-hidden bg-ek-navy pt-16 lg:pt-[72px]"
+    >
+      <HeroVisual scrollProgress={scrollProgress} />
 
-          <div className="grid items-start gap-3 sm:gap-5 lg:grid-cols-[minmax(0,42%)_minmax(0,58%)] lg:gap-6 xl:gap-8">
-            <motion.div
-              initial={{ opacity: 0, y: 28 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.75, ease: [0.22, 1, 0.36, 1] }}
-              className="relative z-10 max-w-[500px] pt-4 sm:pt-8 lg:pt-10 xl:pt-12"
+      <div className="landing-container relative z-10">
+        <motion.div
+          initial={{ opacity: 0, y: 32 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
+          className="relative max-w-[540px] pb-[42vw] pt-6 sm:pb-[38vw] sm:pt-8 md:pb-[34vw] lg:max-w-[560px] lg:pb-32 lg:pt-14 xl:pt-16"
+        >
+          <p className="inline-flex items-center gap-2 text-[10px] font-bold tracking-[0.22em] text-white/85 uppercase">
+            <span className="h-3 w-0.5 rounded-full bg-ek-teal" aria-hidden />
+            {site.location.area}
+          </p>
+
+          <h1 className="mt-4 text-[1.65rem] font-black leading-[1.02] tracking-tight text-white uppercase sm:text-[2.15rem] md:text-[2.35rem] lg:text-[2.55rem] xl:text-[2.75rem]">
+            {site.headline}
+            <br />
+            <span className="relative inline-block text-ek-teal">
+              {site.headlineAccent}
+              <svg
+                className="hero-brush-stroke absolute -bottom-1 left-0 w-full"
+                viewBox="0 0 200 12"
+                preserveAspectRatio="none"
+                aria-hidden
+              >
+                <path
+                  d="M2 8 C40 2, 80 10, 120 6 S180 4, 198 7"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="4"
+                  strokeLinecap="round"
+                  className="text-ek-teal"
+                />
+              </svg>
+            </span>
+          </h1>
+
+          <p className="mt-4 max-w-[420px] text-sm leading-[1.7] text-white/78 sm:mt-5 sm:text-[15px]">
+            {site.tagline}
+          </p>
+
+          <div className="mt-6 flex flex-col gap-3 sm:mt-8 sm:flex-row sm:flex-wrap sm:items-center">
+            <Link
+              href="#contact"
+              className="btn-primary w-full justify-center shadow-lg shadow-ek-teal/25 sm:w-auto"
             >
-              <h1 className="template-hero-title text-[1.45rem] font-black text-ek-navy uppercase sm:text-[2rem] md:text-[2.2rem] lg:text-[2.55rem] xl:text-[2.75rem]">
-                {site.headline}
-                <br />
-                <span className="text-ek-teal">{site.headlineAccent}</span>
-              </h1>
-
-              <p className="mt-3 inline-flex w-fit items-center gap-2 rounded-full border border-ek-teal/25 bg-ek-teal/8 px-3 py-1 text-[10px] font-bold tracking-[0.14em] text-ek-teal uppercase">
-                {site.location.area} · Sydney
-              </p>
-
-              <p className="mt-3 max-w-[400px] text-sm leading-[1.65] text-ek-muted sm:mt-5 sm:text-[15px]">
-                {site.tagline}
-              </p>
-
-              <div className="relative z-20 mt-5 flex flex-col gap-3 sm:mt-8 sm:flex-row sm:flex-wrap sm:items-center sm:gap-5">
-                <Link href="#contact" className="btn-primary w-full justify-center sm:w-auto">
-                  Get a Quote
-                  <ArrowRight className="h-4 w-4" aria-hidden />
-                </Link>
-                {whatsappUrl ? (
-                  <a
-                    href={whatsappUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="btn-play w-full justify-center sm:w-auto"
-                  >
-                    <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-ek-teal/35 bg-ek-teal/10 text-ek-teal">
-                      <WhatsAppIcon className="h-4 w-4" />
-                    </span>
-                    <span className="text-left leading-tight">
-                      <span className="block">Chat on WhatsApp</span>
-                      {phoneDisplay ? (
-                        <span className="mt-0.5 block text-[10px] font-semibold tracking-wide text-ek-muted normal-case">
-                          {phoneDisplay}
-                        </span>
-                      ) : null}
-                    </span>
-                  </a>
-                ) : null}
-              </div>
-            </motion.div>
-
-            <div className="relative -mt-1 min-h-0 sm:mt-0 lg:min-h-[420px] xl:min-h-[460px] lg:-mr-[max(0px,calc((100vw-1140px)/2+1.5rem))]">
-              <div className="hero-dot-grid pointer-events-none absolute top-0 right-2 z-10 hidden h-16 w-16 opacity-70 sm:block sm:right-4 sm:h-20 sm:w-20 lg:top-2 lg:right-6" />
-              <HeroVisual scrollProgress={scrollProgress} />
-            </div>
+              Get a Quote
+              <ArrowRight className="h-4 w-4" aria-hidden />
+            </Link>
+            <Link
+              href="/gallery"
+              className="inline-flex w-full items-center justify-center gap-2 rounded-md border border-white/35 bg-white/5 px-5 py-3.5 text-[11px] font-bold tracking-[0.18em] text-white uppercase backdrop-blur-sm transition hover:border-white/55 hover:bg-white/10 sm:w-auto"
+            >
+              View Our Work
+              <ArrowUpRight className="h-4 w-4" aria-hidden />
+            </Link>
           </div>
+        </motion.div>
+      </div>
 
-          <div className="mt-2 flex justify-center sm:mt-4 lg:hidden">
-            <HeroMobileAccent scrollProgress={scrollProgress} />
+      <HeroTrustBar />
+
+      {whatsappUrl ? (
+        <div className="relative z-20 px-4 pb-2 sm:px-6">
+          <div className="landing-container">
+            <motion.a
+              href={whatsappUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              initial={{ opacity: 0, y: 16 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.75, duration: 0.5 }}
+              className="hero-whatsapp-bar mx-auto flex max-w-xl items-center gap-3 rounded-2xl border border-ek-navy/8 bg-white px-4 py-3.5 shadow-[0_12px_40px_rgba(10,10,10,0.12)] sm:gap-4 sm:px-5 sm:py-4"
+            >
+              <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-ek-teal text-white shadow-sm sm:h-12 sm:w-12">
+                <WhatsAppIcon className="h-5 w-5" />
+              </span>
+              <span className="min-w-0 flex-1">
+                <span className="block text-[10px] font-bold tracking-[0.2em] text-ek-navy uppercase">
+                  Chat on WhatsApp
+                </span>
+                {phoneDisplay ? (
+                  <span className="mt-0.5 block truncate text-sm font-semibold text-ek-muted">
+                    {phoneDisplay}
+                  </span>
+                ) : null}
+              </span>
+              <ArrowRight className="h-4 w-4 shrink-0 text-ek-teal" aria-hidden />
+            </motion.a>
           </div>
         </div>
-      </section>
-    </>
+      ) : null}
+
+      <HeroStatsBand />
+    </section>
   );
 }

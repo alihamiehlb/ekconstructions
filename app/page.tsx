@@ -20,8 +20,8 @@ export default async function HomePage() {
     <>
       <Header />
       <main id="main-content">
+        <Hero />
         <div className="bg-white">
-          <Hero />
           <Services services={cms.services} />
           <WhyChooseUs
             items={cms.whyChooseUs}
