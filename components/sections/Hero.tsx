@@ -38,7 +38,7 @@ export function Hero() {
       <section
         ref={sectionRef}
         id="home"
-        className="relative overflow-hidden bg-white pt-[68px] lg:pt-[74px]"
+        className="relative overflow-hidden bg-white pt-16 lg:pt-[72px]"
       >
         <div className="landing-container relative pb-4 sm:pb-8 lg:pb-10">
           <HeroFloatingScene scrollProgress={scrollProgress} />

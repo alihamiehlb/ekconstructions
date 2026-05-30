@@ -17,7 +17,7 @@ export function MobileQuoteBar() {
   if (!visible) return null;
 
   return (
-    <div className="fixed inset-x-0 bottom-0 z-40 border-t border-ek-navy/10 bg-white/95 p-3 shadow-[0_-8px_30px_rgba(11,29,38,0.08)] backdrop-blur-md lg:hidden">
+    <div className="fixed inset-x-0 bottom-0 z-30 border-t border-ek-navy/10 bg-white/95 p-3 shadow-[0_-8px_30px_rgba(10,10,10,0.08)] backdrop-blur-md lg:hidden">
       <Link
         href="#contact"
         className="btn-primary flex w-full justify-center shadow-sm"

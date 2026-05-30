@@ -54,7 +54,14 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const cms = await readCms();
+  let cms;
+  try {
+    cms = await readCms();
+  } catch (error) {
+    console.error("layout readCms:", error);
+    const { getDefaultCms } = await import("@/lib/cms/defaults");
+    cms = getDefaultCms();
+  }
 
   return (
     <html lang="en-AU" className={montserrat.variable}>

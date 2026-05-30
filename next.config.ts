@@ -28,6 +28,9 @@ const securityHeaders = [
       "img-src 'self' data: blob: https://images.unsplash.com https://*.cdninstagram.com https://*.fbcdn.net https://*.supabase.co",
       "connect-src 'self' https://*.supabase.co",
       "frame-src https://www.instagram.com",
+      "frame-ancestors 'self'",
+      "base-uri 'self'",
+      "form-action 'self'",
     ].join("; "),
   },
 ];

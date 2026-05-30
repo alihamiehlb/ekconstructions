@@ -64,7 +64,49 @@ function StatCard({
 
 export default async function AdminDashboardPage() {
   await requireAdmin();
-  const [stats, insights] = await Promise.all([getAdminStats(), getAdminInsights()]);
+
+  let stats;
+  let insights;
+  let loadError: string | undefined;
+
+  try {
+    [stats, insights] = await Promise.all([getAdminStats(), getAdminInsights()]);
+  } catch (error) {
+    loadError = error instanceof Error ? error.message : "Dashboard data unavailable.";
+    console.error("AdminDashboardPage:", error);
+    stats = {
+      enquiries: { total: 0, thisWeek: 0, thisMonth: 0, byService: [] },
+      pageViews: { total: 0, last7Days: [] },
+      conversionRate: 0,
+      recentEnquiries: [],
+      storage: getStorageMode(),
+    };
+    insights = {
+      instagram: {
+        postCount: 0,
+        carouselCount: 0,
+        totalSlides: 0,
+        withCaption: 0,
+        withoutCaption: 0,
+        captionCoverage: 0,
+        savedUrlCount: 0,
+        lastSynced: null,
+        categories: [],
+        supabaseConfigured: Boolean(process.env.NEXT_PUBLIC_SUPABASE_URL),
+        sessionConfigured: Boolean(process.env.INSTAGRAM_SESSION_ID?.trim()),
+      },
+      site: {
+        storage: getStorageMode(),
+        enquiriesTotal: 0,
+        enquiriesWeek: 0,
+        pageViewsTotal: 0,
+        conversionRate: 0,
+        topServices: [],
+      },
+      activity: { logEvents24h: 0, syncEvents: 0, failedLogins: 0 },
+    };
+  }
+
   const storage = getStorageMode();
   const ig = insights.instagram;
 
@@ -81,6 +123,12 @@ export default async function AdminDashboardPage() {
       />
 
       <AdminNav />
+
+      {loadError && (
+        <div className="mt-6 rounded-2xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-950">
+          {loadError}
+        </div>
+      )}
 
       <div className="mt-8 grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
         <StatCard label="Total enquiries" value={stats.enquiries.total} icon={Inbox} href="/admin/inquiries" />
