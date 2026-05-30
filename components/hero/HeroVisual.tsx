@@ -6,13 +6,13 @@ export function HeroVisual() {
   return (
     <div className="hero-visual pointer-events-none absolute inset-0 overflow-hidden">
       <Image
-        src="/images/hero-building.png"
+        src="/images/hero-mobile.jpg"
         alt=""
         fill
         priority
-        quality={78}
+        quality={80}
         sizes="100vw"
-        className="hero-ken-burns object-cover object-[center_35%] lg:hidden"
+        className="hero-ken-burns object-cover object-[center_40%] lg:hidden"
       />
       <Image
         src="/images/hero-bg.jpg"
