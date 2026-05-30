@@ -47,7 +47,7 @@ export function Hero() {
           initial={{ opacity: 0, y: 32 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
-          className="relative max-w-[540px] pb-[42vw] pt-6 sm:pb-[38vw] sm:pt-8 md:pb-[34vw] lg:max-w-[560px] lg:pb-32 lg:pt-14 xl:pt-16"
+          className="relative max-w-[540px] pb-8 pt-8 sm:pb-10 sm:pt-10 lg:max-w-[580px] lg:pb-14 lg:pt-16 xl:pt-20"
         >
           <p className="inline-flex items-center gap-2 text-[10px] font-bold tracking-[0.22em] text-white/85 uppercase">
             <span className="h-3 w-0.5 rounded-full bg-ek-teal" aria-hidden />

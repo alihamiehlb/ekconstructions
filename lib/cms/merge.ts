@@ -12,7 +12,16 @@ export function mergeCmsWithDefaults(partial: Partial<CmsData>): CmsData {
     whyChooseUs: partial.whyChooseUs?.length ? partial.whyChooseUs : defaults.whyChooseUs,
     materials: partial.materials?.length ? partial.materials : defaults.materials,
     projects: partial.projects?.length ? partial.projects : defaults.projects,
-    beforeAfterSection: partial.beforeAfterSection ?? defaults.beforeAfterSection,
+    beforeAfterSection: (() => {
+      const section = {
+        ...defaults.beforeAfterSection,
+        ...partial.beforeAfterSection,
+      };
+      if (/admin/i.test(section.subtitle)) {
+        section.subtitle = defaults.beforeAfterSection.subtitle;
+      }
+      return section;
+    })(),
     beforeAfterItems: partial.beforeAfterItems?.length
       ? partial.beforeAfterItems
       : defaults.beforeAfterItems,
