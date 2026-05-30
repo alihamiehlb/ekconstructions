@@ -75,13 +75,9 @@ export function Hero() {
           </p>
 
           <div className="hero-mobile-ctas mt-4 lg:hidden">
-            <Link href="#contact" className="hero-btn-primary">
-              <span>Get a Quote</span>
-              <ArrowRight className="h-4 w-4 shrink-0" aria-hidden />
-            </Link>
             <Link href="/gallery" className="hero-btn-outline">
               <span>View Our Work</span>
-              <ArrowUpRight className="h-4 w-4 shrink-0" aria-hidden />
+              <ArrowUpRight className="h-3.5 w-3.5 shrink-0" aria-hidden />
             </Link>
             {whatsappUrl ? (
               <a
@@ -90,7 +86,7 @@ export function Hero() {
                 rel="noopener noreferrer"
                 className="hero-btn-whatsapp"
               >
-                <WhatsAppIcon className="h-4 w-4 shrink-0 text-ek-teal" />
+                <WhatsAppIcon className="h-3.5 w-3.5 shrink-0 text-ek-teal" />
                 <span>WhatsApp</span>
               </a>
             ) : null}

@@ -1,10 +1,10 @@
 "use client";
 
 const hotspots = [
-  { label: "Aluminium Windows", top: "22%", left: "62%" },
-  { label: "Frameless Glass Balustrades", top: "36%", left: "58%" },
-  { label: "Steel Fabrication", top: "50%", left: "64%" },
-  { label: "Custom Joinery", top: "64%", left: "56%" },
+  { label: "Aluminium Windows", top: "19%", left: "76%" },
+  { label: "Frameless Glass Balustrades", top: "33%", left: "68%" },
+  { label: "Steel Fabrication", top: "47%", left: "74%" },
+  { label: "Custom Joinery", top: "61%", left: "66%" },
 ];
 
 export function HeroHotspots() {
@@ -13,12 +13,12 @@ export function HeroHotspots() {
       {hotspots.map((spot) => (
         <div
           key={spot.label}
-          className="hero-hotspot"
+          className="hero-hotspot hero-hotspot--right"
           style={{ top: spot.top, left: spot.left }}
         >
-          <span className="hero-hotspot-dot" />
-          <span className="hero-hotspot-line" />
           <span className="hero-hotspot-label">{spot.label}</span>
+          <span className="hero-hotspot-line" />
+          <span className="hero-hotspot-dot" />
         </div>
       ))}
     </div>
