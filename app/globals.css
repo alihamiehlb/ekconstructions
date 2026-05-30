@@ -68,60 +68,90 @@ body {
 }
 
 .hero-mobile-title {
-  font-size: clamp(1.55rem, 7.2vw, 1.95rem);
-  line-height: 0.96;
+  font-size: clamp(2rem, 9.5vw, 2.65rem);
+  line-height: 0.95;
   letter-spacing: -0.02em;
+}
+
+.hero-mobile-tagline {
+  max-width: 18rem;
+  font-size: 13px;
+  line-height: 1.55;
 }
 
 @media (max-width: 1023px) {
   .hero-mobile-ctas {
     display: flex;
     width: 100%;
-    max-width: 14.5rem;
     flex-direction: column;
-    gap: 0.375rem;
-  }
-
-  .hero-mobile-ctas-secondary {
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 0.375rem;
+    gap: 0.5rem;
   }
 
   .hero-btn-primary,
-  .hero-btn-secondary {
+  .hero-btn-outline,
+  .hero-btn-whatsapp {
     display: inline-flex;
     width: 100%;
-    min-height: 2.75rem;
+    min-height: 2.875rem;
     align-items: center;
     border-radius: 4px;
-    font-size: 9px;
+    font-size: 10px;
     font-weight: 700;
-    letter-spacing: 0.14em;
+    letter-spacing: 0.16em;
     text-transform: uppercase;
     color: white;
   }
 
   .hero-btn-primary {
     justify-content: space-between;
-    padding: 0.5rem 0.875rem;
+    padding: 0.7rem 1rem;
     background: #db2022;
-    box-shadow: 0 4px 14px rgba(219, 32, 34, 0.28);
+    box-shadow: 0 6px 18px rgba(219, 32, 34, 0.32);
   }
 
-  .hero-btn-secondary {
-    justify-content: center;
-    min-height: 2.375rem;
-    padding: 0.45rem 0.5rem;
-    font-size: 8px;
-    letter-spacing: 0.1em;
-    border: 1px solid rgba(255, 255, 255, 0.38);
-    background: rgba(0, 0, 0, 0.18);
+  .hero-btn-outline {
+    justify-content: space-between;
+    padding: 0.7rem 1rem;
+    border: 1px solid rgba(255, 255, 255, 0.72);
+    background: rgba(0, 0, 0, 0.22);
   }
 
-  .hero-btn-secondary--accent {
-    border-color: rgba(219, 32, 34, 0.55);
-    color: rgba(255, 255, 255, 0.92);
+  .hero-btn-whatsapp {
+    justify-content: flex-start;
+    gap: 0.625rem;
+    padding: 0.7rem 1rem;
+    border: 1px solid rgba(219, 32, 34, 0.72);
+    background: rgba(0, 0, 0, 0.28);
+  }
+
+  .hero-mobile-services {
+    padding-top: 0.5rem;
+  }
+
+  .hero-mobile-services-track {
+    scrollbar-width: none;
+  }
+
+  .hero-mobile-services-track::-webkit-scrollbar {
+    display: none;
+  }
+
+  .hero-mobile-service-card {
+    position: relative;
+    height: 6.75rem;
+    width: 6.5rem;
+    border-radius: 3px;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+  }
+
+  .hero-trust-bar--hero {
+    border-radius: 0.5rem;
+    padding: 0.625rem 0.375rem;
+  }
+
+  .hero-trust-item--divider {
+    border-right: 1px solid rgba(255, 255, 255, 0.1);
+    padding-right: 0.25rem;
   }
 }
 

@@ -84,7 +84,7 @@ const icons = {
 
 export function Services({ services }: { services: CmsService[] }) {
   return (
-    <section id="services" className="relative overflow-hidden bg-ek-navy">
+    <section id="services" className="relative hidden overflow-hidden bg-ek-navy lg:block">
       <div className="pointer-events-none absolute inset-0 opacity-[0.07]" aria-hidden>
         <Image
           src="/images/hero-building.png"
