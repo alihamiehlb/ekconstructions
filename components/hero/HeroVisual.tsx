@@ -5,15 +5,7 @@ import Image from "next/image";
 export function HeroVisual() {
   return (
     <div className="hero-visual pointer-events-none absolute inset-0 overflow-hidden">
-      <Image
-        src="/images/hero-mobile.jpg"
-        alt=""
-        fill
-        priority
-        quality={80}
-        sizes="100vw"
-        className="hero-ken-burns object-cover object-[center_40%] lg:hidden"
-      />
+      <div className="hero-visual-mobile-bg hero-ken-burns absolute inset-0 lg:hidden" aria-hidden />
       <Image
         src="/images/hero-bg.jpg"
         alt=""

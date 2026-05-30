@@ -57,6 +57,8 @@ body {
 }
 
 .hero-cinematic {
+  display: flex;
+  flex-direction: column;
   background-color: #0a0a0a;
   min-height: 100dvh;
 }
@@ -65,6 +67,23 @@ body {
   .hero-cinematic {
     min-height: min(88dvh, 820px);
   }
+}
+
+.hero-cinematic-inner {
+  min-height: calc(100dvh - 3.5rem);
+}
+
+@media (min-width: 1024px) {
+  .hero-cinematic-inner {
+    min-height: calc(min(88dvh, 820px) - 4.5rem);
+  }
+}
+
+.hero-visual-mobile-bg {
+  background-image: url("/images/hero-mobile.jpg");
+  background-size: cover;
+  background-position: 68% 36%;
+  background-repeat: no-repeat;
 }
 
 .hero-mobile-title {

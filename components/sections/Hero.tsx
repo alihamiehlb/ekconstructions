@@ -27,12 +27,12 @@ export function Hero() {
   return (
     <section
       id="home"
-      className="hero-cinematic relative overflow-hidden bg-ek-navy pt-14 lg:pt-[72px]"
+      className="hero-cinematic relative flex flex-col overflow-hidden bg-ek-navy pt-14 lg:pt-[72px]"
     >
       <HeroVisual />
       <HeroHotspots />
 
-      <div className="landing-container relative z-10 flex min-h-[calc(100dvh-3.5rem)] flex-col pb-3 lg:min-h-0 lg:block lg:pb-12">
+      <div className="landing-container hero-cinematic-inner relative z-10 flex min-h-0 flex-1 flex-col pb-3 lg:pb-8">
         <div className="hero-content-enter max-w-[600px] flex-1 pt-3 lg:pt-14 xl:pt-16">
           <p className="inline-flex items-center gap-2 text-[10px] font-bold tracking-[0.22em] text-white/90 uppercase">
             <span className="h-3 w-0.5 rounded-full bg-ek-teal" aria-hidden />
@@ -121,7 +121,7 @@ export function Hero() {
           </div>
         </div>
 
-        <HeroTrustBar className="mt-auto shrink-0 pt-3 lg:mt-12" variant="hero" />
+        <HeroTrustBar className="mt-auto shrink-0 pt-3 lg:pt-0" variant="hero" />
       </div>
     </section>
   );
