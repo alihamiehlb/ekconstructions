@@ -19,7 +19,7 @@ export default async function HomePage() {
   return (
     <>
       <Header />
-      <main id="main-content">
+      <main id="main-content" className="pb-20 lg:pb-0">
         <Hero />
         <Services services={cms.services} />
         <HeroTrustBarMobile />

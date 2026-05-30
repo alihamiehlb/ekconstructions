@@ -126,6 +126,26 @@ body {
   border-radius: 0.75rem;
 }
 
+.mobile-chrome-bar {
+  animation: mobileChromeIn 0.28s ease both;
+}
+
+.mobile-chrome-quote {
+  font-size: 10px;
+  letter-spacing: 0.14em;
+}
+
+@keyframes mobileChromeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
 @media (max-width: 639px) {
   .hero-trust-bar--mobile {
     border-radius: 0.5rem;

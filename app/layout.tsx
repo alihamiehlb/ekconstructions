@@ -3,6 +3,7 @@ import { BrandLoader } from "@/components/branding/BrandLoader";
 import { PageViewTracker } from "@/components/analytics/PageViewTracker";
 import { CsrfBootstrap } from "@/components/security/CsrfBootstrap";
 import { SiteProvider } from "@/components/providers/SiteProvider";
+import { MobileChromeProvider } from "@/components/providers/MobileChromeProvider";
 import { SmoothScroll } from "@/components/providers/SmoothScroll";
 import { BackToTop } from "@/components/ui/BackToTop";
 import { MobileQuoteBar } from "@/components/ui/MobileQuoteBar";
@@ -68,16 +69,18 @@ export default async function RootLayout({
     <html lang="en-AU" className={montserrat.variable}>
       <body className="min-h-dvh antialiased">
         <SiteProvider cms={cms}>
-          <CsrfBootstrap />
-          <SmoothScroll>
-            <SkipLink />
-            <BrandLoader />
-            <ScrollProgress />
-            <PageViewTracker />
-            {children}
-            <MobileQuoteBar />
-            <BackToTop />
-          </SmoothScroll>
+          <MobileChromeProvider>
+            <CsrfBootstrap />
+            <SmoothScroll>
+              <SkipLink />
+              <BrandLoader />
+              <ScrollProgress />
+              <PageViewTracker />
+              {children}
+              <MobileQuoteBar />
+              <BackToTop />
+            </SmoothScroll>
+          </MobileChromeProvider>
         </SiteProvider>
       </body>
     </html>

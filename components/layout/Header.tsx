@@ -2,27 +2,18 @@
 
 import { Logo } from "@/components/brand/Logo";
 import { navLinks } from "@/content/site";
+import { useMobileChromeState } from "@/components/providers/MobileChromeProvider";
 import { motion, AnimatePresence } from "framer-motion";
 import { ArrowRight, Menu, X } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 
-const sectionIds = ["home", "about", "services", "materials", "contact"] as const;
-
 export function Header() {
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
-  const [scrolled, setScrolled] = useState(false);
   const [logoReady, setLogoReady] = useState(false);
-  const [activeSection, setActiveSection] = useState<string>("home");
-
-  useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 8);
-    onScroll();
-    window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
-  }, []);
+  const { scrolled, headerHidden, activeSection, immersiveMobile } = useMobileChromeState();
 
   useEffect(() => {
     const reveal = () => setLogoReady(true);
@@ -33,29 +24,6 @@ export function Header() {
       window.clearTimeout(fallback);
     };
   }, []);
-
-  useEffect(() => {
-    if (pathname !== "/") return;
-
-    const sections = sectionIds
-      .map((id) => document.getElementById(id))
-      .filter(Boolean) as HTMLElement[];
-
-    if (!sections.length) return;
-
-    const observer = new IntersectionObserver(
-      (entries) => {
-        const visible = entries
-          .filter((e) => e.isIntersecting)
-          .sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0];
-        if (visible?.target.id) setActiveSection(visible.target.id);
-      },
-      { rootMargin: "-35% 0px -55% 0px", threshold: [0.1, 0.25, 0.5] },
-    );
-
-    sections.forEach((section) => observer.observe(section));
-    return () => observer.disconnect();
-  }, [pathname]);
 
   useEffect(() => {
     if (!open) return;
@@ -85,16 +53,19 @@ export function Header() {
   }
 
   const heroOverlay = pathname === "/" && !scrolled;
+  const mobileDark = immersiveMobile;
 
   return (
     <header
-      className={`fixed inset-x-0 top-0 z-50 border-b transition-all duration-300 ${
-        heroOverlay
-          ? "border-transparent bg-transparent lg:border-transparent lg:bg-white"
+      className={`fixed inset-x-0 top-0 z-50 border-b transition-[transform,background-color,border-color,box-shadow] duration-300 ${
+        headerHidden ? "-translate-y-full lg:translate-y-0" : "translate-y-0"
+      } ${
+        mobileDark
+          ? "border-white/10 bg-ek-navy/45 backdrop-blur-md lg:border-ek-navy/10 lg:bg-white/95 lg:shadow-sm"
           : scrolled
             ? "border-ek-navy/10 bg-white/95 shadow-sm backdrop-blur-md"
             : "border-transparent bg-white"
-      }`}
+      } ${heroOverlay ? "lg:border-transparent lg:bg-white" : ""}`}
     >
       <div className="landing-container flex h-14 items-center justify-between gap-2 sm:gap-4 lg:h-[72px]">
         <motion.div
@@ -103,7 +74,11 @@ export function Header() {
           transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
           className="min-w-0 shrink-0"
         >
-          <Logo variant={heroOverlay ? "dark" : "light"} size="headerCompact" className="lg:hidden" />
+          <Logo
+            variant={mobileDark ? "dark" : "light"}
+            size="headerCompact"
+            className="lg:hidden"
+          />
           <Logo variant="light" size="header" className="hidden lg:inline-flex" />
         </motion.div>
 
@@ -134,20 +109,18 @@ export function Header() {
         <div className="flex shrink-0 items-center gap-2 sm:gap-3">
           <Link
             href={quoteHref()}
-            className={`btn-primary px-2.5 py-1.5 text-[8px] tracking-[0.12em] sm:px-4 sm:py-2.5 sm:text-[10px] sm:tracking-[0.16em] xl:px-5 ${
-              heroOverlay ? "hidden sm:inline-flex" : "inline-flex"
-            }`}
+            className="btn-primary hidden px-4 py-2.5 text-[10px] tracking-[0.16em] lg:inline-flex xl:px-5"
             onClick={() => setOpen(false)}
           >
             Get Quote
-            <ArrowRight className="h-3 w-3 sm:h-3.5 sm:w-3.5" aria-hidden />
+            <ArrowRight className="h-3.5 w-3.5" aria-hidden />
           </Link>
 
           <button
             type="button"
             className={`inline-flex h-9 w-9 items-center justify-center rounded-md border transition lg:hidden ${
-              heroOverlay
-                ? "border-white/25 bg-white text-ek-navy hover:bg-white/90"
+              mobileDark
+                ? "border-white/20 bg-white/10 text-white hover:bg-white/20"
                 : "border-ek-navy/10 text-ek-navy hover:border-ek-teal/30 hover:bg-ek-gray"
             }`}
             aria-expanded={open}
@@ -168,7 +141,7 @@ export function Header() {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              className="fixed inset-0 top-14 z-40 bg-ek-navy/45 backdrop-blur-[2px] lg:hidden"
+              className="fixed inset-0 top-14 z-40 bg-ek-navy/55 backdrop-blur-[2px] lg:hidden"
               aria-label="Close menu"
               onClick={() => setOpen(false)}
             />
@@ -179,7 +152,11 @@ export function Header() {
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -8 }}
               transition={{ duration: 0.22 }}
-              className="absolute inset-x-0 top-full z-50 max-h-[calc(100dvh-4rem)] overflow-y-auto border-t border-ek-navy/10 bg-white shadow-lg lg:hidden"
+              className={`absolute inset-x-0 top-full z-50 max-h-[calc(100dvh-3.5rem)] overflow-y-auto border-t shadow-lg lg:hidden ${
+                mobileDark
+                  ? "border-white/10 bg-ek-navy/95 backdrop-blur-md"
+                  : "border-ek-navy/10 bg-white"
+              }`}
               aria-label="Mobile"
             >
               <ul className="flex flex-col gap-1 px-4 py-4 sm:px-6">
@@ -192,8 +169,12 @@ export function Header() {
                         aria-current={active ? "page" : undefined}
                         className={`flex items-center rounded-lg px-3 py-3 text-xs font-semibold tracking-[0.18em] uppercase transition ${
                           active
-                            ? "bg-ek-teal/8 text-ek-teal"
-                            : "text-ek-navy hover:bg-ek-gray"
+                            ? mobileDark
+                              ? "bg-ek-teal/15 text-ek-teal"
+                              : "bg-ek-teal/8 text-ek-teal"
+                            : mobileDark
+                              ? "text-white/90 hover:bg-white/8"
+                              : "text-ek-navy hover:bg-ek-gray"
                         }`}
                         onClick={() => setOpen(false)}
                       >
@@ -203,7 +184,7 @@ export function Header() {
                   );
                 })}
               </ul>
-              <div className="border-t border-ek-navy/8 px-4 py-4 sm:px-6">
+              <div className={`border-t px-4 py-4 sm:px-6 ${mobileDark ? "border-white/10" : "border-ek-navy/8"}`}>
                 <Link
                   href={quoteHref()}
                   className="btn-primary flex w-full justify-center"
