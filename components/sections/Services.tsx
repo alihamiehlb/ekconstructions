@@ -60,8 +60,8 @@ const icons = {
 
 export function Services({ services }: { services: CmsService[] }) {
   return (
-    <section id="services" className="relative z-20 mt-2 sm:mt-0 lg:-mt-8">
-      <div className="services-clip bg-ek-navy pb-10 pt-[4.5rem] sm:pb-11 sm:pt-20 md:pb-12 md:pt-[5.5rem] lg:pt-24">
+    <section id="services" className="relative bg-ek-navy">
+      <div className="pb-10 pt-10 sm:pb-11 sm:pt-12 md:pb-12 md:pt-14 lg:pt-16">
         <div className="landing-container">
           <SectionReveal>
             <p className="text-[10px] font-semibold tracking-[0.28em] text-ek-teal uppercase">

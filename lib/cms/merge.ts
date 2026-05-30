@@ -22,9 +22,19 @@ export function mergeCmsWithDefaults(partial: Partial<CmsData>): CmsData {
       }
       return section;
     })(),
-    beforeAfterItems: partial.beforeAfterItems?.length
-      ? partial.beforeAfterItems
-      : defaults.beforeAfterItems,
+    beforeAfterItems: (() => {
+      const items = partial.beforeAfterItems?.length
+        ? partial.beforeAfterItems
+        : defaults.beforeAfterItems;
+      const usesStaleAssets = items.some(
+        (i) =>
+          i.beforeSrc?.includes("hero-building") || i.afterSrc?.includes("hero-building"),
+      );
+      if (usesStaleAssets || !items.filter((i) => i.beforeSrc?.trim() && i.afterSrc?.trim()).length) {
+        return defaults.beforeAfterItems;
+      }
+      return items;
+    })(),
     updatedAt: partial.updatedAt ?? defaults.updatedAt,
   };
 }

@@ -21,20 +21,20 @@ export default async function HomePage() {
       <Header />
       <main id="main-content">
         <Hero />
+        <Services services={cms.services} />
         <div className="bg-white">
-          <Services services={cms.services} />
           <WhyChooseUs
             items={cms.whyChooseUs}
             projectsDelivered={cms.site.projectsDelivered}
+          />
+          <BeforeAfterShowcase
+            section={cms.beforeAfterSection}
+            items={cms.beforeAfterItems}
           />
           <ProjectGallery projects={projects} />
         </div>
 
         <About />
-        <BeforeAfterShowcase
-          section={cms.beforeAfterSection}
-          items={cms.beforeAfterItems}
-        />
         <Materials materials={cms.materials} />
         <Contact />
       </main>

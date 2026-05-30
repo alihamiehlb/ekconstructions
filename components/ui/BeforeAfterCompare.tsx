@@ -76,7 +76,7 @@ export function BeforeAfterCompare({
     <figure className={`before-after-card ${className}`}>
       <div
         ref={containerRef}
-        className="before-after-frame group relative aspect-[4/3] cursor-ew-resize touch-none select-none overflow-hidden rounded-2xl bg-ek-navy shadow-xl ring-1 ring-ek-navy/10"
+        className="before-after-frame group relative aspect-[4/3] cursor-ew-resize touch-none select-none overflow-hidden rounded-2xl bg-ek-navy shadow-xl ring-1 ring-ek-navy/10 sm:aspect-[16/10]"
         onPointerDown={(e) => {
           dragging.current = true;
           e.currentTarget.setPointerCapture(e.pointerId);
@@ -101,9 +101,9 @@ export function BeforeAfterCompare({
           alt={afterAlt}
           fill
           priority={priority}
-          quality={90}
-          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 80vw, 960px"
-          className="object-cover"
+          quality={75}
+          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 896px"
+          className="object-cover object-center"
           unoptimized={isRemote(afterSrc)}
         />
 
@@ -115,9 +115,10 @@ export function BeforeAfterCompare({
             src={beforeSrc}
             alt={beforeAlt}
             fill
-            quality={90}
-            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 80vw, 960px"
-            className="before-after-image--before object-cover"
+            quality={75}
+            loading={priority ? undefined : "lazy"}
+            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 896px"
+            className="object-cover object-center"
             unoptimized={isRemote(beforeSrc)}
           />
         </div>

@@ -58,6 +58,7 @@ body {
 
 .hero-cinematic {
   min-height: min(88dvh, 820px);
+  background-color: #0a0a0a;
 }
 
 .hero-content-enter {
@@ -84,7 +85,13 @@ body {
     transform: scale(1.02);
   }
   to {
-    transform: scale(1.08);
+    transform: scale(1.06);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-ken-burns {
+    animation: none;
   }
 }
 
@@ -108,10 +115,6 @@ body {
 .hero-visual-glow {
   background: radial-gradient(circle at 68% 78%, rgba(219, 32, 34, 0.18), transparent 42%);
   animation: heroGlowPulse 8s ease-in-out infinite;
-}
-
-.hero-visual-vignette {
-  background: linear-gradient(180deg, rgba(10, 10, 10, 0.15) 0%, rgba(10, 10, 10, 0.55) 100%);
 }
 
 .hero-wireframe-shimmer {
@@ -257,22 +260,6 @@ body {
   }
   50% {
     opacity: 0.95;
-  }
-}
-
-.services-clip {
-  clip-path: polygon(0 8%, 100% 0, 100% 100%, 0 100%);
-}
-
-@media (min-width: 640px) {
-  .services-clip {
-    clip-path: polygon(0 10%, 100% 0, 100% 100%, 0 100%);
-  }
-}
-
-@media (min-width: 1024px) {
-  .services-clip {
-    clip-path: polygon(0 18%, 100% 0, 100% 100%, 0 100%);
   }
 }
 
