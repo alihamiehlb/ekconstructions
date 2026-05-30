@@ -84,12 +84,16 @@ export function Header() {
     return pathname === "/" ? "#contact" : "/#contact";
   }
 
+  const heroOverlay = pathname === "/" && !scrolled;
+
   return (
     <header
       className={`fixed inset-x-0 top-0 z-50 border-b transition-all duration-300 ${
-        scrolled
-          ? "border-ek-navy/10 bg-white/95 shadow-sm backdrop-blur-md"
-          : "border-transparent bg-white"
+        heroOverlay
+          ? "border-transparent bg-transparent lg:border-transparent lg:bg-white"
+          : scrolled
+            ? "border-ek-navy/10 bg-white/95 shadow-sm backdrop-blur-md"
+            : "border-transparent bg-white"
       }`}
     >
       <div className="landing-container flex h-16 items-center justify-between gap-3 sm:gap-4 lg:h-[72px]">
@@ -99,7 +103,14 @@ export function Header() {
           transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
           className="min-w-0 shrink-0"
         >
-          <Logo />
+          {heroOverlay ? (
+            <>
+              <Logo variant="dark" className="lg:hidden" />
+              <Logo variant="light" className="hidden lg:inline-flex" />
+            </>
+          ) : (
+            <Logo variant="light" />
+          )}
         </motion.div>
 
         <nav className="hidden min-w-0 flex-1 justify-center lg:flex" aria-label="Main">
@@ -129,7 +140,7 @@ export function Header() {
         <div className="flex shrink-0 items-center gap-2 sm:gap-3">
           <Link
             href={quoteHref()}
-            className="btn-primary hidden px-4 py-2.5 text-[10px] tracking-[0.16em] sm:inline-flex xl:px-5"
+            className="btn-primary inline-flex px-3 py-2 text-[9px] tracking-[0.14em] sm:px-4 sm:py-2.5 sm:text-[10px] sm:tracking-[0.16em] xl:px-5"
             onClick={() => setOpen(false)}
           >
             Get Quote
@@ -138,7 +149,11 @@ export function Header() {
 
           <button
             type="button"
-            className="inline-flex h-10 w-10 items-center justify-center rounded-md border border-ek-navy/10 text-ek-navy transition hover:border-ek-teal/30 hover:bg-ek-gray lg:hidden"
+            className={`inline-flex h-10 w-10 items-center justify-center rounded-md border transition lg:hidden ${
+              heroOverlay
+                ? "border-white/25 bg-white text-ek-navy hover:bg-white/90"
+                : "border-ek-navy/10 text-ek-navy hover:border-ek-teal/30 hover:bg-ek-gray"
+            }`}
             aria-expanded={open}
             aria-controls="mobile-nav"
             aria-label={open ? "Close menu" : "Open menu"}

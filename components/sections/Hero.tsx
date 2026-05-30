@@ -1,7 +1,8 @@
 "use client";
 
-import { HeroTrustBar } from "@/components/hero/HeroTrustBar";
+import { HeroHotspots } from "@/components/hero/HeroHotspots";
 import { HeroVisual } from "@/components/hero/HeroVisual";
+import { HeroTrustBar } from "@/components/hero/HeroTrustBar";
 import { useSite } from "@/components/providers/SiteProvider";
 import { buildWhatsAppChatUrl } from "@/lib/whatsapp";
 import { ArrowRight, ArrowUpRight } from "lucide-react";
@@ -29,15 +30,25 @@ export function Hero() {
       className="hero-cinematic relative overflow-hidden bg-ek-navy pt-16 lg:pt-[72px]"
     >
       <HeroVisual />
+      <HeroHotspots />
 
-      <div className="landing-container relative z-10 pb-8 sm:pb-10 lg:pb-12">
-        <div className="hero-content-enter relative max-w-[560px] pt-8 sm:pt-10 lg:max-w-[600px] lg:pt-14 xl:pt-16">
-          <p className="inline-flex items-center gap-2 text-[10px] font-bold tracking-[0.22em] text-white/85 uppercase">
+      <div className="landing-container relative z-10 flex min-h-[calc(100dvh-4rem)] flex-col pb-3 lg:min-h-0 lg:block lg:pb-12">
+        <div className="hero-content-enter flex flex-1 flex-col pt-5 lg:max-w-[600px] lg:pt-14 xl:pt-16">
+          <p className="inline-flex items-center gap-2 text-[10px] font-bold tracking-[0.22em] text-white/90 uppercase">
             <span className="h-3 w-0.5 rounded-full bg-ek-teal" aria-hidden />
             {site.location.area}
           </p>
 
-          <h1 className="mt-4 text-[1.65rem] font-black leading-[1.02] tracking-tight text-white uppercase sm:text-[2.15rem] md:text-[2.35rem] lg:text-[2.55rem] xl:text-[2.75rem]">
+          {/* Mobile headline — mockup */}
+          <h1 className="hero-mobile-title mt-4 font-black uppercase text-white lg:hidden">
+            WE BUILD{" "}
+            <span className="text-ek-teal">DETAILS</span>
+            {" "}THAT LAST
+            <span className="hero-headline-mark" aria-hidden />
+          </h1>
+
+          {/* Desktop headline — CMS */}
+          <h1 className="mt-4 hidden text-[1.65rem] font-black leading-[1.02] tracking-tight text-white uppercase sm:text-[2.15rem] md:text-[2.35rem] lg:block lg:text-[2.55rem] xl:text-[2.75rem]">
             {site.headline}
             <br />
             <span className="relative inline-block text-ek-teal">
@@ -60,21 +71,45 @@ export function Hero() {
             </span>
           </h1>
 
-          <p className="mt-4 max-w-[440px] text-sm leading-[1.7] text-white/78 sm:mt-5 sm:text-[15px]">
+          <p className="mt-4 max-w-[340px] text-[13px] leading-[1.65] text-white/82 sm:max-w-[440px] sm:text-[15px] lg:text-white/78">
             {site.tagline}
           </p>
 
-          <div className="mt-6 flex flex-col gap-3 sm:mt-8 sm:flex-row sm:flex-wrap sm:items-center">
+          {/* Mobile CTAs — stacked full width */}
+          <div className="mt-5 flex flex-col gap-2.5 lg:hidden">
+            <Link href="#contact" className="hero-btn-primary w-full">
+              Get a Quote
+              <ArrowRight className="h-4 w-4" aria-hidden />
+            </Link>
+            <Link href="/gallery" className="hero-btn-outline w-full">
+              View Our Work
+              <ArrowUpRight className="h-4 w-4" aria-hidden />
+            </Link>
+            {whatsappUrl ? (
+              <a
+                href={whatsappUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="hero-btn-whatsapp w-full"
+              >
+                <WhatsAppIcon className="h-4 w-4 text-ek-teal" />
+                WhatsApp
+              </a>
+            ) : null}
+          </div>
+
+          {/* Desktop CTAs — row */}
+          <div className="mt-6 hidden flex-row flex-wrap items-center gap-3 sm:mt-8 lg:flex">
             <Link
               href="#contact"
-              className="btn-primary w-full justify-center shadow-lg shadow-ek-teal/25 sm:w-auto"
+              className="btn-primary justify-center shadow-lg shadow-ek-teal/25"
             >
               Get a Quote
               <ArrowRight className="h-4 w-4" aria-hidden />
             </Link>
             <Link
               href="/gallery"
-              className="inline-flex w-full items-center justify-center gap-2 rounded-md border border-white/35 bg-white/5 px-5 py-3.5 text-[11px] font-bold tracking-[0.18em] text-white uppercase backdrop-blur-sm transition hover:border-white/55 hover:bg-white/10 sm:w-auto"
+              className="inline-flex items-center justify-center gap-2 rounded-md border border-white/35 bg-white/5 px-5 py-3.5 text-[11px] font-bold tracking-[0.18em] text-white uppercase backdrop-blur-sm transition hover:border-white/55 hover:bg-white/10"
             >
               View Our Work
               <ArrowUpRight className="h-4 w-4" aria-hidden />
@@ -84,7 +119,7 @@ export function Hero() {
                 href={whatsappUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex w-full items-center justify-center gap-2 rounded-md border border-ek-teal/40 bg-ek-teal/10 px-5 py-3.5 text-[11px] font-bold tracking-[0.16em] text-white uppercase transition hover:bg-ek-teal/20 sm:w-auto"
+                className="inline-flex items-center justify-center gap-2 rounded-md border border-ek-teal/40 bg-ek-teal/10 px-5 py-3.5 text-[11px] font-bold tracking-[0.16em] text-white uppercase transition hover:bg-ek-teal/20"
               >
                 <WhatsAppIcon className="h-4 w-4 text-ek-teal" />
                 WhatsApp

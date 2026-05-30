@@ -5,6 +5,7 @@ type Props = {
   className?: string;
   size?: "header" | "loader";
   asLink?: boolean;
+  variant?: "light" | "dark";
 };
 
 const heights = {
@@ -12,9 +13,9 @@ const heights = {
   loader: 52,
 } as const;
 
-export function Logo({ className = "", size = "header", asLink = true }: Props) {
+export function Logo({ className = "", size = "header", asLink = true, variant = "light" }: Props) {
   const height = heights[size];
-  const mark = <LogoWordmark height={height} className={className} />;
+  const mark = <LogoWordmark height={height} className={className} variant={variant} />;
 
   if (!asLink) return mark;
 
