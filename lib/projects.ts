@@ -1,26 +1,11 @@
 import { projects as defaultProjects, type Project } from "@/content/projects";
 import { getCmsProjects } from "@/lib/cms";
+import {
+  isValidGalleryImageSrc,
+  normalizeProjectList,
+} from "@/lib/gallery-image";
 
 export type { Project };
-
-const PLACEHOLDER_PREFIX = "/images/gallery/";
-
-function isPlaceholderProject(project: Project): boolean {
-  if (project.src.startsWith(PLACEHOLDER_PREFIX)) return true;
-  return (project.images ?? []).some((src) => src.startsWith(PLACEHOLDER_PREFIX));
-}
-
-function isValidImageSrc(src: string): boolean {
-  return (
-    src.startsWith("http://") ||
-    src.startsWith("https://") ||
-    (src.startsWith("/") && !src.startsWith(PLACEHOLDER_PREFIX))
-  );
-}
-
-function isValidProject(project: Project): boolean {
-  return Boolean(project.src?.trim()) && isValidImageSrc(project.src) && !isPlaceholderProject(project);
-}
 
 export function sortProjects(projects: Project[]): Project[] {
   return [...projects].sort((a, b) => {
@@ -31,10 +16,14 @@ export function sortProjects(projects: Project[]): Project[] {
   });
 }
 
+function isValidProject(project: Project): boolean {
+  return Boolean(project.src?.trim()) && isValidGalleryImageSrc(project.src);
+}
+
 export async function getProjects(): Promise<Project[]> {
-  const cmsProjects = (await getCmsProjects()).filter(isValidProject);
+  const cmsProjects = normalizeProjectList(await getCmsProjects()).filter(isValidProject);
   if (cmsProjects.length > 0) return sortProjects(cmsProjects);
-  return sortProjects(defaultProjects.filter(isValidProject));
+  return sortProjects(normalizeProjectList(defaultProjects).filter(isValidProject));
 }
 
 export async function getProjectById(id: string): Promise<Project | undefined> {

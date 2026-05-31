@@ -39,7 +39,7 @@ function ProjectCard({
     >
       <Link
         href={`/gallery/${project.id}`}
-        className={`group relative flex h-full flex-col overflow-hidden rounded-2xl border border-ek-navy/8 bg-white shadow-sm transition-all duration-300 hover:-translate-y-1 hover:border-ek-teal/25 hover:shadow-[0_16px_40px_-20px_rgba(11,29,38,0.35)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ek-teal ${
+        className={`gallery-card group relative flex h-full flex-col overflow-hidden rounded-2xl border border-ek-navy/8 bg-white shadow-[0_8px_30px_-18px_rgba(10,10,10,0.35)] transition-all duration-300 hover:-translate-y-1.5 hover:border-ek-teal/30 hover:shadow-[0_22px_48px_-24px_rgba(219,32,34,0.28)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ek-teal ${
           compact ? "p-2 sm:p-2.5" : "p-3 sm:p-4"
         }`}
       >
@@ -137,7 +137,7 @@ export function GalleryGrid({
   const showFilters = projects.length >= 2 && categories.length > 1;
 
   return (
-    <section id="gallery" className="section-block bg-ek-gray/30 pb-12 pt-4 sm:pb-16">
+    <section id="gallery" className="section-block bg-gradient-to-b from-white via-ek-gray/40 to-ek-gray/30 pb-12 pt-6 sm:pb-16 sm:pt-8">
       <div className="landing-container mb-8 flex flex-col gap-4 sm:mb-10 sm:flex-row sm:items-end sm:justify-between">
         <SectionHeading eyebrow={subtitle} title={title} />
         {showFilters && (

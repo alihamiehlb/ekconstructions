@@ -6,15 +6,16 @@ import {
   DEFAULT_PROJECT_CATEGORY,
   PROJECT_CATEGORIES,
 } from "@/lib/project-categories";
+import { isPlaceholderImageSrc } from "@/lib/gallery-image";
 import { secureJsonFetch } from "@/lib/security/client-fetch";
 import { Star, Trash2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
-const PLACEHOLDER_PREFIX = "/images/gallery/";
+const PLACEHOLDER_PREFIX = "/images/gallery/placeholder";
 
 function isPlaceholder(project: Project): boolean {
-  return project.src.startsWith(PLACEHOLDER_PREFIX);
+  return isPlaceholderImageSrc(project.src) || project.src.startsWith(PLACEHOLDER_PREFIX);
 }
 
 function newProject(): Project {
@@ -142,9 +143,9 @@ export function AdminProjectsEditor() {
     <div className="space-y-6">
       <div className="admin-card rounded-2xl border border-ek-teal/20 bg-gradient-to-br from-ek-teal/5 to-white p-5">
         <p className="text-sm leading-relaxed text-ek-muted">
-          Manage the public gallery here. Paste image URLs (Supabase, CDN, or{" "}
-          <code className="text-ek-navy">/images/...</code> paths), pick a category, and mark
-          projects as featured for the homepage spotlight.
+          Manage the public gallery here. Paste stable image URLs (Supabase Storage,{" "}
+          <code className="text-ek-navy">/images/gallery/...</code>, or your CDN). Instagram links
+          expire — upload to Supabase or use local paths instead.
         </p>
       </div>
 

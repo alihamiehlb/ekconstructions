@@ -1,8 +1,8 @@
 "use client";
 
+import { ProjectImage } from "@/components/gallery/ProjectImage";
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import { ChevronLeft, ChevronRight } from "lucide-react";
-import Image from "next/image";
 import { useCallback, useEffect, useState } from "react";
 
 type Props = {
@@ -58,7 +58,7 @@ export function ImageCarousel({
           exit={reduceMotion ? undefined : { opacity: 0, scale: 0.98, filter: "blur(4px)" }}
           transition={{ duration: 0.65, ease: [0.22, 1, 0.36, 1] }}
         >
-          <Image
+          <ProjectImage
             src={images[index]}
             alt={`${alt} — slide ${index + 1} of ${count}`}
             fill

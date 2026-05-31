@@ -1,12 +1,12 @@
 "use client";
 
 import { ImageCarousel } from "@/components/gallery/ImageCarousel";
+import { ProjectImage } from "@/components/gallery/ProjectImage";
 import { useSite } from "@/components/providers/SiteProvider";
 import type { Project } from "@/content/projects";
 import { getProjectImages } from "@/lib/project-images";
 import { motion } from "framer-motion";
 import { ArrowLeft, ArrowRight, Instagram } from "lucide-react";
-import Image from "next/image";
 import Link from "next/link";
 
 type Props = {
@@ -34,8 +34,9 @@ export function ProjectDetailScreen({ project, projects, index }: Props) {
           />
         ) : (
           <div className="relative min-h-[52vh] lg:min-h-[68vh]">
-            <Image
+            <ProjectImage
               src={project.src}
+              projectId={project.id}
               alt={project.alt}
               fill
               priority
@@ -92,8 +93,9 @@ export function ProjectDetailScreen({ project, projects, index }: Props) {
             {images.map((src, i) => (
               <li key={src} className="shrink-0">
                 <div className="relative h-20 w-28 overflow-hidden rounded-lg border border-white/15 sm:h-24 sm:w-36">
-                  <Image
+                  <ProjectImage
                     src={src}
+                    projectId={project.id}
                     alt=""
                     fill
                     sizes="144px"
