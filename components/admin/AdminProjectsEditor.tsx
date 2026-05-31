@@ -98,6 +98,13 @@ export function AdminProjectsEditor() {
     setExpandedId(next.id);
   }
 
+  function clearAll() {
+    if (!projects.length) return;
+    if (!confirm("Remove all gallery projects from the site? Save to apply.")) return;
+    setProjects([]);
+    showMessage("All projects removed — click Save gallery to apply.", "warn");
+  }
+
   function reorder(from: number, dir: -1 | 1) {
     const next = moveItem(projects, from, from + dir).map((p, index) => ({
       ...p,
@@ -163,10 +170,8 @@ export function AdminProjectsEditor() {
     <div className="space-y-6 pb-24">
       <div className="admin-gallery-intro rounded-2xl border border-ek-navy/8 bg-white p-5 shadow-sm sm:p-6">
         <p className="text-sm leading-relaxed text-ek-muted">
-          Add, reorder, and edit every public gallery project here. Upload to Supabase or paste a
-          stable URL — local paths like{" "}
-          <code className="rounded bg-ek-gray px-1.5 py-0.5 text-ek-navy">/images/gallery/…</code>{" "}
-          work too. Avoid Instagram links; they expire.
+          This is the only source for the public gallery and homepage section. Upload images or
+          paste stable URLs — nothing appears on the site until you save here.
         </p>
         <dl className="mt-4 flex flex-wrap gap-3">
           <div className="admin-gallery-stat">
@@ -426,14 +431,25 @@ export function AdminProjectsEditor() {
       )}
 
       <div className="admin-gallery-actions sticky bottom-4 z-20 flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-ek-navy/10 bg-white/95 p-4 shadow-lg backdrop-blur-md">
-        <button
-          type="button"
-          className="inline-flex items-center gap-2 text-xs font-semibold text-ek-teal uppercase"
-          onClick={addProject}
-        >
-          <Plus className="h-4 w-4" aria-hidden />
-          Add project
-        </button>
+        <div className="flex flex-wrap gap-4">
+          <button
+            type="button"
+            className="inline-flex items-center gap-2 text-xs font-semibold text-ek-teal uppercase"
+            onClick={addProject}
+          >
+            <Plus className="h-4 w-4" aria-hidden />
+            Add project
+          </button>
+          {projects.length > 0 && (
+            <button
+              type="button"
+              className="text-xs font-semibold text-red-600 uppercase hover:underline"
+              onClick={clearAll}
+            >
+              Clear all
+            </button>
+          )}
+        </div>
         <button
           type="button"
           disabled={saving}

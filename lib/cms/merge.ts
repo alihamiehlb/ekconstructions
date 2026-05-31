@@ -12,10 +12,7 @@ export function mergeCmsWithDefaults(partial: Partial<CmsData>): CmsData {
     services: partial.services?.length ? partial.services : defaults.services,
     whyChooseUs: partial.whyChooseUs?.length ? partial.whyChooseUs : defaults.whyChooseUs,
     materials: partial.materials?.length ? partial.materials : defaults.materials,
-    projects:
-      partial.projects != null
-        ? normalizeProjectList(partial.projects)
-        : defaults.projects,
+    projects: partial.projects != null ? normalizeProjectList(partial.projects) : [],
     updatedAt: partial.updatedAt ?? defaults.updatedAt,
   };
 }

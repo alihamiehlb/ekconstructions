@@ -1,10 +1,5 @@
 import type { Project } from "@/content/projects";
 
-const LEGACY_GALLERY_BY_ID: Record<string, string> = {
-  "project-DXJsOgwDysY": "/images/gallery/glass-balustrade-pool.jpg",
-  "project-DW3rM9qmE-K": "/images/gallery/aluminium-windows.jpg",
-};
-
 const UNRELIABLE_HOST_PATTERNS = [
   /instagram\.[^/]+/i,
   /cdninstagram\.com/i,
@@ -35,18 +30,16 @@ export function isValidGalleryImageSrc(src: string): boolean {
   return false;
 }
 
-/** Returns a usable image URL or empty string when none is available. */
-export function resolveGalleryImageSrc(src: string, projectId?: string): string {
+export function resolveGalleryImageSrc(src: string): string {
   const trimmed = src.trim();
   if (isValidGalleryImageSrc(trimmed)) return trimmed;
-  if (projectId && LEGACY_GALLERY_BY_ID[projectId]) return LEGACY_GALLERY_BY_ID[projectId];
   return "";
 }
 
 export function normalizeProjectImages(project: Project): Project {
-  const src = resolveGalleryImageSrc(project.src, project.id);
+  const src = resolveGalleryImageSrc(project.src);
   const extras = (project.images ?? [])
-    .map((image) => resolveGalleryImageSrc(image, project.id))
+    .map((image) => resolveGalleryImageSrc(image))
     .filter((image) => image && image !== src);
   const uniqueExtras = [...new Set(extras)];
   const images =

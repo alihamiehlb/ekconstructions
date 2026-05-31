@@ -1,4 +1,4 @@
-import { projects as defaultProjects, type Project } from "@/content/projects";
+import type { Project } from "@/content/projects";
 import { getCmsProjects } from "@/lib/cms";
 import {
   isValidGalleryImageSrc,
@@ -20,10 +20,10 @@ function isValidProject(project: Project): boolean {
   return Boolean(project.title?.trim()) && Boolean(project.src?.trim()) && isValidGalleryImageSrc(project.src);
 }
 
+/** Public gallery — CMS projects only (no hardcoded fallbacks). */
 export async function getProjects(): Promise<Project[]> {
   const cmsProjects = normalizeProjectList(await getCmsProjects()).filter(isValidProject);
-  if (cmsProjects.length > 0) return sortProjects(cmsProjects);
-  return sortProjects(normalizeProjectList(defaultProjects).filter(isValidProject));
+  return sortProjects(cmsProjects);
 }
 
 export async function getProjectById(id: string): Promise<Project | undefined> {

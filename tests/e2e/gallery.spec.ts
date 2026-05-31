@@ -9,10 +9,18 @@ test.describe("Gallery page", () => {
     await gallery.goto();
   });
 
-  test("renders gallery heading and filters", async ({ page }) => {
+  test("renders gallery heading", async () => {
     await expect(gallery.heading).toBeVisible();
-    await expect(gallery.filterGroup).toBeVisible();
-    await expect(gallery.filterGroup.getByRole("button", { name: /^All/i })).toBeVisible();
+  });
+
+  test("shows filters when multiple projects exist", async ({ page }) => {
+    const filters = gallery.filterGroup;
+    const cards = page.locator("#gallery article");
+    if ((await cards.count()) < 2) {
+      test.skip(true, "Need at least two projects for category filters");
+    }
+    await expect(filters).toBeVisible();
+    await expect(filters.getByRole("button", { name: /^All/i })).toBeVisible();
   });
 
   test("category filter updates URL and results", async ({ page }) => {

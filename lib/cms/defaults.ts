@@ -1,4 +1,3 @@
-import { projects as defaultProjects } from "@/content/projects";
 import {
   aboutParagraphs,
   materials,
@@ -39,7 +38,7 @@ export function getDefaultCms(): CmsData {
       icon: w.icon,
     })),
     materials: [...materials],
-    projects: defaultProjects.map((p) => ({ ...p })),
+    projects: [],
     updatedAt: new Date().toISOString(),
   };
 }

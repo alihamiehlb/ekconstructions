@@ -19,14 +19,14 @@ export function ProjectImage({
   onError,
   ...props
 }: Props) {
-  const resolved = resolveGalleryImageSrc(src, projectId);
+  const resolved = resolveGalleryImageSrc(src);
   const [imgSrc, setImgSrc] = useState(resolved);
   const [failed, setFailed] = useState(false);
 
   useEffect(() => {
-    setImgSrc(resolveGalleryImageSrc(src, projectId));
+    setImgSrc(resolveGalleryImageSrc(src));
     setFailed(false);
-  }, [src, projectId]);
+  }, [src]);
 
   const handleError = useCallback(
     (event: React.SyntheticEvent<HTMLImageElement, Event>) => {
