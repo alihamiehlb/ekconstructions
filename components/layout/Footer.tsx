@@ -10,24 +10,24 @@ export function Footer() {
   const year = new Date().getFullYear();
 
   return (
-    <footer className="border-t border-ek-navy/10 bg-white py-10 sm:py-12">
-      <div className="section-pad grid gap-10 md:grid-cols-[1.2fr_1fr_1fr] md:gap-8">
+    <footer className="site-footer py-12 sm:py-14">
+      <div className="landing-container grid gap-10 md:grid-cols-[1.2fr_1fr_1fr] md:gap-8">
         <div>
-          <p className="text-lg font-black text-ek-navy">EK CONSTRUCTIONS</p>
-          <p className="mt-2 max-w-xs text-sm leading-relaxed text-ek-muted">
+          <p className="text-lg font-black tracking-[0.08em] text-white uppercase">EK Constructions</p>
+          <p className="mt-3 max-w-xs text-sm leading-relaxed text-white/65">
             Aluminium glazing, glass balustrades, steel work & privacy solutions — Sydney, NSW.
           </p>
-          <p className="mt-3 text-xs text-ek-muted">ABN {site.business.abn}</p>
+          <p className="mt-4 text-xs text-white/45">ABN {site.business.abn}</p>
         </div>
 
         <nav aria-label="Site">
-          <p className="text-[10px] font-semibold tracking-[0.25em] text-ek-teal uppercase">Explore</p>
-          <ul className="mt-3 flex flex-col gap-2">
+          <p className="section-eyebrow section-eyebrow--dark text-[9px]">Explore</p>
+          <ul className="mt-4 flex flex-col gap-2.5">
             {navLinks.map((link) => (
               <li key={link.href}>
                 <Link
                   href={link.href}
-                  className="text-xs font-semibold tracking-wide text-ek-navy/70 uppercase transition hover:text-ek-teal"
+                  className="text-xs font-semibold tracking-wide text-white/70 uppercase transition hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
                 >
                   {link.label}
                 </Link>
@@ -37,13 +37,13 @@ export function Footer() {
         </nav>
 
         <nav aria-label="Legal">
-          <p className="text-[10px] font-semibold tracking-[0.25em] text-ek-teal uppercase">Legal</p>
-          <ul className="mt-3 flex flex-col gap-2">
+          <p className="section-eyebrow section-eyebrow--dark text-[9px]">Legal</p>
+          <ul className="mt-4 flex flex-col gap-2.5">
             {legalLinks.map((link) => (
               <li key={link.href}>
                 <Link
                   href={link.href}
-                  className="text-xs font-semibold tracking-wide text-ek-navy/70 uppercase transition hover:text-ek-teal"
+                  className="text-xs font-semibold tracking-wide text-white/70 uppercase transition hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
                 >
                   {link.label}
                 </Link>
@@ -53,14 +53,16 @@ export function Footer() {
         </nav>
       </div>
 
-      <div className="section-pad mt-8 flex flex-col items-center justify-between gap-3 border-t border-ek-navy/8 pt-6 text-center text-xs text-ek-muted sm:flex-row sm:text-left">
-        <p>© {year} {site.name}. All rights reserved.</p>
+      <div className="landing-container mt-10 flex flex-col items-center justify-between gap-3 border-t border-white/10 pt-6 text-center text-xs text-white/45 sm:flex-row sm:text-left">
         <p>
-          <a href="/llms.txt" className="hover:text-ek-teal">
+          © {year} {site.name}. All rights reserved.
+        </p>
+        <p>
+          <a href="/llms.txt" className="transition hover:text-white">
             llms.txt
           </a>
           {" · "}
-          <a href="/privacy" className="hover:text-ek-teal">
+          <a href="/privacy" className="transition hover:text-white">
             Privacy
           </a>
         </p>

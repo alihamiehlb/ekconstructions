@@ -31,6 +31,9 @@ export function Header() {
     document.body.style.overflow = "hidden";
     const onKey = (e: KeyboardEvent) => e.key === "Escape" && setOpen(false);
     window.addEventListener("keydown", onKey);
+    const panel = document.getElementById("mobile-nav");
+    const focusable = panel?.querySelector<HTMLElement>("a, button");
+    focusable?.focus();
     return () => {
       document.body.style.overflow = prev;
       window.removeEventListener("keydown", onKey);
@@ -167,7 +170,7 @@ export function Header() {
                       <Link
                         href={link.href}
                         aria-current={active ? "page" : undefined}
-                        className={`flex items-center rounded-lg px-3 py-3 text-xs font-semibold tracking-[0.18em] uppercase transition ${
+                        className={`flex min-h-[44px] items-center rounded-lg px-3 py-3 text-xs font-semibold tracking-[0.18em] uppercase transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ek-teal ${
                           active
                             ? mobileDark
                               ? "bg-ek-teal/15 text-ek-teal"

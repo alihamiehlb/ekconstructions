@@ -1,16 +1,18 @@
 @import "tailwindcss";
 
 @theme {
-  /* EK Constructions — palette extracted from the logo. Black · White · Architectural Red. */
-  --color-ek-teal: #db2022; /* accent (was teal) → Architectural Red */
-  --color-ek-teal-dark: #b81a1c; /* red hover */
-  --color-ek-orange: #db2022; /* consolidated to red */
+  /* EK Constructions — Black · White · Architectural Red */
+  --color-ek-teal: #db2022;
+  --color-ek-teal-dark: #b81a1c;
+  --color-ek-orange: #db2022;
   --color-ek-orange-dark: #b81a1c;
   --color-ek-black: #0a0a0a;
-  --color-ek-navy: #0a0a0a; /* dark surface + primary text → Deep Black */
-  --color-ek-navy-light: #161616; /* lifted black for cards on dark */
-  --color-ek-gray: #f4f4f4; /* neutral light surface */
-  --color-ek-muted: #6e6e6e; /* neutral gray text (de-tinted) */
+  --color-ek-navy: #0a0a0a;
+  --color-ek-navy-light: #161616;
+  --color-ek-gray: #f4f4f4;
+  --color-ek-muted: #6e6e6e;
+  --color-ek-surface: #fafafa;
+  --color-ek-line: rgba(10, 10, 10, 0.08);
   --font-sans: var(--font-montserrat), system-ui, sans-serif;
 }
 
@@ -75,7 +77,162 @@ body {
 
 .section-fade-from-dark {
   background: linear-gradient(180deg, #0a0a0a 0%, #f4f4f4 100%);
-  height: 3rem;
+  height: 4rem;
+}
+
+.section-eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.625rem;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+}
+
+.section-eyebrow--light {
+  color: var(--color-ek-muted);
+}
+
+.section-eyebrow--light::before {
+  content: "";
+  width: 1.75rem;
+  height: 2px;
+  background: var(--color-ek-teal);
+}
+
+.section-eyebrow--dark {
+  color: rgba(255, 255, 255, 0.88);
+}
+
+.section-eyebrow--dark::before {
+  content: "";
+  width: 1.75rem;
+  height: 2px;
+  background: var(--color-ek-teal);
+}
+
+.section-title {
+  font-weight: 900;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  line-height: 1.05;
+}
+
+.services-section-bg {
+  background-color: #0a0a0a;
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+  background-size: 48px 48px;
+}
+
+.why-stat-band {
+  display: grid;
+  gap: 1px;
+  overflow: hidden;
+  border: 1px solid var(--color-ek-line);
+  border-radius: 0.75rem;
+  background: var(--color-ek-line);
+}
+
+@media (min-width: 640px) {
+  .why-stat-band {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+.why-stat-cell {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  background: white;
+  padding: 1.25rem 1.5rem;
+}
+
+.why-stat-value {
+  font-size: clamp(1.75rem, 4vw, 2.25rem);
+  font-weight: 900;
+  letter-spacing: -0.02em;
+  line-height: 1;
+  color: var(--color-ek-navy);
+}
+
+.why-stat-label {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--color-ek-muted);
+}
+
+.why-value-card {
+  position: relative;
+  border: 1px solid var(--color-ek-line);
+  border-radius: 0.75rem;
+  background: white;
+  padding: 1.25rem 1rem;
+  transition:
+    border-color 0.25s ease,
+    box-shadow 0.25s ease,
+    transform 0.25s ease;
+}
+
+.why-value-card::before {
+  content: "";
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: 3px;
+  border-radius: 0.75rem 0 0 0.75rem;
+  background: transparent;
+  transition: background-color 0.25s ease;
+}
+
+.why-value-card:hover {
+  border-color: rgba(219, 32, 34, 0.22);
+  box-shadow: 0 16px 40px -28px rgba(10, 10, 10, 0.35);
+  transform: translateY(-3px);
+}
+
+.why-value-card:hover::before {
+  background: var(--color-ek-teal);
+}
+
+.site-footer {
+  border-top: 3px solid var(--color-ek-teal);
+  background: var(--color-ek-navy);
+  color: rgba(255, 255, 255, 0.72);
+}
+
+.contact-detail-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.contact-detail-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.875rem;
+  min-height: 2.75rem;
+}
+
+.contact-detail-icon {
+  display: flex;
+  height: 2.5rem;
+  width: 2.5rem;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  border-radius: 0.5rem;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(255, 255, 255, 0.06);
+  color: rgba(255, 255, 255, 0.92);
+}
+
+.about-accent-panel {
+  border-left: 3px solid var(--color-ek-teal);
+  padding-left: 1.25rem;
 }
 
 .section-skeleton {
@@ -113,6 +270,12 @@ body {
 .nav-link-active::after,
 .nav-link:hover::after {
   transform: scaleX(1);
+}
+
+.nav-link:focus-visible {
+  outline: 2px solid var(--color-ek-teal);
+  outline-offset: 4px;
+  border-radius: 2px;
 }
 
 .hero-dot-grid {
@@ -559,18 +722,33 @@ body {
   }
 }
 
+.service-card-index {
+  position: absolute;
+  top: 1rem;
+  right: 1.25rem;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  color: rgba(255, 255, 255, 0.18);
+  transition: color 0.25s ease;
+}
+
+.service-card:hover .service-card-index {
+  color: rgba(219, 32, 34, 0.55);
+}
+
 .service-card {
   position: relative;
   display: flex;
   min-height: 12rem;
   flex-direction: column;
   overflow: hidden;
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  border-radius: 0.75rem;
-  background: linear-gradient(165deg, rgba(255, 255, 255, 0.06) 0%, rgba(10, 10, 10, 0.55) 100%);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 0.5rem;
+  background: rgba(255, 255, 255, 0.04);
   padding: 1.35rem;
-  backdrop-filter: blur(10px);
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.06);
+  backdrop-filter: blur(8px);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.05);
   transition:
     transform 0.28s cubic-bezier(0.22, 1, 0.36, 1),
     border-color 0.28s ease,

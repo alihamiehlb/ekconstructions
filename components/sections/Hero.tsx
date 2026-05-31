@@ -27,43 +27,43 @@ export function Hero() {
     <section
       id="home"
       className="hero-cinematic section-block relative flex flex-col overflow-hidden bg-ek-navy pt-14 lg:pt-[72px]"
+      aria-labelledby="hero-heading"
     >
       <HeroVisual />
 
       <div className="landing-container hero-cinematic-inner relative z-10 flex min-h-0 flex-1 flex-col pb-3 lg:justify-between lg:pb-8">
         <div className="hero-content-enter hero-desktop-copy flex max-w-[640px] flex-1 flex-col justify-center pt-3 lg:flex-none lg:pt-10 xl:pt-12">
-          <p className="inline-flex items-center gap-2 text-[10px] font-bold tracking-[0.22em] text-white/90 uppercase">
-            <span className="h-3 w-0.5 rounded-full bg-ek-teal" aria-hidden />
-            {site.location.area}
-          </p>
+          <p className="section-eyebrow section-eyebrow--dark">{site.location.area}</p>
 
-          <h1 className="hero-mobile-title mt-3 font-black uppercase text-white lg:hidden">
-            WE BUILD{" "}
-            <span className="text-ek-teal">DETAILS</span>
-            {" "}THAT LAST
-            <span className="hero-headline-mark" aria-hidden />
-          </h1>
-
-          <h1 className="mt-4 hidden font-black leading-[1.02] tracking-tight text-white uppercase lg:block lg:text-[2.35rem] xl:text-[2.75rem]">
-            {site.headline}
-            <br />
-            <span className="relative inline-block text-ek-teal">
-              {site.headlineAccent}
-              <svg
-                className="hero-brush-stroke absolute -bottom-1 left-0 w-full"
-                viewBox="0 0 200 12"
-                preserveAspectRatio="none"
-                aria-hidden
-              >
-                <path
-                  d="M2 8 C40 2, 80 10, 120 6 S180 4, 198 7"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="4"
-                  strokeLinecap="round"
-                  className="text-ek-teal"
-                />
-              </svg>
+          <h1
+            id="hero-heading"
+            className="hero-mobile-title mt-3 font-black uppercase text-white lg:mt-4 lg:text-[2.35rem] lg:leading-[1.02] lg:tracking-tight xl:text-[2.75rem]"
+          >
+            <span className="lg:hidden">
+              WE BUILD <span className="text-ek-teal">DETAILS</span> THAT LAST
+              <span className="hero-headline-mark" aria-hidden />
+            </span>
+            <span className="hidden lg:inline">
+              {site.headline}
+              <br />
+              <span className="relative inline-block text-ek-teal">
+                {site.headlineAccent}
+                <svg
+                  className="hero-brush-stroke absolute -bottom-1 left-0 w-full"
+                  viewBox="0 0 200 12"
+                  preserveAspectRatio="none"
+                  aria-hidden
+                >
+                  <path
+                    d="M2 8 C40 2, 80 10, 120 6 S180 4, 198 7"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="4"
+                    strokeLinecap="round"
+                    className="text-ek-teal"
+                  />
+                </svg>
+              </span>
             </span>
           </h1>
 
@@ -104,7 +104,7 @@ export function Hero() {
             </Link>
             <Link
               href="/gallery"
-              className="inline-flex items-center justify-center gap-2 rounded-md border border-white/35 bg-white/5 px-5 py-3.5 text-[11px] font-bold tracking-[0.18em] text-white uppercase backdrop-blur-sm transition hover:border-white/55 hover:bg-white/10"
+              className="inline-flex items-center justify-center gap-2 rounded-md border border-white/35 bg-white/5 px-5 py-3.5 text-[11px] font-bold tracking-[0.18em] text-white uppercase backdrop-blur-sm transition hover:border-white/55 hover:bg-white/10 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
             >
               View Our Work
               <ArrowUpRight className="h-4 w-4" aria-hidden />
@@ -114,9 +114,9 @@ export function Hero() {
                 href={whatsappUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center justify-center gap-2 rounded-md border border-ek-teal/40 bg-ek-teal/10 px-5 py-3.5 text-[11px] font-bold tracking-[0.16em] text-white uppercase transition hover:bg-ek-teal/20"
+                className="inline-flex items-center justify-center gap-2 rounded-md border border-white/25 bg-white/5 px-5 py-3.5 text-[11px] font-bold tracking-[0.16em] text-white uppercase transition hover:border-white/45 hover:bg-white/10 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
               >
-                <WhatsAppIcon className="h-4 w-4 text-ek-teal" />
+                <WhatsAppIcon className="h-4 w-4 text-white/90" />
                 WhatsApp
               </a>
             ) : null}

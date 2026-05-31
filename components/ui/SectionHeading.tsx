@@ -8,6 +8,7 @@ type Props = {
   theme?: "light" | "dark";
   className?: string;
   delay?: number;
+  id?: string;
 };
 
 export function SectionHeading({
@@ -18,29 +19,23 @@ export function SectionHeading({
   theme = "light",
   className = "",
   delay = 0,
+  id,
 }: Props) {
   const alignClass = align === "center" ? "text-center mx-auto" : "";
   const titleColor = theme === "dark" ? "text-white" : "text-ek-navy";
-  const descColor = theme === "dark" ? "text-white/65" : "text-ek-muted";
+  const descColor = theme === "dark" ? "text-white/70" : "text-ek-muted";
+  const eyebrowClass =
+    theme === "dark" ? "section-eyebrow section-eyebrow--dark" : "section-eyebrow section-eyebrow--light";
 
   return (
     <SectionReveal delay={delay} className={className}>
       <div className={`max-w-2xl ${alignClass}`.trim()}>
         {eyebrow ? (
-          <div
-            className={`flex items-center gap-2.5 sm:gap-3 ${align === "center" ? "justify-center" : ""}`}
-          >
-            <p className="text-[9px] font-semibold tracking-[0.24em] text-ek-teal uppercase sm:text-[10px] sm:tracking-[0.28em]">
-              {eyebrow}
-            </p>
-            <span
-              className={`h-px max-w-16 bg-ek-teal/80 sm:max-w-32 ${align === "center" ? "hidden sm:block" : "flex-1"}`}
-              aria-hidden
-            />
-          </div>
+          <p className={`${eyebrowClass} ${align === "center" ? "justify-center" : ""}`}>{eyebrow}</p>
         ) : null}
         <h2
-          className={`${eyebrow ? "mt-2" : ""} text-2xl font-black tracking-[0.12em] uppercase sm:text-3xl lg:text-4xl lg:tracking-[0.14em] ${titleColor}`}
+          id={id}
+          className={`section-title ${eyebrow ? "mt-3" : ""} text-2xl sm:text-3xl lg:text-4xl ${titleColor}`}
         >
           {title}
         </h2>

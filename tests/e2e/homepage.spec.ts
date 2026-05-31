@@ -41,9 +41,7 @@ test.describe("Homepage", () => {
 
     const cards = gallery.locator("article");
     if ((await cards.count()) === 0) {
-      await expect(
-        gallery.getByRole("heading", { name: /new project photos on the way/i }),
-      ).toBeVisible();
+      await expect(gallery.getByRole("heading", { name: /recent projects/i })).toBeVisible();
       return;
     }
 

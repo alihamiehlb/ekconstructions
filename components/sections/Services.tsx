@@ -4,7 +4,6 @@ import { StaggerItem, StaggerReveal } from "@/components/ui/StaggerReveal";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import type { CmsService } from "@/lib/cms/types";
 import { ArrowRight } from "lucide-react";
-import Image from "next/image";
 import Link from "next/link";
 
 const iconClass = "h-7 w-7 text-ek-teal sm:h-8 sm:w-8 lg:h-9 lg:w-9";
@@ -84,21 +83,17 @@ const icons = {
 
 export function Services({ services }: { services: CmsService[] }) {
   return (
-    <section id="services" className="section-block relative overflow-hidden bg-ek-navy scroll-mt-20 lg:scroll-mt-[5.5rem]">
-      <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-ek-navy via-ek-navy/98 to-ek-navy" aria-hidden />
-      <div className="pointer-events-none absolute inset-0 opacity-[0.05] lg:hidden" aria-hidden>
-        <Image
-          src="/images/hero-building.png"
-          alt=""
-          fill
-          className="object-cover object-center"
-          sizes="100vw"
-        />
-      </div>
+    <section
+      id="services"
+      className="section-block services-section-bg relative overflow-hidden scroll-mt-20 lg:scroll-mt-[5.5rem]"
+      aria-labelledby="services-heading"
+    >
+      <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-white/10" aria-hidden />
 
       <div className="relative pb-10 pt-8 sm:pb-16 sm:pt-12 lg:pb-20 lg:pt-16">
         <div className="landing-container">
           <SectionHeading
+            id="services-heading"
             eyebrow="Our Expertise"
             title="Services"
             description="Premium aluminium, glass, steel and carpentry — designed, supplied and installed with precision across Sydney and Greater NSW."
@@ -128,6 +123,9 @@ export function Services({ services }: { services: CmsService[] }) {
                   }
                 >
                   <Link href="#contact" className="service-card group">
+                    <span className="service-card-index" aria-hidden>
+                      {String(index + 1).padStart(2, "0")}
+                    </span>
                     <span className="service-card-accent" aria-hidden />
                     <span className="service-card-icon">
                       <Icon />
@@ -138,7 +136,7 @@ export function Services({ services }: { services: CmsService[] }) {
                     <p className="mt-2 flex-1 text-[12px] leading-relaxed text-white/60 sm:text-[13px] lg:text-sm lg:leading-[1.65]">
                       {service.description}
                     </p>
-                    <span className="mt-4 inline-flex items-center gap-1.5 text-[10px] font-bold tracking-[0.14em] text-white/70 uppercase transition group-hover:text-ek-teal">
+                    <span className="mt-4 inline-flex items-center gap-1.5 text-[10px] font-bold tracking-[0.14em] text-white/70 uppercase transition group-hover:text-white">
                       Enquire
                       <ArrowRight
                         className="h-3.5 w-3.5 transition group-hover:translate-x-0.5"

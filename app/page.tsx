@@ -26,7 +26,7 @@ const GalleryTeaser = dynamic(
       default: m.GalleryTeaser,
     })),
   {
-    loading: () => <div className="section-skeleton min-h-[320px] bg-ek-gray/30" aria-hidden />,
+    loading: () => <div className="section-skeleton min-h-[320px] bg-ek-surface" aria-hidden />,
   },
 );
 
@@ -46,6 +46,7 @@ export default async function HomePage() {
           <WhyChooseUs
             items={cms.whyChooseUs}
             projectsDelivered={cms.site.projectsDelivered}
+            yearsExperience={cms.site.yearsExperience}
           />
           <ProjectGallery projects={projects} />
           {projects.length === 0 && <GalleryTeaser />}

@@ -42,9 +42,9 @@ export function GalleryEmptyState({
             <Camera className="h-3.5 w-3.5" aria-hidden />
             Portfolio updating
           </div>
-          <h2 className="mt-4 text-2xl font-black tracking-tight text-ek-navy uppercase sm:text-3xl">
+          <h3 className="mt-4 text-xl font-black tracking-tight text-ek-navy uppercase sm:text-2xl">
             New project photos on the way
-          </h2>
+          </h3>
           <p className="mt-3 text-sm leading-relaxed text-ek-muted sm:text-base">
             We&apos;re adding recent aluminium, glass, and steel work to the gallery. For the
             latest installs and finishes, follow us on Instagram or request a quote for your
