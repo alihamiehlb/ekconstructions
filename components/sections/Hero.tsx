@@ -1,12 +1,10 @@
 "use client";
 
-import { HeroHotspots } from "@/components/hero/HeroHotspots";
 import { HeroVisual } from "@/components/hero/HeroVisual";
 import { HeroTrustBar } from "@/components/hero/HeroTrustBar";
 import { useSite } from "@/components/providers/SiteProvider";
 import { buildWhatsAppChatUrl } from "@/lib/whatsapp";
-import { motion, useReducedMotion } from "framer-motion";
-import { ArrowRight, ArrowUpRight, ChevronDown } from "lucide-react";
+import { ArrowRight, ArrowUpRight } from "lucide-react";
 import Link from "next/link";
 import { useMemo } from "react";
 
@@ -18,23 +16,8 @@ function WhatsAppIcon({ className }: { className?: string }) {
   );
 }
 
-const headlineContainer = {
-  hidden: {},
-  show: { transition: { staggerChildren: 0.12, delayChildren: 0.15 } },
-};
-
-const headlineItem = {
-  hidden: { opacity: 0, y: 22 },
-  show: {
-    opacity: 1,
-    y: 0,
-    transition: { duration: 0.55, ease: [0.22, 1, 0.36, 1] as const },
-  },
-};
-
 export function Hero() {
   const site = useSite();
-  const reduceMotion = useReducedMotion();
   const whatsappUrl = useMemo(
     () => buildWhatsAppChatUrl(site.contact.phone),
     [site.contact.phone],
@@ -46,7 +29,6 @@ export function Hero() {
       className="hero-cinematic section-block relative flex flex-col overflow-hidden bg-ek-navy pt-14 lg:pt-[72px]"
     >
       <HeroVisual />
-      <HeroHotspots />
 
       <div className="landing-container hero-cinematic-inner relative z-10 flex min-h-0 flex-1 flex-col pb-3 lg:justify-between lg:pb-8">
         <div className="hero-content-enter hero-desktop-copy flex max-w-[640px] flex-1 flex-col justify-center pt-3 lg:flex-none lg:pt-10 xl:pt-12">
@@ -62,50 +44,33 @@ export function Hero() {
             <span className="hero-headline-mark" aria-hidden />
           </h1>
 
-          <motion.div
-            className="hero-glass-panel mt-4 hidden lg:block"
-            variants={reduceMotion ? undefined : headlineContainer}
-            initial={reduceMotion ? false : "hidden"}
-            animate={reduceMotion ? undefined : "show"}
-          >
-            <motion.h1
-              variants={reduceMotion ? undefined : headlineItem}
-              className="font-black leading-[1.02] tracking-tight text-white uppercase lg:text-[2.35rem] xl:text-[2.75rem]"
-            >
-              {site.headline}
-            </motion.h1>
-            <motion.h1
-              variants={reduceMotion ? undefined : headlineItem}
-              className="mt-1 font-black leading-[1.02] tracking-tight text-white uppercase lg:text-[2.35rem] xl:text-[2.75rem]"
-            >
-              <span className="relative inline-block text-ek-teal">
-                {site.headlineAccent}
-                <svg
-                  className="hero-brush-stroke absolute -bottom-1 left-0 w-full"
-                  viewBox="0 0 200 12"
-                  preserveAspectRatio="none"
-                  aria-hidden
-                >
-                  <path
-                    d="M2 8 C40 2, 80 10, 120 6 S180 4, 198 7"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="4"
-                    strokeLinecap="round"
-                    className="text-ek-teal"
-                  />
-                </svg>
-              </span>
-            </motion.h1>
-            <motion.p
-              variants={reduceMotion ? undefined : headlineItem}
-              className="mt-4 max-w-[440px] text-[15px] leading-[1.65] text-white/78"
-            >
-              {site.tagline}
-            </motion.p>
-          </motion.div>
+          <h1 className="mt-4 hidden font-black leading-[1.02] tracking-tight text-white uppercase lg:block lg:text-[2.35rem] xl:text-[2.75rem]">
+            {site.headline}
+            <br />
+            <span className="relative inline-block text-ek-teal">
+              {site.headlineAccent}
+              <svg
+                className="hero-brush-stroke absolute -bottom-1 left-0 w-full"
+                viewBox="0 0 200 12"
+                preserveAspectRatio="none"
+                aria-hidden
+              >
+                <path
+                  d="M2 8 C40 2, 80 10, 120 6 S180 4, 198 7"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="4"
+                  strokeLinecap="round"
+                  className="text-ek-teal"
+                />
+              </svg>
+            </span>
+          </h1>
 
           <p className="hero-mobile-tagline mt-3 text-white/82 lg:hidden">{site.tagline}</p>
+          <p className="mt-4 hidden max-w-[440px] text-[15px] leading-[1.65] text-white/78 lg:block">
+            {site.tagline}
+          </p>
 
           <div className="hero-mobile-ctas mt-5 lg:hidden">
             <Link href="#contact" className="hero-btn-primary">
@@ -159,14 +124,6 @@ export function Hero() {
         </div>
 
         <HeroTrustBar className="shrink-0 pt-3 lg:pt-0" variant="hero" />
-
-        <a
-          href="#services"
-          className="hero-scroll-hint absolute bottom-24 left-1/2 z-20 hidden -translate-x-1/2 flex-col items-center gap-1 text-[9px] font-semibold tracking-[0.22em] text-white/55 uppercase transition hover:text-white lg:flex"
-        >
-          <span>Scroll</span>
-          <ChevronDown className="hero-scroll-chevron h-4 w-4" aria-hidden />
-        </a>
       </div>
     </section>
   );
