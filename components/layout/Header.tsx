@@ -7,12 +7,13 @@ import { motion, AnimatePresence } from "framer-motion";
 import { ArrowRight, Menu, X } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 export function Header() {
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
   const [logoReady, setLogoReady] = useState(false);
+  const menuButtonRef = useRef<HTMLButtonElement>(null);
   const { scrolled, headerHidden, activeSection, immersiveMobile } = useMobileChromeState();
 
   useEffect(() => {
@@ -29,7 +30,12 @@ export function Header() {
     if (!open) return;
     const prev = document.body.style.overflow;
     document.body.style.overflow = "hidden";
-    const onKey = (e: KeyboardEvent) => e.key === "Escape" && setOpen(false);
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        setOpen(false);
+        menuButtonRef.current?.focus();
+      }
+    };
     window.addEventListener("keydown", onKey);
     const panel = document.getElementById("mobile-nav");
     const focusable = panel?.querySelector<HTMLElement>("a, button");
@@ -55,37 +61,33 @@ export function Header() {
     return pathname === "/" ? "#contact" : "/#contact";
   }
 
-  const heroOverlay = pathname === "/" && !scrolled;
+  const onHomeHero = pathname === "/" && !scrolled;
   const mobileDark = immersiveMobile;
-  const mobileTransparent = pathname === "/" && (mobileDark || heroOverlay);
+  const mobileUsesDarkLogo = onHomeHero || mobileDark;
 
   return (
     <header
       className={`fixed inset-x-0 top-0 z-50 border-b transition-[transform,background-color,border-color,box-shadow] duration-300 ${
         headerHidden ? "-translate-y-full lg:translate-y-0" : "translate-y-0"
       } ${
-        mobileTransparent
-          ? "border-transparent bg-transparent lg:border-ek-navy/10 lg:bg-white/95 lg:shadow-sm"
+        onHomeHero
+          ? "border-white/10 bg-ek-navy/92 shadow-sm backdrop-blur-md lg:border-ek-navy/10 lg:bg-white/97 lg:shadow-sm"
           : mobileDark
-            ? "border-white/10 bg-ek-navy/45 backdrop-blur-md lg:border-ek-navy/10 lg:bg-white/95 lg:shadow-sm"
+            ? "border-white/10 bg-ek-navy/90 backdrop-blur-md lg:border-ek-navy/10 lg:bg-white/97 lg:shadow-sm"
             : scrolled
-              ? "border-ek-navy/10 bg-white/95 shadow-sm backdrop-blur-md"
-              : "border-transparent bg-white"
-      } ${heroOverlay ? "lg:border-transparent lg:bg-white" : ""}`}
+              ? "border-ek-navy/10 bg-white/97 shadow-sm backdrop-blur-md"
+              : "border-ek-navy/8 bg-white/97 shadow-sm"
+      }`}
     >
-      <div className="landing-container flex h-14 items-center justify-between gap-2 sm:gap-4 lg:h-[72px]">
+      <div className="landing-container flex h-[3.75rem] items-center justify-between gap-3 sm:h-16 lg:h-[4.5rem]">
         <motion.div
           initial={{ opacity: 0, x: -10 }}
           animate={logoReady ? { opacity: 1, x: 0 } : { opacity: 0, x: -10 }}
           transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
           className="min-w-0 shrink-0"
         >
-          <Logo
-            variant={mobileTransparent || mobileDark ? "dark" : "light"}
-            size="headerCompact"
-            className="lg:hidden"
-          />
-          <Logo variant="light" size="header" className="hidden lg:inline-flex" />
+          <Logo variant={mobileUsesDarkLogo ? "dark" : "light"} className="lg:hidden" />
+          <Logo variant="light" className="hidden lg:inline-flex" />
         </motion.div>
 
         <nav className="hidden min-w-0 flex-1 justify-center lg:flex" aria-label="Main">
@@ -97,7 +99,7 @@ export function Header() {
                   <Link
                     href={link.href}
                     aria-current={active ? "page" : undefined}
-                    className={`nav-link relative whitespace-nowrap px-1 py-2 text-[10px] font-semibold tracking-[0.22em] uppercase xl:text-[11px] xl:tracking-[0.24em] ${
+                    className={`nav-link relative whitespace-nowrap px-1 py-2.5 text-[10px] font-semibold tracking-[0.22em] uppercase xl:text-[11px] xl:tracking-[0.24em] ${
                       active ? "nav-link-active text-ek-teal" : "text-ek-navy/65 hover:text-ek-teal"
                     }`}
                   >
@@ -112,17 +114,18 @@ export function Header() {
         <div className="flex shrink-0 items-center gap-2 sm:gap-3">
           <Link
             href={quoteHref()}
-            className="btn-primary inline-flex px-2.5 py-1.5 text-[8px] tracking-[0.12em] sm:px-3 sm:py-2 sm:text-[9px] lg:px-4 lg:py-2.5 lg:text-[10px] lg:tracking-[0.16em] xl:px-5"
+            className="btn-primary inline-flex min-h-10 px-3 py-2 text-[10px] tracking-[0.14em] sm:min-h-11 sm:px-4 sm:text-[10px] lg:px-5 lg:tracking-[0.16em]"
             onClick={() => setOpen(false)}
           >
             Get Quote
-            <ArrowRight className="h-3 w-3 sm:h-3.5 sm:w-3.5" aria-hidden />
+            <ArrowRight className="h-3.5 w-3.5 sm:h-4 sm:w-4" aria-hidden />
           </Link>
 
           <button
+            ref={menuButtonRef}
             type="button"
-            className={`inline-flex h-9 w-9 items-center justify-center rounded-md border transition lg:hidden ${
-              mobileTransparent || mobileDark || open
+            className={`inline-flex h-11 w-11 items-center justify-center rounded-md border transition lg:hidden ${
+              mobileUsesDarkLogo || open
                 ? "border-white/25 bg-white text-ek-navy hover:bg-white/90"
                 : "border-ek-navy/10 text-ek-navy hover:border-ek-teal/30 hover:bg-ek-gray"
             }`}
@@ -144,7 +147,7 @@ export function Header() {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              className="fixed inset-0 top-14 z-40 bg-ek-navy/55 backdrop-blur-[2px] lg:hidden"
+              className="fixed inset-0 top-[3.75rem] z-40 bg-ek-navy/55 backdrop-blur-[2px] sm:top-16 lg:hidden"
               aria-label="Close menu"
               onClick={() => setOpen(false)}
             />
@@ -155,7 +158,7 @@ export function Header() {
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -8 }}
               transition={{ duration: 0.22 }}
-              className={`absolute inset-x-0 top-full z-50 max-h-[calc(100dvh-3.5rem)] overflow-y-auto border-t shadow-lg lg:hidden ${
+              className={`absolute inset-x-0 top-full z-50 max-h-[calc(100dvh-3.75rem)] overflow-y-auto border-t shadow-lg sm:max-h-[calc(100dvh-4rem)] lg:hidden ${
                 mobileDark
                   ? "border-white/10 bg-ek-navy/95 backdrop-blur-md"
                   : "border-ek-navy/10 bg-white"

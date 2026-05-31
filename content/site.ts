@@ -2,7 +2,7 @@ export const siteConfig = {
   name: "EK Constructions",
   tagline: "Premium aluminium, glass, steel and carpentry solutions built with precision and experience.",
   headline: "WE TURN IDEAS INTO",
-  headlineAccent: "ICONIC SPACES.",
+  headlineAccent: "ICONIC SPACES",
   url: "https://ekconstructions.com.au",
   locale: "en-AU",
   instagram: {

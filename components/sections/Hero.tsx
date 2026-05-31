@@ -8,6 +8,10 @@ import { ArrowRight, ArrowUpRight } from "lucide-react";
 import Link from "next/link";
 import { useMemo } from "react";
 
+function stripTrailingPeriod(text: string) {
+  return text.replace(/\.\s*$/, "");
+}
+
 function WhatsAppIcon({ className }: { className?: string }) {
   return (
     <svg viewBox="0 0 24 24" className={className} fill="currentColor" aria-hidden>
@@ -22,6 +26,7 @@ export function Hero() {
     () => buildWhatsAppChatUrl(site.contact.phone),
     [site.contact.phone],
   );
+  const accent = stripTrailingPeriod(site.headlineAccent);
 
   return (
     <section
@@ -32,92 +37,54 @@ export function Hero() {
       <HeroVisual />
 
       <div className="landing-container hero-cinematic-inner relative z-10 flex min-h-0 flex-1 flex-col pb-3 lg:justify-between lg:pb-8">
-        <div className="hero-content-enter hero-desktop-copy flex max-w-[640px] flex-1 flex-col justify-center pt-3 lg:flex-none lg:pt-10 xl:pt-12">
+        <div className="hero-content-enter hero-desktop-copy flex max-w-[680px] flex-1 flex-col justify-center pt-3 lg:flex-none lg:pt-10 xl:pt-12">
           <p className="section-eyebrow section-eyebrow--dark">{site.location.area}</p>
 
           <h1
             id="hero-heading"
             className="hero-mobile-title mt-3 font-black uppercase text-white lg:mt-4 lg:text-[2.35rem] lg:leading-[1.02] lg:tracking-tight xl:text-[2.75rem]"
           >
-            <span className="lg:hidden">
-              WE BUILD <span className="text-ek-teal">DETAILS</span> THAT LAST
-              <span className="hero-headline-mark" aria-hidden />
-            </span>
-            <span className="hidden lg:inline">
-              {site.headline}
-              <br />
-              <span className="relative inline-block text-ek-teal">
-                {site.headlineAccent}
-                <svg
-                  className="hero-brush-stroke absolute -bottom-1 left-0 w-full"
-                  viewBox="0 0 200 12"
-                  preserveAspectRatio="none"
-                  aria-hidden
-                >
-                  <path
-                    d="M2 8 C40 2, 80 10, 120 6 S180 4, 198 7"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="4"
-                    strokeLinecap="round"
-                    className="text-ek-teal"
-                  />
-                </svg>
-              </span>
+            {site.headline}{" "}
+            <span className="hero-title-accent">
+              {accent}
+              <svg
+                className="hero-brush-stroke absolute -bottom-1 left-0 hidden w-full lg:block"
+                viewBox="0 0 200 12"
+                preserveAspectRatio="none"
+                aria-hidden
+              >
+                <path
+                  d="M2 8 C40 2, 80 10, 120 6 S180 4, 198 7"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="4"
+                  strokeLinecap="round"
+                  className="text-ek-teal"
+                />
+              </svg>
             </span>
           </h1>
 
-          <p className="hero-mobile-tagline mt-3 text-white/82 lg:hidden">{site.tagline}</p>
-          <p className="mt-4 hidden max-w-[440px] text-[15px] leading-[1.65] text-white/78 lg:block">
-            {site.tagline}
-          </p>
+          <p className="hero-tagline mt-3 lg:mt-4">{site.tagline}</p>
 
-          <div className="hero-mobile-ctas mt-5 lg:hidden">
-            <Link href="#contact" className="hero-btn-primary">
+          <div className="hero-cta-row">
+            <Link href="#contact" className="hero-cta-primary">
               <span>Get a Quote</span>
-              <ArrowRight className="h-3.5 w-3.5 shrink-0" aria-hidden />
+              <ArrowRight className="h-3.5 w-3.5 shrink-0 lg:h-4 lg:w-4" aria-hidden />
             </Link>
-            <Link href="/gallery" className="hero-btn-outline">
+            <Link href="/gallery" className="hero-cta-secondary">
               <span>View Our Work</span>
-              <ArrowUpRight className="h-3.5 w-3.5 shrink-0" aria-hidden />
+              <ArrowUpRight className="h-3.5 w-3.5 shrink-0 lg:h-4 lg:w-4" aria-hidden />
             </Link>
             {whatsappUrl ? (
               <a
                 href={whatsappUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="hero-btn-whatsapp"
+                className="hero-cta-whatsapp"
               >
-                <WhatsAppIcon className="h-3.5 w-3.5 shrink-0 text-ek-teal" />
+                <WhatsAppIcon className="h-3.5 w-3.5 shrink-0 text-white/90 lg:h-4 lg:w-4" />
                 <span>WhatsApp</span>
-              </a>
-            ) : null}
-          </div>
-
-          <div className="hero-desktop-ctas mt-6 hidden flex-wrap items-center gap-3 lg:flex lg:mt-8">
-            <Link
-              href="#contact"
-              className="btn-primary justify-center shadow-lg shadow-ek-teal/25"
-            >
-              Get a Quote
-              <ArrowRight className="h-4 w-4" aria-hidden />
-            </Link>
-            <Link
-              href="/gallery"
-              className="inline-flex items-center justify-center gap-2 rounded-md border border-white/35 bg-white/5 px-5 py-3.5 text-[11px] font-bold tracking-[0.18em] text-white uppercase backdrop-blur-sm transition hover:border-white/55 hover:bg-white/10 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
-            >
-              View Our Work
-              <ArrowUpRight className="h-4 w-4" aria-hidden />
-            </Link>
-            {whatsappUrl ? (
-              <a
-                href={whatsappUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center justify-center gap-2 rounded-md border border-white/25 bg-white/5 px-5 py-3.5 text-[11px] font-bold tracking-[0.16em] text-white uppercase transition hover:border-white/45 hover:bg-white/10 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
-              >
-                <WhatsAppIcon className="h-4 w-4 text-white/90" />
-                WhatsApp
               </a>
             ) : null}
           </div>

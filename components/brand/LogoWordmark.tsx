@@ -8,7 +8,7 @@ type Props = {
 };
 
 /** Real EK Constructions logo artwork. */
-export function LogoWordmark({ className = "", height = 36, variant = "light" }: Props) {
+export function LogoWordmark({ className = "", height = 42, variant = "light" }: Props) {
   const ratio = 683 / 364;
   const width = Math.round(height * ratio);
   const src = variant === "dark" ? "/images/ek-logo-ondark.png" : "/images/ek-logo-onlight.png";
@@ -20,7 +20,7 @@ export function LogoWordmark({ className = "", height = 36, variant = "light" }:
       width={width}
       height={height}
       priority
-      className={`logo-wordmark ${className}`}
+      className={`logo-wordmark logo-wordmark--${variant} ${className}`}
     />
   );
 }
