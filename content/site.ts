@@ -3,7 +3,7 @@ export const siteConfig = {
   tagline: "Premium aluminium, glass, steel and carpentry solutions built with precision and experience.",
   headline: "WE TURN IDEAS INTO",
   headlineAccent: "ICONIC SPACES",
-  url: "https://ekconstructions.com.au",
+  url: "https://ekconstructions.vercel.app",
   locale: "en-AU",
   instagram: {
     handle: "ekconstructions",

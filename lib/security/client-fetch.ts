@@ -14,27 +14,49 @@ export function clearCsrfCache() {
 }
 
 export async function secureJsonFetch(url: string, init: RequestInit = {}): Promise<Response> {
-  const token = await getCsrfToken();
-  const headers = new Headers(init.headers);
-  headers.set("Content-Type", "application/json");
-  headers.set("X-CSRF-Token", token);
+  const attempt = async (retry: boolean): Promise<Response> => {
+    const token = await getCsrfToken();
+    const headers = new Headers(init.headers);
+    headers.set("Content-Type", "application/json");
+    headers.set("X-CSRF-Token", token);
 
-  return fetch(url, {
-    ...init,
-    credentials: "same-origin",
-    headers,
-  });
+    const res = await fetch(url, {
+      ...init,
+      credentials: "same-origin",
+      headers,
+    });
+
+    if (res.status === 403 && retry) {
+      clearCsrfCache();
+      return attempt(false);
+    }
+
+    return res;
+  };
+
+  return attempt(true);
 }
 
 /** Multipart upload with CSRF (no JSON content-type). */
 export async function secureFormFetch(url: string, init: RequestInit = {}): Promise<Response> {
-  const token = await getCsrfToken();
-  const headers = new Headers(init.headers);
-  headers.set("X-CSRF-Token", token);
+  const attempt = async (retry: boolean): Promise<Response> => {
+    const token = await getCsrfToken();
+    const headers = new Headers(init.headers);
+    headers.set("X-CSRF-Token", token);
 
-  return fetch(url, {
-    ...init,
-    credentials: "same-origin",
-    headers,
-  });
+    const res = await fetch(url, {
+      ...init,
+      credentials: "same-origin",
+      headers,
+    });
+
+    if (res.status === 403 && retry) {
+      clearCsrfCache();
+      return attempt(false);
+    }
+
+    return res;
+  };
+
+  return attempt(true);
 }

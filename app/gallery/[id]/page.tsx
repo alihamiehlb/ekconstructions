@@ -10,11 +10,6 @@ export const dynamic = "force-dynamic";
 
 type Props = { params: Promise<{ id: string }> };
 
-export async function generateStaticParams() {
-  const projects = await getProjects();
-  return projects.map((p) => ({ id: p.id }));
-}
-
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { id } = await params;
   const project = await getProjectById(id);

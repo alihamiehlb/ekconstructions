@@ -5,6 +5,7 @@ import type { Project } from "@/content/projects";
 import {
   DEFAULT_PROJECT_CATEGORY,
   PROJECT_CATEGORIES,
+  isProjectCategory,
 } from "@/lib/project-categories";
 import { isValidGalleryImageSrc } from "@/lib/gallery-image";
 import { secureJsonFetch } from "@/lib/security/client-fetch";
@@ -30,8 +31,38 @@ function newProject(sortOrder: number): Project {
     description: "Describe the scope, materials, and location.",
     featured: false,
     sortOrder,
-    highlights: [],
   };
+}
+
+function normalizeForSave(projects: Project[]): Project[] {
+  return projects.map((project, index) => {
+    const images = (project.images ?? []).map((img) => img.trim()).filter(Boolean);
+    const highlights = (project.highlights ?? []).map((h) => h.trim()).filter(Boolean);
+    const category = isProjectCategory(project.category)
+      ? project.category
+      : DEFAULT_PROJECT_CATEGORY;
+
+    return {
+      ...project,
+      id: project.id.trim() || `project-${Date.now()}-${index}`,
+      title: project.title.trim(),
+      category,
+      src: project.src.trim(),
+      alt: project.alt.trim() || project.title.trim(),
+      description: project.description.trim(),
+      objectPosition: project.objectPosition?.trim() || undefined,
+      images: images.length ? images : undefined,
+      highlights: highlights.length ? highlights : undefined,
+      sortOrder: index + 1,
+    };
+  });
+}
+
+async function loadProjects(): Promise<Project[]> {
+  const res = await fetch("/api/admin/cms/projects", { credentials: "same-origin" });
+  if (!res.ok) throw new Error("Failed to load projects");
+  const data = (await res.json()) as { projects?: Project[] };
+  return data.projects ?? [];
 }
 
 function moveItem<T>(list: T[], from: number, to: number): T[] {
@@ -52,10 +83,8 @@ export function AdminProjectsEditor() {
   const [messageTone, setMessageTone] = useState<"ok" | "warn" | "error">("ok");
 
   useEffect(() => {
-    fetch("/api/admin/cms/projects", { credentials: "same-origin" })
-      .then((r) => r.json())
-      .then((data: { projects?: Project[] }) => {
-        const list = data.projects ?? [];
+    loadProjects()
+      .then((list) => {
         setProjects(list);
         setExpandedId(list[0]?.id ?? null);
       })
@@ -114,9 +143,10 @@ export function AdminProjectsEditor() {
   }
 
   async function saveProjects() {
-    const invalid = projects.filter((p) => !p.title.trim() || !p.src.trim());
+    const payload = normalizeForSave(projects);
+    const invalid = payload.filter((p) => !p.title || !p.src || !isValidGalleryImageSrc(p.src));
     if (invalid.length > 0) {
-      showMessage("Each project needs a title and cover image before saving.", "error");
+      showMessage("Each project needs a title and a valid cover image URL before saving.", "error");
       setExpandedId(invalid[0].id);
       return;
     }
@@ -124,31 +154,38 @@ export function AdminProjectsEditor() {
     setSaving(true);
     setMessage("");
 
-    const res = await secureJsonFetch("/api/admin/cms/projects", {
-      method: "PUT",
-      body: JSON.stringify({ projects }),
-    });
+    try {
+      const res = await secureJsonFetch("/api/admin/cms/projects", {
+        method: "PUT",
+        body: JSON.stringify({ projects: payload }),
+      });
 
-    const data = (await res.json()) as {
-      error?: string;
-      details?: { fieldErrors?: Record<string, string[]> };
-      count?: number;
-    };
+      const data = (await res.json()) as {
+        error?: string;
+        details?: { fieldErrors?: Record<string, string[]> };
+        count?: number;
+        projects?: Project[];
+      };
 
-    setSaving(false);
+      if (!res.ok) {
+        const detail = data.details?.fieldErrors
+          ? Object.entries(data.details.fieldErrors)
+              .map(([k, v]) => `${k}: ${v?.join(", ")}`)
+              .join(" · ")
+          : "";
+        showMessage([data.error ?? "Save failed", detail].filter(Boolean).join(" — "), "error");
+        return;
+      }
 
-    if (!res.ok) {
-      const detail = data.details?.fieldErrors
-        ? Object.entries(data.details.fieldErrors)
-            .map(([k, v]) => `${k}: ${v?.join(", ")}`)
-            .join(" · ")
-        : "";
-      showMessage([data.error ?? "Save failed", detail].filter(Boolean).join(" — "), "error");
-      return;
+      const saved = data.projects ?? payload;
+      setProjects(saved);
+      showMessage(`Saved ${data.count ?? saved.length} project(s) to the live site.`, "ok");
+      router.refresh();
+    } catch {
+      showMessage("Save failed — check your connection and try again.", "error");
+    } finally {
+      setSaving(false);
     }
-
-    showMessage(`Saved ${data.count ?? projects.length} project(s).`, "ok");
-    router.refresh();
   }
 
   const messageClass =

@@ -4,7 +4,7 @@ import { mergeCmsWithDefaults } from "@/lib/cms/merge";
 import { projectSchema } from "@/lib/cms/schema";
 import { logSecurityEvent } from "@/lib/security/audit";
 import { guardMutation, getClientIp } from "@/lib/security/api-guard";
-import { sanitizeCmsPayload } from "@/lib/security/sanitize-cms";
+import { sanitizeProject } from "@/lib/security/sanitize-cms";
 import { NextResponse } from "next/server";
 import { z } from "zod";
 
@@ -48,12 +48,14 @@ export async function PUT(request: Request) {
 
   try {
     const cms = await readCms();
-    const merged = mergeCmsWithDefaults(
-      sanitizeCmsPayload({
-        ...cms,
-        projects: parsed.data.projects,
-      }),
+    const sanitizedProjects = parsed.data.projects.map((project, index) =>
+      sanitizeProject({ ...project, sortOrder: project.sortOrder ?? index + 1 }),
     );
+
+    const merged = mergeCmsWithDefaults({
+      ...cms,
+      projects: sanitizedProjects,
+    });
 
     await writeCms({ ...merged, updatedAt: new Date().toISOString() });
 
@@ -63,9 +65,10 @@ export async function PUT(request: Request) {
       detail: `Projects updated (${merged.projects.length} items)`,
     });
 
-    return NextResponse.json({ ok: true, count: merged.projects.length });
+    return NextResponse.json({ ok: true, count: merged.projects.length, projects: merged.projects });
   } catch (error) {
     const message = error instanceof Error ? error.message : "Save failed";
+    console.error("PUT /api/admin/cms/projects:", error);
     return NextResponse.json({ error: message }, { status: 500 });
   }
 }

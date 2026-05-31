@@ -1,10 +1,6 @@
 import type { Project } from "@/content/projects";
 import { getCmsProjects } from "@/lib/cms";
-import { purgeLegacyGalleryProjects } from "@/lib/cms/purge-legacy-projects";
-import {
-  isValidGalleryImageSrc,
-  normalizeProjectList,
-} from "@/lib/gallery-image";
+import { filterPublicGalleryProjects } from "@/lib/cms/purge-legacy-projects";
 
 export type { Project };
 
@@ -17,15 +13,9 @@ export function sortProjects(projects: Project[]): Project[] {
   });
 }
 
-function isValidProject(project: Project): boolean {
-  return Boolean(project.title?.trim()) && Boolean(project.src?.trim()) && isValidGalleryImageSrc(project.src);
-}
-
 /** Public gallery — CMS projects only (no hardcoded fallbacks). */
 export async function getProjects(): Promise<Project[]> {
-  const cmsProjects = purgeLegacyGalleryProjects(
-    normalizeProjectList(await getCmsProjects()),
-  ).filter(isValidProject);
+  const cmsProjects = filterPublicGalleryProjects(await getCmsProjects());
   return sortProjects(cmsProjects);
 }
 
@@ -39,4 +29,14 @@ export async function getFeaturedProjects(limit = 3): Promise<Project[]> {
   const featured = projects.filter((p) => p.featured);
   if (featured.length > 0) return featured.slice(0, limit);
   return projects.slice(0, limit);
+}
+
+/** All CMS projects including drafts — admin preview only. */
+export async function getAdminProjects(): Promise<Project[]> {
+  return sortProjects(await getCmsProjects());
+}
+
+export async function getAdminProjectById(id: string): Promise<Project | undefined> {
+  const list = await getAdminProjects();
+  return list.find((p) => p.id === id);
 }

@@ -1,7 +1,7 @@
 import type { Project } from "@/content/projects";
-import { isStockGalleryImageSrc, isValidGalleryImageSrc } from "@/lib/gallery-image";
+import { isStockGalleryImageSrc, isValidGalleryImageSrc, normalizeProjectList } from "@/lib/gallery-image";
 
-/** Baked-in demo projects from early site builds — never show publicly. */
+/** Baked-in demo projects from early site builds — hidden on the public site only. */
 export const LEGACY_DEMO_PROJECT_IDS = new Set([
   "project-DXJsOgwDysY",
   "project-DW3rM9qmE-K",
@@ -10,24 +10,30 @@ export const LEGACY_DEMO_PROJECT_IDS = new Set([
   "project-carpentry-01",
 ]);
 
+/** True when the project id or cover image is a known demo placeholder. */
 export function isLegacyDemoProject(project: Project): boolean {
   if (LEGACY_DEMO_PROJECT_IDS.has(project.id)) return true;
 
   const src = project.src.trim();
   if (src.startsWith("/images/gallery/")) return true;
 
-  if (isStockGalleryImageSrc(src)) return true;
-
-  const extras = project.images ?? [];
-  if (extras.some((image) => image.startsWith("/images/gallery/") || isStockGalleryImageSrc(image))) {
-    return true;
-  }
-
-  return false;
+  return isStockGalleryImageSrc(src);
 }
 
-export function purgeLegacyGalleryProjects(projects: Project[]): Project[] {
-  return projects.filter(
-    (project) => !isLegacyDemoProject(project) && isValidGalleryImageSrc(project.src.trim()),
+function isValidPublicProject(project: Project): boolean {
+  return (
+    Boolean(project.title?.trim()) &&
+    Boolean(project.src?.trim()) &&
+    isValidGalleryImageSrc(project.src)
   );
 }
+
+/** Filters demo/invalid projects for the public gallery — never mutates CMS storage. */
+export function filterPublicGalleryProjects(projects: Project[]): Project[] {
+  return normalizeProjectList(projects).filter(
+    (project) => !isLegacyDemoProject(project) && isValidPublicProject(project),
+  );
+}
+
+/** @deprecated Use filterPublicGalleryProjects — kept for any stale imports. */
+export const purgeLegacyGalleryProjects = filterPublicGalleryProjects;

@@ -1,5 +1,5 @@
 import type { z } from "zod";
-import type { cmsSchema } from "@/lib/cms/schema";
+import type { cmsSchema, projectSchema } from "@/lib/cms/schema";
 import {
   sanitizeAssetPath,
   sanitizeEmail,
@@ -7,6 +7,37 @@ import {
 } from "@/lib/security/sanitize";
 
 type CmsPayload = z.infer<typeof cmsSchema>;
+type ProjectPayload = z.infer<typeof projectSchema>;
+
+function sanitizeRemoteOrAssetPath(value: string): string {
+  const text = sanitizeText(value, 500);
+  if (text.startsWith("https://") || text.startsWith("http://")) return text;
+  return sanitizeAssetPath(text) ?? text;
+}
+
+export function sanitizeProject(project: ProjectPayload): ProjectPayload {
+  const images = project.images
+    ?.map((img) => sanitizeRemoteOrAssetPath(img))
+    .filter(Boolean);
+  const highlights = project.highlights?.map((h) => sanitizeText(h, 120)).filter(Boolean);
+
+  return {
+    ...project,
+    id: sanitizeText(project.id, 80),
+    title: sanitizeText(project.title, 120),
+    category: sanitizeText(project.category, 80),
+    src: sanitizeRemoteOrAssetPath(project.src),
+    images: images?.length ? images : undefined,
+    alt: sanitizeText(project.alt, 200),
+    description: sanitizeText(project.description, 2000),
+    objectPosition: project.objectPosition?.trim()
+      ? sanitizeText(project.objectPosition, 80)
+      : undefined,
+    highlights: highlights?.length ? highlights : undefined,
+    featured: project.featured,
+    sortOrder: project.sortOrder,
+  };
+}
 
 export function sanitizeCmsPayload(data: CmsPayload): CmsPayload {
   return {
@@ -41,27 +72,6 @@ export function sanitizeCmsPayload(data: CmsPayload): CmsPayload {
       icon: sanitizeText(w.icon, 40),
     })),
     materials: data.materials.map((m) => sanitizeText(m, 200)).filter(Boolean),
-    projects: data.projects.map((p) => ({
-      ...p,
-      id: sanitizeText(p.id, 40),
-      title: sanitizeText(p.title, 120),
-      category: sanitizeText(p.category, 80),
-      src: sanitizeRemoteOrAssetPath(p.src),
-      images: p.images
-        ?.map((img) => sanitizeRemoteOrAssetPath(img))
-        .filter(Boolean),
-      alt: sanitizeText(p.alt, 200),
-      description: sanitizeText(p.description, 2000),
-      objectPosition: p.objectPosition ? sanitizeText(p.objectPosition, 80) : undefined,
-      highlights: p.highlights?.map((h) => sanitizeText(h, 120)),
-      featured: p.featured,
-      sortOrder: p.sortOrder,
-    })),
+    projects: data.projects.map(sanitizeProject),
   };
-}
-
-function sanitizeRemoteOrAssetPath(value: string): string {
-  const text = sanitizeText(value, 500);
-  if (text.startsWith("https://") || text.startsWith("http://")) return text;
-  return sanitizeAssetPath(text) ?? text;
 }
