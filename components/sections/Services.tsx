@@ -86,7 +86,7 @@ export function Services({ services }: { services: CmsService[] }) {
   return (
     <section id="services" className="section-block relative overflow-hidden bg-ek-navy scroll-mt-20 lg:scroll-mt-[5.5rem]">
       <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-ek-navy via-ek-navy/98 to-ek-navy" aria-hidden />
-      <div className="pointer-events-none absolute inset-0 opacity-[0.05]" aria-hidden>
+      <div className="pointer-events-none absolute inset-0 opacity-[0.05] lg:hidden" aria-hidden>
         <Image
           src="/images/hero-building.png"
           alt=""
