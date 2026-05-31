@@ -313,11 +313,11 @@ body {
 
 @media (min-width: 1024px) {
   .hero-cinematic {
-    min-height: min(92dvh, 860px);
+    min-height: min(96dvh, 940px);
   }
 
   .hero-cinematic-inner {
-    min-height: calc(min(92dvh, 860px) - 4.5rem);
+    min-height: calc(min(96dvh, 940px) - 4.5rem);
   }
 
   .hero-desktop-copy h1,
@@ -705,12 +705,32 @@ body {
     linear-gradient(180deg, rgba(8, 8, 10, 0.4) 0%, transparent 38%, rgba(8, 8, 10, 0.68) 100%);
 }
 
+.hero-photo {
+  object-fit: cover;
+  object-position: center 38%;
+}
+
 @media (min-width: 1024px) {
   .hero-photo {
+    /* Portrait photo: anchor to bottom on wide screens so the pool stays in frame. */
+    object-position: 54% 100%;
     transform: translateZ(0);
+    transform-origin: 54% 100%;
     backface-visibility: hidden;
   }
 
+  .hero-ken-burns {
+    transform-origin: 54% 100%;
+  }
+}
+
+@media (min-width: 1280px) {
+  .hero-photo {
+    object-position: 50% 98%;
+  }
+}
+
+@media (min-width: 1024px) {
   .hero-visual-overlay--desktop {
     background:
       linear-gradient(
@@ -720,13 +740,13 @@ body {
         rgba(8, 8, 10, 0.08) 52%,
         transparent 68%
       ),
-      linear-gradient(180deg, rgba(8, 8, 10, 0.22) 0%, transparent 42%, rgba(8, 8, 10, 0.5) 100%);
+      linear-gradient(180deg, rgba(8, 8, 10, 0.16) 0%, transparent 45%, rgba(8, 8, 10, 0.22) 100%);
   }
 
   .hero-visual-vignette--desktop {
     background:
-      radial-gradient(ellipse 110% 70% at 50% 100%, rgba(8, 8, 10, 0.32), transparent 58%),
-      linear-gradient(180deg, transparent 0%, transparent 55%, rgba(8, 8, 10, 0.22) 100%);
+      radial-gradient(ellipse 110% 70% at 50% 100%, rgba(8, 8, 10, 0.18), transparent 62%),
+      linear-gradient(180deg, transparent 0%, transparent 62%, rgba(8, 8, 10, 0.12) 100%);
   }
 }
 

@@ -18,7 +18,7 @@ export function HeroVisual() {
         fetchPriority="high"
         quality={90}
         sizes="100vw"
-        className={`hero-photo object-cover object-[center_36%] sm:object-[center_34%] lg:object-[68%_center] ${reduceMotion ? "" : "hero-ken-burns"}`}
+        className={`hero-photo ${reduceMotion ? "" : "hero-ken-burns"}`}
       />
       <div className="hero-visual-glow absolute inset-0 lg:opacity-50" aria-hidden />
       <div className="hero-visual-overlay hero-visual-overlay--mobile absolute inset-0 lg:hidden" aria-hidden />
