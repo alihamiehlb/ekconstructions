@@ -6,15 +6,10 @@ import { usePathname } from "next/navigation";
 const links = [
   { href: "/admin", label: "Dashboard" },
   { href: "/admin/inquiries", label: "Enquiries" },
-  { href: "/admin/business", label: "Business" },
   { href: "/admin/content", label: "Site content" },
-  { href: "/admin/projects", label: "Projects" },
-  { href: "/admin/before-after", label: "Before/After" },
-  { href: "/admin/instagram", label: "Instagram" },
-  { href: "/admin/accounts", label: "Accounts" },
+  { href: "/admin/projects", label: "Gallery" },
   { href: "/admin/settings", label: "Settings" },
-  { href: "/admin/logs", label: "Logs" },
-  { href: "/admin/security", label: "Security" },
+  { href: "/admin/accounts", label: "Accounts" },
 ];
 
 export function AdminNav() {

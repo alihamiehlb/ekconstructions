@@ -1,26 +1,18 @@
-import { inferCategoryFromCaption } from "@/lib/instagram/caption-utils";
-import { readInstagramFeed } from "@/lib/instagram/feed";
-import { isSupabaseFeedConfigured } from "@/lib/instagram/supabase-feed";
+import { getCmsProjects } from "@/lib/cms";
 import { readSecurityAudit } from "@/lib/security/audit";
 import { getAdminStats, getStorageMode } from "@/lib/store";
 
 export type AdminInsights = {
-  instagram: {
-    postCount: number;
+  gallery: {
+    projectCount: number;
+    featuredCount: number;
     carouselCount: number;
     totalSlides: number;
-    withCaption: number;
-    withoutCaption: number;
-    captionCoverage: number;
-    savedUrlCount: number;
-    lastSynced: string | null;
     categories: { name: string; count: number }[];
-    supabaseConfigured: boolean;
-    sessionConfigured: boolean;
   };
   activity: {
     logEvents24h: number;
-    syncEvents: number;
+    cmsUpdates: number;
     failedLogins: number;
   };
   site: {
@@ -34,8 +26,8 @@ export type AdminInsights = {
 };
 
 export async function getAdminInsights(): Promise<AdminInsights> {
-  const [feed, stats, logs] = await Promise.all([
-    readInstagramFeed(),
+  const [projects, stats, logs] = await Promise.all([
+    getCmsProjects(),
     getAdminStats(),
     readSecurityAudit(100),
   ]);
@@ -44,41 +36,31 @@ export async function getAdminInsights(): Promise<AdminInsights> {
   const recentLogs = logs.filter((e) => new Date(e.at).getTime() >= dayAgo);
 
   const categoryMap = new Map<string, number>();
-  let withCaption = 0;
+  let featuredCount = 0;
   let carouselCount = 0;
   let totalSlides = 0;
 
-  for (const post of feed.posts) {
-    if (post.caption.trim()) withCaption++;
-    if (post.isCarousel) carouselCount++;
-    totalSlides += post.images.length;
-    const cat = inferCategoryFromCaption(post.caption);
-    categoryMap.set(cat, (categoryMap.get(cat) ?? 0) + 1);
+  for (const project of projects) {
+    if (project.featured) featuredCount++;
+    const slides = project.images?.length ?? 1;
+    if ((project.images?.length ?? 0) > 1) carouselCount++;
+    totalSlides += slides;
+    categoryMap.set(project.category, (categoryMap.get(project.category) ?? 0) + 1);
   }
 
-  const postCount = feed.posts.length;
-
   return {
-    instagram: {
-      postCount,
+    gallery: {
+      projectCount: projects.length,
+      featuredCount,
       carouselCount,
       totalSlides,
-      withCaption,
-      withoutCaption: postCount - withCaption,
-      captionCoverage: postCount > 0 ? Math.round((withCaption / postCount) * 100) : 0,
-      savedUrlCount: feed.savedUrls?.length ?? 0,
-      lastSynced: feed.syncedAt || null,
       categories: [...categoryMap.entries()]
         .map(([name, count]) => ({ name, count }))
         .sort((a, b) => b.count - a.count),
-      supabaseConfigured: isSupabaseFeedConfigured(),
-      sessionConfigured: Boolean(process.env.INSTAGRAM_SESSION_ID?.trim()),
     },
     activity: {
       logEvents24h: recentLogs.length,
-      syncEvents: recentLogs.filter(
-        (e) => e.type === "instagram_sync" || e.type === "instagram_discover",
-      ).length,
+      cmsUpdates: recentLogs.filter((e) => e.type === "cms_update").length,
       failedLogins: recentLogs.filter((e) => e.type === "login_failed").length,
     },
     site: {

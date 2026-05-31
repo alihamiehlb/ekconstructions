@@ -3,6 +3,7 @@ import { Header } from "@/components/layout/Header";
 import { GalleryGrid } from "@/components/gallery/GalleryGrid";
 import { getProjects } from "@/lib/projects";
 import type { Metadata } from "next";
+import { Suspense } from "react";
 
 export const dynamic = "force-dynamic";
 
@@ -27,14 +28,23 @@ export default async function GalleryPage() {
           </h1>
           <p className="mt-4 max-w-xl text-sm leading-relaxed text-ek-muted sm:text-base">
             Browse completed aluminium glazing, frameless glass balustrades, privacy screens, steel
-            work and carpentry across Sydney and Greater NSW.
+            work and carpentry across Sydney and Greater NSW. Filter by category below.
           </p>
         </div>
-        <GalleryGrid
-          projects={projects}
-          title="All Projects"
-          subtitle="Showcase"
-        />
+        <Suspense
+          fallback={
+            <div className="landing-container py-12 text-center text-sm text-ek-muted">
+              Loading gallery…
+            </div>
+          }
+        >
+          <GalleryGrid
+            projects={projects}
+            title="All Projects"
+            subtitle="Showcase"
+            syncUrl
+          />
+        </Suspense>
       </main>
       <Footer />
     </>

@@ -5,7 +5,7 @@ import { useSite } from "@/components/providers/SiteProvider";
 import type { Project } from "@/content/projects";
 import { getProjectImages } from "@/lib/project-images";
 import { motion } from "framer-motion";
-import { ArrowLeft, ArrowRight, ExternalLink, Instagram } from "lucide-react";
+import { ArrowLeft, ArrowRight, Instagram } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 
@@ -153,27 +153,15 @@ export function ProjectDetailScreen({ project, projects, index }: Props) {
             Get a Quote
             <ArrowRight className="h-4 w-4" aria-hidden />
           </Link>
-          {project.instagramUrl ? (
-            <a
-              href={project.instagramUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="mt-3 inline-flex w-full items-center justify-center gap-2 rounded-[3px] border border-white/15 px-5 py-3.5 text-[11px] font-bold tracking-[0.14em] text-white uppercase transition hover:border-ek-teal hover:text-ek-teal"
-            >
-              <ExternalLink className="h-4 w-4" aria-hidden />
-              View on Instagram
-            </a>
-          ) : (
-            <a
-              href={site.instagram.url}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="mt-3 inline-flex w-full items-center justify-center gap-2 rounded-[3px] border border-white/15 px-5 py-3.5 text-[11px] font-bold tracking-[0.14em] text-white uppercase transition hover:border-ek-teal hover:text-ek-teal"
-            >
-              <Instagram className="h-4 w-4" aria-hidden />
-              @{site.instagram.handle}
-            </a>
-          )}
+          <a
+            href={site.instagram.url}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="mt-3 inline-flex w-full items-center justify-center gap-2 rounded-[3px] border border-white/15 px-5 py-3.5 text-[11px] font-bold tracking-[0.14em] text-white uppercase transition hover:border-ek-teal hover:text-ek-teal"
+          >
+            <Instagram className="h-4 w-4" aria-hidden />
+            @{site.instagram.handle}
+          </a>
         </motion.aside>
       </div>
 

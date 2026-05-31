@@ -1,15 +1,15 @@
 "use client";
 
 const hotspots = [
-  { label: "Aluminium Windows", top: "19%", left: "76%" },
-  { label: "Frameless Glass Balustrades", top: "33%", left: "68%" },
-  { label: "Steel Fabrication", top: "47%", left: "74%" },
-  { label: "Custom Joinery", top: "61%", left: "66%" },
+  { label: "Pool glazing", top: "28%", left: "72%" },
+  { label: "Glass balustrade", top: "42%", left: "78%" },
+  { label: "Aluminium windows", top: "22%", left: "58%" },
+  { label: "Outdoor living", top: "55%", left: "68%" },
 ];
 
 export function HeroHotspots() {
   return (
-    <div className="hero-hotspots pointer-events-none absolute inset-0 z-[5] lg:hidden" aria-hidden>
+    <div className="hero-hotspots pointer-events-none absolute inset-0 z-[5] hidden lg:block" aria-hidden>
       {hotspots.map((spot) => (
         <div
           key={spot.label}

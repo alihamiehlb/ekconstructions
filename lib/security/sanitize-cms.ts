@@ -53,24 +53,9 @@ export function sanitizeCmsPayload(data: CmsPayload): CmsPayload {
       alt: sanitizeText(p.alt, 200),
       description: sanitizeText(p.description, 2000),
       objectPosition: p.objectPosition ? sanitizeText(p.objectPosition, 80) : undefined,
-      instagramUrl: p.instagramUrl ? sanitizeText(p.instagramUrl, 300) : undefined,
       highlights: p.highlights?.map((h) => sanitizeText(h, 120)),
-    })),
-    beforeAfterSection: data.beforeAfterSection
-      ? {
-          eyebrow: sanitizeText(data.beforeAfterSection.eyebrow, 80),
-          title: sanitizeText(data.beforeAfterSection.title, 120),
-          subtitle: sanitizeText(data.beforeAfterSection.subtitle, 300),
-        }
-      : undefined,
-    beforeAfterItems: data.beforeAfterItems?.map((item) => ({
-      id: sanitizeText(item.id, 40),
-      title: sanitizeText(item.title, 120),
-      location: sanitizeText(item.location, 120),
-      beforeSrc: sanitizeRemoteOrAssetPath(item.beforeSrc),
-      afterSrc: sanitizeRemoteOrAssetPath(item.afterSrc),
-      beforeAlt: sanitizeText(item.beforeAlt, 200),
-      afterAlt: sanitizeText(item.afterAlt, 200),
+      featured: p.featured,
+      sortOrder: p.sortOrder,
     })),
   };
 }

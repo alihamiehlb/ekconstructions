@@ -70,22 +70,20 @@ Tracks:
 | `SUPABASE_SERVICE_ROLE_KEY` | Supabase → Settings → API → `service_role` (secret) |
 | `NEXT_PUBLIC_CONTACT_EMAIL` | Your business email |
 | `NEXT_PUBLIC_CONTACT_PHONE` | Optional phone number |
-| `NEXT_PUBLIC_INSTAGRAM_VIDEO_URL` | Full Instagram reel/post URL for hero video |
 
-## Instagram gallery
+## Gallery (URL-based)
 
-1. Open **Admin → Instagram** (`/admin/instagram`).
-2. Click **Discover & sync profile** or paste post URLs from [@ekconstructions](https://www.instagram.com/ekconstructions/).
-3. Images use **direct Instagram CDN links** (not downloaded). Carousel posts stay grouped as one gallery project with slides.
+1. Open **Admin → Gallery** (`/admin/projects`).
+2. Click **+ Add project** and paste **cover image URLs** (Supabase Storage, CDN, or `/images/...` paths).
+3. Choose a **category** for filter buttons on the public gallery.
+4. Check **Featured on homepage** for the bento spotlight section (up to 3 projects).
+5. Click **Save gallery**.
 
-Optional: set `INSTAGRAM_SESSION_ID` in Vercel env (from browser cookies while logged into Instagram) so “Discover” can load all profile posts.
-
-Feed is stored in **Supabase** (`instagram_feed` table) and `content/instagram-feed.json` for git backup.
+Extra slides: one image URL per line in the slides field (for carousel projects).
 
 ## Security (DB → Vercel)
 
-- Supabase tables `enquiries`, `page_views`, `cms_content`, `instagram_feed`, `security_audit` — RLS enabled, **deny all** for `anon` / `authenticated`; only `service_role` on the server.
-- Run migrations in `supabase/migrations/` in the Supabase SQL editor (including `20240529120000_instagram_feed_and_storage.sql`).
+- Supabase tables `enquiries`, `page_views`, `cms_content`, `security_audit` — RLS enabled, **deny all** for `anon` / `authenticated`; only `service_role` on the server.
 - Admin: JWT session cookie, CSRF on mutations, origin allowlist (includes your Vercel URL), rate limits, input sanitization.
 - Contact form saves to DB only (no Resend). Enquiries visible in **Admin → Dashboard**.
 

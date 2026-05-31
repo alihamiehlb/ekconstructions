@@ -1,13 +1,5 @@
 import { projects as defaultProjects, type Project } from "@/content/projects";
 import { getCmsProjects } from "@/lib/cms";
-import {
-  descriptionFromCaption,
-  inferCategoryFromCaption,
-  titleFromCaption,
-} from "@/lib/instagram/caption-utils";
-import { readInstagramFeed } from "@/lib/instagram/feed";
-import { getInstagramPostMeta } from "@/lib/instagram/post-meta";
-import type { InstagramPost } from "@/lib/instagram/types";
 
 export type { Project };
 
@@ -18,61 +10,41 @@ function isPlaceholderProject(project: Project): boolean {
   return (project.images ?? []).some((src) => src.startsWith(PLACEHOLDER_PREFIX));
 }
 
-function isRemoteImage(src: string): boolean {
-  return src.startsWith("http://") || src.startsWith("https://");
+function isValidImageSrc(src: string): boolean {
+  return (
+    src.startsWith("http://") ||
+    src.startsWith("https://") ||
+    (src.startsWith("/") && !src.startsWith(PLACEHOLDER_PREFIX))
+  );
 }
 
-function instagramPostToProject(post: InstagramPost): Project {
-  const caption = post.caption || "";
-  const meta = getInstagramPostMeta(post.shortcode);
-
-  return {
-    id: `ig-${post.shortcode}`,
-    title: meta?.title ?? post.title ?? titleFromCaption(caption),
-    category: meta?.category ?? inferCategoryFromCaption(caption),
-    src: post.thumbnail,
-    images: post.images,
-    alt: caption.slice(0, 120) || titleFromCaption(caption),
-    description: meta?.description ?? descriptionFromCaption(caption),
-    instagramUrl: post.permalink,
-    highlights: post.isCarousel ? [`${post.images.length} photos`] : undefined,
-    objectPosition: "center",
-  };
+function isValidProject(project: Project): boolean {
+  return Boolean(project.src?.trim()) && isValidImageSrc(project.src) && !isPlaceholderProject(project);
 }
 
-async function projectsFromInstagramFeed(): Promise<Project[]> {
-  const feed = await readInstagramFeed();
-  return feed.posts
-    .filter((p) => p.images.length > 0 && isRemoteImage(p.thumbnail))
-    .map(instagramPostToProject);
+export function sortProjects(projects: Project[]): Project[] {
+  return [...projects].sort((a, b) => {
+    const orderA = a.sortOrder ?? 999;
+    const orderB = b.sortOrder ?? 999;
+    if (orderA !== orderB) return orderA - orderB;
+    return a.title.localeCompare(b.title);
+  });
 }
 
 export async function getProjects(): Promise<Project[]> {
-  const fromIg = await projectsFromInstagramFeed();
-
-  const cmsProjects = (await getCmsProjects()).filter((p) => !isPlaceholderProject(p));
-
-  if (fromIg.length > 0) {
-    const igIds = new Set(fromIg.map((p) => p.id));
-    const extraCms = cmsProjects.filter(
-      (p) => !p.id.startsWith("ig-") && !igIds.has(p.id) && isRemoteImage(p.src),
-    );
-    return [...fromIg, ...extraCms];
-  }
-
-  if (cmsProjects.length > 0) {
-    return cmsProjects.filter((p) => isRemoteImage(p.src));
-  }
-
-  return defaultProjects.filter((p) => isRemoteImage(p.src));
+  const cmsProjects = (await getCmsProjects()).filter(isValidProject);
+  if (cmsProjects.length > 0) return sortProjects(cmsProjects);
+  return sortProjects(defaultProjects.filter(isValidProject));
 }
 
 export async function getProjectById(id: string): Promise<Project | undefined> {
-  const projects = await getProjects();
-  return projects.find((p) => p.id === id);
+  const list = await getProjects();
+  return list.find((p) => p.id === id);
 }
 
-export async function getInstagramPostsForHome() {
-  const feed = await readInstagramFeed();
-  return feed.posts.filter((p) => p.images.length > 0).slice(0, 8);
+export async function getFeaturedProjects(limit = 3): Promise<Project[]> {
+  const projects = await getProjects();
+  const featured = projects.filter((p) => p.featured);
+  if (featured.length > 0) return featured.slice(0, limit);
+  return projects.slice(0, limit);
 }

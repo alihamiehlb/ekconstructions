@@ -22,12 +22,11 @@ const securityHeaders = [
     key: "Content-Security-Policy",
     value: [
       "default-src 'self'",
-      "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://www.instagram.com",
+      "script-src 'self' 'unsafe-inline' 'unsafe-eval'",
       "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
       "font-src 'self' https://fonts.gstatic.com data:",
       "img-src 'self' data: blob: https://images.unsplash.com https://*.cdninstagram.com https://*.fbcdn.net https://*.supabase.co",
       "connect-src 'self' https://*.supabase.co",
-      "frame-src https://www.instagram.com",
       "frame-ancestors 'self'",
       "base-uri 'self'",
       "form-action 'self'",
@@ -45,9 +44,17 @@ const nextConfig: NextConfig = {
       { protocol: "https", hostname: "images.unsplash.com" },
       { protocol: "https", hostname: "**.cdninstagram.com" },
       { protocol: "https", hostname: "**.fbcdn.net" },
-      { protocol: "https", hostname: "**.instagram.com" },
       { protocol: "https", hostname: "**.supabase.co", pathname: "/storage/v1/object/public/**" },
     ],
+  },
+  async redirects() {
+    return [
+      { source: "/admin/instagram", destination: "/admin/projects", permanent: false },
+      { source: "/admin/before-after", destination: "/admin/projects", permanent: false },
+      { source: "/admin/business", destination: "/admin", permanent: false },
+      { source: "/admin/security", destination: "/admin/settings", permanent: false },
+      { source: "/admin/logs", destination: "/admin/settings", permanent: false },
+    ];
   },
   async headers() {
     return [

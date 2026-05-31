@@ -73,18 +73,12 @@ export default async function AdminDashboardPage() {
       storage: getStorageMode(),
     };
     insights = {
-      instagram: {
-        postCount: 0,
+      gallery: {
+        projectCount: 0,
+        featuredCount: 0,
         carouselCount: 0,
         totalSlides: 0,
-        withCaption: 0,
-        withoutCaption: 0,
-        captionCoverage: 0,
-        savedUrlCount: 0,
-        lastSynced: null,
         categories: [],
-        supabaseConfigured: Boolean(process.env.NEXT_PUBLIC_SUPABASE_URL),
-        sessionConfigured: Boolean(process.env.INSTAGRAM_SESSION_ID?.trim()),
       },
       site: {
         storage: getStorageMode(),
@@ -94,7 +88,7 @@ export default async function AdminDashboardPage() {
         conversionRate: 0,
         topServices: [],
       },
-      activity: { logEvents24h: 0, syncEvents: 0, failedLogins: 0 },
+      activity: { logEvents24h: 0, cmsUpdates: 0, failedLogins: 0 },
     };
   }
 
@@ -107,7 +101,7 @@ export default async function AdminDashboardPage() {
         badge={storage === "supabase" ? "Secure · Supabase" : "Local file mode"}
         description={
           storage === "supabase"
-            ? "Full management hub — enquiries, Instagram gallery, logs, and site content."
+            ? "Manage enquiries, gallery projects, and site content."
             : "Configure Supabase on Vercel for production persistence."
         }
       />

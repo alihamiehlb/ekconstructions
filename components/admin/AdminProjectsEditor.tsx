@@ -2,9 +2,12 @@
 
 import { ImageUploadField } from "@/components/admin/ImageUploadField";
 import type { Project } from "@/content/projects";
+import {
+  DEFAULT_PROJECT_CATEGORY,
+  PROJECT_CATEGORIES,
+} from "@/lib/project-categories";
 import { secureJsonFetch } from "@/lib/security/client-fetch";
-import { Trash2 } from "lucide-react";
-import Link from "next/link";
+import { Star, Trash2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
@@ -12,6 +15,20 @@ const PLACEHOLDER_PREFIX = "/images/gallery/";
 
 function isPlaceholder(project: Project): boolean {
   return project.src.startsWith(PLACEHOLDER_PREFIX);
+}
+
+function newProject(): Project {
+  return {
+    id: `project-${Date.now()}`,
+    title: "New project",
+    category: DEFAULT_PROJECT_CATEGORY,
+    src: "",
+    alt: "Project photo",
+    description: "Project description.",
+    featured: false,
+    sortOrder: 99,
+    highlights: [],
+  };
 }
 
 export function AdminProjectsEditor() {
@@ -56,9 +73,9 @@ export function AdminProjectsEditor() {
 
   function clearAll() {
     if (!projects.length) return;
-    if (!confirm("Remove all CMS projects? Instagram gallery posts are managed separately.")) return;
+    if (!confirm("Remove all gallery projects?")) return;
     setProjects([]);
-    showMessage("All CMS projects removed — click Save to persist.", "ok");
+    showMessage("All projects removed — click Save to persist.", "ok");
   }
 
   async function persistProjects(next: Project[], successText: string) {
@@ -125,11 +142,9 @@ export function AdminProjectsEditor() {
     <div className="space-y-6">
       <div className="admin-card rounded-2xl border border-ek-teal/20 bg-gradient-to-br from-ek-teal/5 to-white p-5">
         <p className="text-sm leading-relaxed text-ek-muted">
-          The public gallery is powered by{" "}
-          <Link href="/admin/instagram" className="font-semibold text-ek-teal hover:underline">
-            Admin → Instagram
-          </Link>
-          . Use this page only for extra manual CMS projects (optional).
+          Manage the public gallery here. Paste image URLs (Supabase, CDN, or{" "}
+          <code className="text-ek-navy">/images/...</code> paths), pick a category, and mark
+          projects as featured for the homepage spotlight.
         </p>
       </div>
 
@@ -137,8 +152,7 @@ export function AdminProjectsEditor() {
         <div className="flex flex-wrap items-center justify-between gap-3 rounded-xl border border-ek-teal/30 bg-ek-teal/5 px-4 py-3">
           <p className="text-sm text-ek-navy">
             {hiddenExamples} example project{hiddenExamples === 1 ? "" : "s"} still stored
-            (placeholder images). They are hidden from this list but can block saves on the old
-            editor.
+            (placeholder images).
           </p>
           <button
             type="button"
@@ -157,10 +171,7 @@ export function AdminProjectsEditor() {
 
       {projects.length === 0 ? (
         <p className="rounded-xl border border-ek-navy/10 bg-white p-8 text-center text-sm text-ek-muted">
-          No CMS projects — gallery shows Instagram posts only.{" "}
-          <Link href="/admin/instagram" className="font-semibold text-ek-teal hover:underline">
-            Sync Instagram →
-          </Link>
+          No gallery projects yet. Add your first project below.
         </p>
       ) : (
         projects.map((project, i) => (
@@ -180,29 +191,90 @@ export function AdminProjectsEditor() {
               </button>
             </div>
             <div className="grid gap-3 md:grid-cols-2">
-              {(
-                [
-                  ["id", "ID"],
-                  ["title", "Title"],
-                  ["category", "Category"],
-                  ["alt", "Alt text"],
-                  ["objectPosition", "Object position (CSS)"],
-                ] as const
-              ).map(([key, label]) => (
-                <label key={key} className="block text-sm">
-                  <span className="font-medium text-ek-navy">{label}</span>
-                  <input
-                    className="mt-1 w-full rounded-lg border border-ek-navy/15 px-3 py-2 text-sm"
-                    value={project[key] ?? ""}
-                    onChange={(e) => updateProject(i, { [key]: e.target.value })}
-                  />
-                </label>
-              ))}
+              <label className="block text-sm">
+                <span className="font-medium text-ek-navy">ID</span>
+                <input
+                  className="mt-1 w-full rounded-lg border border-ek-navy/15 px-3 py-2 text-sm"
+                  value={project.id}
+                  onChange={(e) => updateProject(i, { id: e.target.value })}
+                />
+              </label>
+              <label className="block text-sm">
+                <span className="font-medium text-ek-navy">Title</span>
+                <input
+                  className="mt-1 w-full rounded-lg border border-ek-navy/15 px-3 py-2 text-sm"
+                  value={project.title}
+                  onChange={(e) => updateProject(i, { title: e.target.value })}
+                />
+              </label>
+              <label className="block text-sm">
+                <span className="font-medium text-ek-navy">Category</span>
+                <select
+                  className="mt-1 w-full rounded-lg border border-ek-navy/15 px-3 py-2 text-sm"
+                  value={project.category}
+                  onChange={(e) => updateProject(i, { category: e.target.value })}
+                >
+                  {PROJECT_CATEGORIES.map((cat) => (
+                    <option key={cat} value={cat}>
+                      {cat}
+                    </option>
+                  ))}
+                </select>
+              </label>
+              <label className="block text-sm">
+                <span className="font-medium text-ek-navy">Sort order</span>
+                <input
+                  type="number"
+                  min={0}
+                  max={9999}
+                  className="mt-1 w-full rounded-lg border border-ek-navy/15 px-3 py-2 text-sm"
+                  value={project.sortOrder ?? 99}
+                  onChange={(e) =>
+                    updateProject(i, { sortOrder: Number.parseInt(e.target.value, 10) || 0 })
+                  }
+                />
+              </label>
+              <label className="block text-sm">
+                <span className="font-medium text-ek-navy">Alt text</span>
+                <input
+                  className="mt-1 w-full rounded-lg border border-ek-navy/15 px-3 py-2 text-sm"
+                  value={project.alt}
+                  onChange={(e) => updateProject(i, { alt: e.target.value })}
+                />
+              </label>
+              <label className="block text-sm">
+                <span className="font-medium text-ek-navy">Object position (CSS)</span>
+                <input
+                  className="mt-1 w-full rounded-lg border border-ek-navy/15 px-3 py-2 text-sm"
+                  value={project.objectPosition ?? ""}
+                  onChange={(e) => updateProject(i, { objectPosition: e.target.value })}
+                  placeholder="center"
+                />
+              </label>
               <ImageUploadField
-                label="Cover image"
+                label="Cover image URL"
                 value={project.src}
                 onChange={(url) => updateProject(i, { src: url })}
               />
+              <label className="block text-sm md:col-span-2">
+                <span className="font-medium text-ek-navy">
+                  Extra slides (one image URL per line)
+                </span>
+                <textarea
+                  rows={3}
+                  className="mt-1 w-full rounded-lg border border-ek-navy/15 px-3 py-2 font-mono text-xs"
+                  value={(project.images ?? []).join("\n")}
+                  onChange={(e) =>
+                    updateProject(i, {
+                      images: e.target.value
+                        .split(/\r?\n/)
+                        .map((l) => l.trim())
+                        .filter(Boolean),
+                    })
+                  }
+                  placeholder="https://example.com/photo-2.jpg"
+                />
+              </label>
               <label className="block text-sm md:col-span-2">
                 <span className="font-medium text-ek-navy">Description</span>
                 <textarea
@@ -211,6 +283,16 @@ export function AdminProjectsEditor() {
                   value={project.description}
                   onChange={(e) => updateProject(i, { description: e.target.value })}
                 />
+              </label>
+              <label className="flex cursor-pointer items-center gap-2 text-sm md:col-span-2">
+                <input
+                  type="checkbox"
+                  checked={Boolean(project.featured)}
+                  onChange={(e) => updateProject(i, { featured: e.target.checked })}
+                  className="h-4 w-4 rounded border-ek-navy/20 text-ek-teal"
+                />
+                <Star className="h-4 w-4 text-ek-teal" aria-hidden />
+                <span className="font-medium text-ek-navy">Featured on homepage spotlight</span>
               </label>
             </div>
           </section>
@@ -221,22 +303,9 @@ export function AdminProjectsEditor() {
         <button
           type="button"
           className="text-xs font-semibold text-ek-teal uppercase"
-          onClick={() =>
-            setProjects([
-              ...projects,
-              {
-                id: `project-${Date.now()}`,
-                title: "New project",
-                category: "Recent Work",
-                src: "",
-                alt: "Project photo",
-                description: "Project description.",
-                highlights: [],
-              },
-            ])
-          }
+          onClick={() => setProjects([...projects, newProject()])}
         >
-          + Add CMS project
+          + Add project
         </button>
         {projects.length > 0 && (
           <button
@@ -255,7 +324,7 @@ export function AdminProjectsEditor() {
         onClick={saveProjects}
         className="btn-primary block disabled:opacity-60"
       >
-        {saving ? "Saving…" : "Save projects"}
+        {saving ? "Saving…" : "Save gallery"}
       </button>
     </div>
   );

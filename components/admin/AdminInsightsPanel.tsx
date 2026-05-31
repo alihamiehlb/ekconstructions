@@ -9,8 +9,7 @@ import {
   Hash,
   Image,
   Layers,
-  MessageSquare,
-  RefreshCw,
+  Star,
 } from "lucide-react";
 import Link from "next/link";
 
@@ -60,7 +59,7 @@ function StatusPill({ ok, label }: { ok: boolean; label: string }) {
 }
 
 export function AdminInsightsPanel({ insights }: { insights: AdminInsights }) {
-  const ig = insights.instagram;
+  const gallery = insights.gallery;
 
   return (
     <div className="admin-card grid gap-6 lg:grid-cols-3">
@@ -68,27 +67,23 @@ export function AdminInsightsPanel({ insights }: { insights: AdminInsights }) {
         <div className="flex flex-wrap items-start justify-between gap-3">
           <div>
             <h2 className="text-sm font-bold tracking-wide text-ek-navy uppercase">
-              Instagram health
+              Gallery health
             </h2>
             <p className="mt-1 text-xs text-ek-muted">
-              Gallery content from synced posts · last sync{" "}
-              {ig.lastSynced
-                ? new Date(ig.lastSynced).toLocaleString("en-AU")
-                : "never"}
+              Projects managed in Admin → Gallery with URL-based images.
             </p>
           </div>
-          <Link href="/admin/instagram" className="btn-primary px-4 py-2 text-[10px]">
-            <RefreshCw className="h-3.5 w-3.5" aria-hidden />
-            Manage
+          <Link href="/admin/projects" className="btn-primary px-4 py-2 text-[10px]">
+            Manage gallery
           </Link>
         </div>
 
         <div className="mt-6 grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
           {[
-            { icon: Image, label: "Posts", value: ig.postCount },
-            { icon: Layers, label: "Carousels", value: ig.carouselCount },
-            { icon: Hash, label: "Slides", value: ig.totalSlides },
-            { icon: MessageSquare, label: "Captions", value: ig.withCaption },
+            { icon: Image, label: "Projects", value: gallery.projectCount },
+            { icon: Star, label: "Featured", value: gallery.featuredCount },
+            { icon: Layers, label: "Multi-slide", value: gallery.carouselCount },
+            { icon: Hash, label: "Total slides", value: gallery.totalSlides },
           ].map(({ icon: Icon, label, value }, i) => (
             <motion.div
               key={label}
@@ -107,18 +102,22 @@ export function AdminInsightsPanel({ insights }: { insights: AdminInsights }) {
         </div>
 
         <div className="mt-6 space-y-4">
-          <Meter label="Caption coverage" value={ig.withCaption} max={ig.postCount || 1} />
           <Meter
-            label="Saved URLs"
-            value={ig.savedUrlCount}
-            max={Math.max(ig.savedUrlCount, ig.postCount, 1)}
+            label="Featured coverage"
+            value={gallery.featuredCount}
+            max={Math.max(gallery.projectCount, 1)}
+          />
+          <Meter
+            label="Categories in use"
+            value={gallery.categories.length}
+            max={6}
             color="bg-ek-navy"
           />
         </div>
 
-        {ig.categories.length > 0 && (
+        {gallery.categories.length > 0 && (
           <div className="mt-6 flex flex-wrap gap-2">
-            {ig.categories.map((c) => (
+            {gallery.categories.map((c) => (
               <span
                 key={c.name}
                 className="rounded-full bg-ek-teal/10 px-3 py-1 text-[10px] font-bold text-ek-teal uppercase"
@@ -137,10 +136,9 @@ export function AdminInsightsPanel({ insights }: { insights: AdminInsights }) {
         </div>
 
         <div className="mt-5 space-y-3">
-          <StatusPill ok={ig.supabaseConfigured} label="Supabase feed" />
           <StatusPill ok={insights.site.storage === "supabase"} label="Database storage" />
-          <StatusPill ok={ig.sessionConfigured} label="Instagram session" />
-          <StatusPill ok={ig.postCount > 0} label="Gallery populated" />
+          <StatusPill ok={gallery.projectCount > 0} label="Gallery populated" />
+          <StatusPill ok={gallery.featuredCount > 0} label="Homepage featured" />
         </div>
 
         <dl className="mt-6 space-y-3 text-sm">
@@ -149,8 +147,8 @@ export function AdminInsightsPanel({ insights }: { insights: AdminInsights }) {
             <dd className="font-bold">{insights.activity.logEvents24h}</dd>
           </div>
           <div className="flex justify-between border-b border-white/10 pb-2">
-            <dt className="text-white/60">Sync events</dt>
-            <dd className="font-bold">{insights.activity.syncEvents}</dd>
+            <dt className="text-white/60">CMS updates</dt>
+            <dd className="font-bold">{insights.activity.cmsUpdates}</dd>
           </div>
           <div className="flex justify-between border-b border-white/10 pb-2">
             <dt className="text-white/60">Failed logins</dt>
@@ -162,28 +160,12 @@ export function AdminInsightsPanel({ insights }: { insights: AdminInsights }) {
           </div>
         </dl>
 
-        {!ig.sessionConfigured && (
-          <p className="mt-5 rounded-lg bg-white/10 p-3 text-xs leading-relaxed text-white/80">
-            Add <code className="text-ek-teal">INSTAGRAM_SESSION_ID</code> in Vercel env for
-            discover + captions.{" "}
-            <Link href="/admin/settings" className="font-semibold underline">
-              Setup guide →
-            </Link>
-          </p>
-        )}
-
-        <div className="mt-5 flex flex-wrap gap-4">
+        <div className="mt-5">
           <Link
             href="/admin/settings"
             className="inline-flex text-xs font-semibold tracking-wide text-ek-teal uppercase hover:underline"
           >
             Settings →
-          </Link>
-          <Link
-            href="/admin/logs"
-            className="inline-flex text-xs font-semibold tracking-wide text-ek-teal uppercase hover:underline"
-          >
-            Activity logs →
           </Link>
         </div>
       </section>

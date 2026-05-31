@@ -53,7 +53,7 @@ export function ImageUploadField({ label, value, onChange }: Props) {
             className="w-full rounded-lg border border-ek-navy/15 px-3 py-2 text-sm"
             value={value}
             onChange={(e) => onChange(e.target.value)}
-            placeholder="/images/gallery/... or uploaded URL"
+            placeholder="https://... or /images/gallery/photo.jpg"
           />
           <input
             ref={inputRef}
@@ -77,14 +77,16 @@ export function ImageUploadField({ label, value, onChange }: Props) {
             ) : (
               <ImagePlus className="h-4 w-4" aria-hidden />
             )}
-            {uploading ? "Uploading…" : "Upload image"}
+            {uploading ? "Uploading…" : "Or upload to Supabase"}
           </button>
           {error && (
             <p className="text-xs text-red-600" role="alert">
               {error}
             </p>
           )}
-          <p className="text-xs text-ek-muted">Max 5 MB. Stored in Supabase when configured.</p>
+          <p className="text-xs text-ek-muted">
+            Paste a direct image URL above, or upload (max 5 MB) when Supabase is configured.
+          </p>
         </div>
       </div>
     </div>

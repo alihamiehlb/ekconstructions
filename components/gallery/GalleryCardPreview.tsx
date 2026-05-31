@@ -27,7 +27,6 @@ export function GalleryCardPreview({ project, index, compact }: Props) {
   }, [multi, reduceMotion, images.length]);
 
   const src = multi ? images[slide] : images[0];
-  const igShortcode = project.id.startsWith("ig-") ? project.id.slice(3) : null;
   const [imgSrc, setImgSrc] = useState(src);
 
   useEffect(() => {
@@ -60,12 +59,7 @@ export function GalleryCardPreview({ project, index, compact }: Props) {
           style={{ objectPosition: project.objectPosition ?? "center" }}
           loading={index < 4 ? "eager" : "lazy"}
           quality={88}
-          unoptimized={imgSrc.startsWith("http") || imgSrc.startsWith("/api/")}
-          onError={() => {
-            if (igShortcode && !imgSrc.startsWith("/api/")) {
-              setImgSrc(`/api/instagram/image?shortcode=${encodeURIComponent(igShortcode)}`);
-            }
-          }}
+          unoptimized={imgSrc.startsWith("http")}
         />
       </motion.div>
 

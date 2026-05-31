@@ -3,7 +3,7 @@ import { AdminLogoutButton } from "@/components/admin/AdminLogoutButton";
 import { requireAdmin } from "@/lib/auth";
 import Link from "next/link";
 
-export const metadata = { title: "Edit Projects" };
+export const metadata = { title: "Gallery" };
 
 export default async function AdminProjectsPage() {
   await requireAdmin();
@@ -13,13 +13,9 @@ export default async function AdminProjectsPage() {
       <div className="flex flex-wrap items-center justify-between gap-4">
         <div className="min-w-0">
           <p className="text-xs font-semibold tracking-[0.3em] text-ek-teal uppercase">Admin</p>
-          <h1 className="text-2xl font-black text-ek-navy uppercase sm:text-3xl">Projects</h1>
+          <h1 className="text-2xl font-black text-ek-navy uppercase sm:text-3xl">Gallery</h1>
           <p className="mt-1 text-sm text-ek-muted">
-            Optional manual projects. The live gallery uses{" "}
-            <Link href="/admin/instagram" className="font-semibold text-ek-teal hover:underline">
-              Instagram sync
-            </Link>
-            .
+            Paste image URLs, set categories, and mark featured projects for the homepage.
           </p>
         </div>
         <div className="flex items-center gap-3">

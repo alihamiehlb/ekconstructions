@@ -3,11 +3,13 @@
 import { GalleryCardPreview } from "@/components/gallery/GalleryCardPreview";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import type { Project } from "@/content/projects";
+import { PROJECT_CATEGORIES } from "@/lib/project-categories";
 import { projectHasGallery } from "@/lib/project-images";
 import { motion } from "framer-motion";
 import { ArrowUpRight, Layers } from "lucide-react";
 import Link from "next/link";
-import { useMemo, useState } from "react";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { useCallback, useMemo, useState } from "react";
 
 type Props = {
   projects: Project[];
@@ -15,6 +17,7 @@ type Props = {
   title?: string;
   subtitle?: string;
   compact?: boolean;
+  syncUrl?: boolean;
 };
 
 function ProjectCard({
@@ -79,45 +82,90 @@ export function GalleryGrid({
   title = "Recent Projects",
   subtitle = "Portfolio",
   compact = false,
+  syncUrl = false,
 }: Props) {
-  const [filter, setFilter] = useState<string>("All");
+  const router = useRouter();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+  const [localFilter, setLocalFilter] = useState("All");
+  const urlCategory = syncUrl ? searchParams.get("category") : null;
+  const activeFilter =
+    syncUrl && urlCategory && (urlCategory === "All" || PROJECT_CATEGORIES.includes(urlCategory as never))
+      ? urlCategory
+      : syncUrl
+        ? "All"
+        : localFilter;
 
-  const categories = useMemo(
-    () => ["All", ...Array.from(new Set(projects.map((p) => p.category)))],
-    [projects],
-  );
+  const categories = useMemo(() => {
+    const used = new Set(projects.map((p) => p.category));
+    return ["All", ...PROJECT_CATEGORIES.filter((c) => used.has(c))];
+  }, [projects]);
+
+  const counts = useMemo(() => {
+    const map = new Map<string, number>();
+    map.set("All", projects.length);
+    for (const p of projects) {
+      map.set(p.category, (map.get(p.category) ?? 0) + 1);
+    }
+    return map;
+  }, [projects]);
 
   const filtered =
-    filter === "All" ? projects : projects.filter((p) => p.category === filter);
+    activeFilter === "All"
+      ? projects
+      : projects.filter((p) => p.category === activeFilter);
+
+  const setFilter = useCallback(
+    (cat: string) => {
+      if (syncUrl) {
+        const params = new URLSearchParams(searchParams.toString());
+        if (cat === "All") params.delete("category");
+        else params.set("category", cat);
+        const qs = params.toString();
+        router.replace(qs ? `${pathname}?${qs}` : pathname, { scroll: false });
+      } else {
+        setLocalFilter(cat);
+      }
+    },
+    [pathname, router, searchParams, syncUrl],
+  );
 
   const gridClass = compact
     ? "grid grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-5 md:grid-cols-3 lg:grid-cols-5"
     : "grid grid-cols-1 gap-5 sm:grid-cols-2 sm:gap-6 lg:grid-cols-3 xl:gap-8";
 
+  const showFilters = projects.length >= 2 && categories.length > 1;
+
   return (
     <section id="gallery" className="section-block bg-ek-gray/30 pb-12 pt-4 sm:pb-16">
       <div className="landing-container mb-8 flex flex-col gap-4 sm:mb-10 sm:flex-row sm:items-end sm:justify-between">
         <SectionHeading eyebrow={subtitle} title={title} />
-        {categories.length > 1 && (
+        {showFilters && (
           <div
             className={`flex flex-wrap gap-2 ${compact ? "sm:max-w-md sm:justify-end" : ""}`}
             role="group"
             aria-label="Filter projects by category"
           >
-            {categories.map((cat) => (
-              <button
-                key={cat}
-                type="button"
-                onClick={() => setFilter(cat)}
-                className={`min-h-[36px] rounded-full px-4 py-2 text-[10px] font-semibold tracking-wide uppercase transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ek-teal ${
-                  filter === cat
-                    ? "bg-ek-teal text-white shadow-sm"
-                    : "border border-ek-navy/10 bg-white text-ek-muted hover:border-ek-teal/30 hover:text-ek-navy"
-                }`}
-              >
-                {cat}
-              </button>
-            ))}
+            {categories.map((cat) => {
+              const count = counts.get(cat) ?? 0;
+              const active = activeFilter === cat;
+              return (
+                <button
+                  key={cat}
+                  type="button"
+                  onClick={() => setFilter(cat)}
+                  aria-pressed={active}
+                  className={`min-h-[36px] rounded-full px-4 py-2 text-[10px] font-semibold tracking-wide uppercase transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ek-teal ${
+                    active
+                      ? "bg-ek-teal text-white shadow-sm"
+                      : "border border-ek-navy/10 bg-white text-ek-muted hover:border-ek-teal/30 hover:text-ek-navy"
+                  }`}
+                >
+                  {cat}
+                  <span className="ml-1 opacity-70">({count})</span>
+                </button>
+              );
+            })}
           </div>
         )}
       </div>

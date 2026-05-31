@@ -12,29 +12,6 @@ export function mergeCmsWithDefaults(partial: Partial<CmsData>): CmsData {
     whyChooseUs: partial.whyChooseUs?.length ? partial.whyChooseUs : defaults.whyChooseUs,
     materials: partial.materials?.length ? partial.materials : defaults.materials,
     projects: partial.projects?.length ? partial.projects : defaults.projects,
-    beforeAfterSection: (() => {
-      const section = {
-        ...defaults.beforeAfterSection,
-        ...partial.beforeAfterSection,
-      };
-      if (/admin/i.test(section.subtitle)) {
-        section.subtitle = defaults.beforeAfterSection.subtitle;
-      }
-      return section;
-    })(),
-    beforeAfterItems: (() => {
-      const items = partial.beforeAfterItems?.length
-        ? partial.beforeAfterItems
-        : defaults.beforeAfterItems;
-      const usesStaleAssets = items.some(
-        (i) =>
-          i.beforeSrc?.includes("hero-building") || i.afterSrc?.includes("hero-building"),
-      );
-      if (usesStaleAssets || !items.filter((i) => i.beforeSrc?.trim() && i.afterSrc?.trim()).length) {
-        return defaults.beforeAfterItems;
-      }
-      return items;
-    })(),
     updatedAt: partial.updatedAt ?? defaults.updatedAt,
   };
 }

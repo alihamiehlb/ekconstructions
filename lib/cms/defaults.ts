@@ -1,4 +1,3 @@
-import { defaultBeforeAfterItems, defaultBeforeAfterSection } from "@/content/before-after";
 import { projects as defaultProjects } from "@/content/projects";
 import {
   aboutParagraphs,
@@ -41,8 +40,6 @@ export function getDefaultCms(): CmsData {
     })),
     materials: [...materials],
     projects: defaultProjects.map((p) => ({ ...p })),
-    beforeAfterSection: { ...defaultBeforeAfterSection },
-    beforeAfterItems: defaultBeforeAfterItems.map((item) => ({ ...item })),
     updatedAt: new Date().toISOString(),
   };
 }

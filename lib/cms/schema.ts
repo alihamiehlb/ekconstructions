@@ -1,36 +1,23 @@
+import { PROJECT_CATEGORIES } from "@/lib/project-categories";
 import { z } from "zod";
-
-export const beforeAfterItemSchema = z.object({
-  id: z.string().min(1),
-  title: z.string().min(1),
-  location: z.string().max(120),
-  beforeSrc: z.string().min(1),
-  afterSrc: z.string().min(1),
-  beforeAlt: z.string().min(1),
-  afterAlt: z.string().min(1),
-});
-
-export const beforeAfterSectionSchema = z.object({
-  eyebrow: z.string().min(1),
-  title: z.string().min(1),
-  subtitle: z.string().min(1),
-});
 
 export const projectSchema = z.object({
   id: z.string().min(1),
   title: z.string().min(1),
-  category: z.string().min(1),
+  category: z
+    .string()
+    .min(1)
+    .refine((v) => (PROJECT_CATEGORIES as readonly string[]).includes(v), {
+      message: "Invalid category",
+    }),
   src: z.string().min(1),
   images: z.array(z.string().min(1)).optional(),
   alt: z.string().min(1),
   description: z.string().min(1),
   highlights: z.array(z.string()).optional(),
   objectPosition: z.string().optional(),
-  instagramUrl: z
-    .string()
-    .max(300)
-    .optional()
-    .transform((v) => (v?.trim() ? v.trim() : undefined)),
+  featured: z.boolean().optional(),
+  sortOrder: z.number().int().min(0).max(9999).optional(),
 });
 
 export const cmsSchema = z.object({
@@ -68,6 +55,4 @@ export const cmsSchema = z.object({
   ),
   materials: z.array(z.string().min(1)),
   projects: z.array(projectSchema),
-  beforeAfterSection: beforeAfterSectionSchema.optional(),
-  beforeAfterItems: z.array(beforeAfterItemSchema).optional(),
 });
