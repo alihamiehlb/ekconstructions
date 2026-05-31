@@ -1,7 +1,7 @@
 "use client";
 
 import { StaggerItem, StaggerReveal } from "@/components/ui/StaggerReveal";
-import { SectionReveal } from "@/components/ui/SectionReveal";
+import { SectionHeading } from "@/components/ui/SectionHeading";
 import type { CmsService } from "@/lib/cms/types";
 import { ArrowRight } from "lucide-react";
 import Image from "next/image";
@@ -84,7 +84,7 @@ const icons = {
 
 export function Services({ services }: { services: CmsService[] }) {
   return (
-    <section id="services" className="relative overflow-hidden bg-ek-navy">
+    <section id="services" className="section-block relative overflow-hidden bg-ek-navy scroll-mt-20 lg:scroll-mt-[5.5rem]">
       <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-ek-navy via-ek-navy/98 to-ek-navy" aria-hidden />
       <div className="pointer-events-none absolute inset-0 opacity-[0.05]" aria-hidden>
         <Image
@@ -98,23 +98,19 @@ export function Services({ services }: { services: CmsService[] }) {
 
       <div className="relative pb-10 pt-8 sm:pb-16 sm:pt-12 lg:pb-20 lg:pt-16">
         <div className="landing-container">
-          <SectionReveal>
-            <div className="max-w-2xl">
-              <div className="flex items-center gap-2.5 sm:gap-3">
-                <p className="text-[9px] font-semibold tracking-[0.24em] text-ek-teal uppercase sm:text-[10px] sm:tracking-[0.28em]">
-                  Our Expertise
-                </p>
-                <span className="h-px max-w-16 flex-1 bg-ek-teal/80 sm:max-w-32" aria-hidden />
-              </div>
-              <h2 className="mt-2 text-2xl font-black tracking-[0.14em] text-white uppercase sm:text-3xl lg:text-4xl lg:tracking-[0.16em]">
-                Services
-              </h2>
-              <p className="mt-3 hidden max-w-xl text-sm leading-relaxed text-white/55 lg:block">
-                Premium aluminium, glass, steel and carpentry — designed, supplied and installed with
-                precision across Sydney and Greater NSW.
-              </p>
-            </div>
-          </SectionReveal>
+          <SectionHeading
+            eyebrow="Our Expertise"
+            title="Services"
+            description="Premium aluminium, glass, steel and carpentry — designed, supplied and installed with precision across Sydney and Greater NSW."
+            theme="dark"
+            className="hidden lg:block"
+          />
+          <SectionHeading
+            eyebrow="Our Expertise"
+            title="Services"
+            theme="dark"
+            className="lg:hidden"
+          />
 
           <StaggerReveal className="services-grid mt-8 sm:mt-10 lg:mt-12">
             {services.map((service, index) => {

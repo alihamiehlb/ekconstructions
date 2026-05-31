@@ -26,7 +26,7 @@ export function Hero() {
   return (
     <section
       id="home"
-      className="hero-cinematic relative flex flex-col overflow-hidden bg-ek-navy pt-14 lg:pt-[72px]"
+      className="hero-cinematic section-block relative flex flex-col overflow-hidden bg-ek-navy pt-14 lg:pt-[72px]"
     >
       <HeroVisual />
 

@@ -18,7 +18,7 @@ export function Header() {
   useEffect(() => {
     const reveal = () => setLogoReady(true);
     window.addEventListener("ek-brand-loader-done", reveal);
-    const fallback = window.setTimeout(reveal, 3200);
+    const fallback = window.setTimeout(reveal, 1600);
     return () => {
       window.removeEventListener("ek-brand-loader-done", reveal);
       window.clearTimeout(fallback);
@@ -94,14 +94,11 @@ export function Header() {
                   <Link
                     href={link.href}
                     aria-current={active ? "page" : undefined}
-                    className={`relative whitespace-nowrap px-1 py-2 text-[10px] font-semibold tracking-[0.22em] uppercase transition-colors xl:text-[11px] xl:tracking-[0.24em] ${
-                      active ? "text-ek-teal" : "text-ek-navy/65 hover:text-ek-teal"
+                    className={`nav-link relative whitespace-nowrap px-1 py-2 text-[10px] font-semibold tracking-[0.22em] uppercase xl:text-[11px] xl:tracking-[0.24em] ${
+                      active ? "nav-link-active text-ek-teal" : "text-ek-navy/65 hover:text-ek-teal"
                     }`}
                   >
                     {link.label}
-                    {active && (
-                      <span className="absolute -bottom-0.5 left-1/2 h-[2px] w-5 -translate-x-1/2 rounded-full bg-ek-teal" />
-                    )}
                   </Link>
                 </li>
               );

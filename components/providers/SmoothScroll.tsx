@@ -39,11 +39,11 @@ export function SmoothScroll({ children }: { children: React.ReactNode }) {
         autoToggle: true,
         anchors: true,
         allowNestedScroll: true,
-        duration: 1.05,
+        duration: 0.95,
         easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
         smoothWheel: true,
-        wheelMultiplier: 1,
-        touchMultiplier: 1.15,
+        wheelMultiplier: 0.9,
+        touchMultiplier: 1.05,
       });
 
       lenis.on("scroll", dispatchScroll);

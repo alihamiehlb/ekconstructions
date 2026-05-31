@@ -1,10 +1,10 @@
 "use client";
 
 import { ServiceIcon } from "@/components/icons/ServiceIcons";
-import { SectionReveal } from "@/components/ui/SectionReveal";
+import { SectionHeading } from "@/components/ui/SectionHeading";
 import { StaggerItem, StaggerReveal } from "@/components/ui/StaggerReveal";
 import type { CmsWhyItem } from "@/lib/cms/types";
-import { motion } from "framer-motion";
+import { motion, useReducedMotion } from "framer-motion";
 
 export function WhyChooseUs({
   items,
@@ -12,30 +12,31 @@ export function WhyChooseUs({
   items: CmsWhyItem[];
   projectsDelivered?: string;
 }) {
-  return (
-    <section className="bg-white py-10 md:py-12 lg:py-14">
-      <div className="landing-container">
-        <SectionReveal>
-          <h2 className="text-[1.45rem] font-black tracking-tight text-ek-navy uppercase sm:text-[1.65rem] lg:text-[1.85rem]">
-            Why Choose Us?
-          </h2>
-        </SectionReveal>
+  const reduceMotion = useReducedMotion();
 
-        <StaggerReveal className="mt-8 grid grid-cols-2 gap-x-3 gap-y-8 sm:grid-cols-3 lg:grid-cols-5 lg:gap-4">
+  return (
+    <section className="section-block-light">
+      <div className="landing-container">
+        <SectionHeading
+          title="Why Choose Us?"
+          description="Trusted expertise, quality materials, and a commitment to Australian standards on every project."
+        />
+
+        <StaggerReveal className="mt-10 grid grid-cols-2 gap-x-4 gap-y-10 sm:grid-cols-3 lg:grid-cols-5 lg:gap-6">
           {items.map((item) => (
             <StaggerItem key={item.title}>
               <motion.div
-                whileHover={{ y: -3 }}
+                whileHover={reduceMotion ? undefined : { y: -4 }}
                 transition={{ type: "spring", stiffness: 380, damping: 24 }}
-                className="flex flex-col items-center text-center"
+                className="group flex flex-col items-center text-center"
               >
-                <div className="mb-3 flex h-11 w-11 items-center justify-center rounded-full bg-ek-gray text-ek-navy transition-colors hover:bg-ek-teal/10">
+                <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-ek-gray text-ek-navy transition-colors duration-300 group-hover:bg-ek-teal/10">
                   <ServiceIcon name={item.icon} className="h-8 w-8" />
                 </div>
-                <h3 className="max-w-[7.5rem] text-[9px] leading-[1.35] font-bold tracking-[0.05em] text-ek-navy uppercase sm:text-[10px]">
+                <h3 className="max-w-[9rem] text-[11px] leading-snug font-bold tracking-[0.06em] text-ek-navy uppercase sm:text-xs lg:max-w-[10rem]">
                   {item.title}
                 </h3>
-                <p className="mt-2 hidden max-w-[9rem] text-[8px] leading-snug text-ek-muted sm:block lg:max-w-[7.5rem]">
+                <p className="mt-2 max-w-[11rem] text-xs leading-relaxed text-ek-muted sm:text-[13px] lg:max-w-[9.5rem]">
                   {item.description}
                 </p>
               </motion.div>

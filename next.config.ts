@@ -52,12 +52,8 @@ const nextConfig: NextConfig = {
   async headers() {
     return [
       {
-        source: "/images/hero-home.jpg",
-        headers: [{ key: "Cache-Control", value: "public, max-age=0, must-revalidate" }],
-      },
-      {
-        source: "/images/hero-home-desktop.jpg",
-        headers: [{ key: "Cache-Control", value: "public, max-age=0, must-revalidate" }],
+        source: "/images/:path*",
+        headers: [{ key: "Cache-Control", value: "public, max-age=31536000, immutable" }],
       },
       { source: "/(.*)", headers: securityHeaders },
     ];

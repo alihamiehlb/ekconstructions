@@ -1,10 +1,10 @@
 "use client";
 
 import { BeforeAfterCompare } from "@/components/ui/BeforeAfterCompare";
-import { SectionReveal } from "@/components/ui/SectionReveal";
+import { SectionHeading } from "@/components/ui/SectionHeading";
 import type { CmsBeforeAfterItem, CmsBeforeAfterSection } from "@/lib/cms/types";
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
-import { ChevronLeft, ChevronRight, Sparkles } from "lucide-react";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 import { useCallback, useEffect, useMemo, useState } from "react";
 
 type Props = {
@@ -40,24 +40,16 @@ export function BeforeAfterShowcase({ section, items }: Props) {
   const active = slides[index];
 
   return (
-    <section id="transformations" className="relative overflow-hidden bg-ek-gray py-14 md:py-16 lg:py-20">
+    <section id="transformations" className="section-block section-block-muted relative overflow-hidden">
       <div className="before-after-bg pointer-events-none absolute inset-0" aria-hidden />
 
       <div className="landing-container relative">
-        <SectionReveal>
-          <div className="mx-auto max-w-2xl text-center">
-            <p className="inline-flex items-center justify-center gap-2 text-[10px] font-semibold tracking-[0.28em] text-ek-teal uppercase">
-              <Sparkles className="h-3.5 w-3.5" aria-hidden />
-              {section.eyebrow}
-            </p>
-            <h2 className="mt-3 text-[1.55rem] font-black tracking-tight text-ek-navy uppercase sm:text-[1.85rem] lg:text-[2.1rem]">
-              {section.title}
-            </h2>
-            <p className="mt-3 text-sm leading-relaxed text-ek-muted sm:text-base">
-              {section.subtitle}
-            </p>
-          </div>
-        </SectionReveal>
+        <SectionHeading
+          eyebrow={section.eyebrow}
+          title={section.title}
+          description={section.subtitle}
+          align="center"
+        />
 
         <div className="relative mx-auto mt-10 w-full max-w-4xl lg:mt-12">
           <AnimatePresence mode="wait" initial={false}>

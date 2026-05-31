@@ -1,11 +1,14 @@
 "use client";
 
 import Image from "next/image";
+import { useReducedMotion } from "framer-motion";
 
 const HERO_MOBILE = "/images/hero-home.jpg";
 const HERO_DESKTOP = "/images/hero-home-desktop.jpg";
 
 export function HeroVisual() {
+  const reduceMotion = useReducedMotion();
+
   return (
     <div className="hero-visual pointer-events-none absolute inset-0 overflow-hidden">
       <Image
@@ -13,7 +16,8 @@ export function HeroVisual() {
         alt=""
         fill
         priority
-        unoptimized
+        fetchPriority="high"
+        quality={82}
         sizes="100vw"
         className="object-cover object-[center_52%] lg:hidden"
       />
@@ -22,9 +26,10 @@ export function HeroVisual() {
         alt=""
         fill
         priority
-        unoptimized
+        fetchPriority="high"
+        quality={82}
         sizes="100vw"
-        className="hero-ken-burns hidden object-cover object-[58%_center] lg:block"
+        className={`hidden object-cover object-[58%_center] lg:block ${reduceMotion ? "" : "hero-ken-burns"}`}
       />
       <div className="hero-visual-glow absolute inset-0 opacity-80" aria-hidden />
       <div className="hero-visual-overlay hero-visual-overlay--mobile absolute inset-0 lg:hidden" aria-hidden />

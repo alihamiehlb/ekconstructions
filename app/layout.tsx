@@ -67,6 +67,22 @@ export default async function RootLayout({
 
   return (
     <html lang="en-AU" className={montserrat.variable}>
+      <head>
+        <link
+          rel="preload"
+          as="image"
+          href="/images/hero-home.jpg"
+          media="(max-width: 1023px)"
+          fetchPriority="high"
+        />
+        <link
+          rel="preload"
+          as="image"
+          href="/images/hero-home-desktop.jpg"
+          media="(min-width: 1024px)"
+          fetchPriority="high"
+        />
+      </head>
       <body className="min-h-dvh antialiased">
         <SiteProvider cms={cms}>
           <MobileChromeProvider>

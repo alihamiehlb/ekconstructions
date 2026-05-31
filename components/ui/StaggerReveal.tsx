@@ -1,6 +1,6 @@
 "use client";
 
-import { motion, useInView } from "framer-motion";
+import { motion, useInView, useReducedMotion } from "framer-motion";
 import { useRef } from "react";
 
 type Props = {
@@ -12,16 +12,17 @@ type Props = {
 export function StaggerReveal({ children, className = "", stagger = 0.08 }: Props) {
   const ref = useRef(null);
   const inView = useInView(ref, { once: true, margin: "-40px" });
+  const reduceMotion = useReducedMotion();
 
   return (
     <motion.div
       ref={ref}
       className={className}
       initial="hidden"
-      animate={inView ? "show" : "hidden"}
+      animate={inView || reduceMotion ? "show" : "hidden"}
       variants={{
         hidden: {},
-        show: { transition: { staggerChildren: stagger } },
+        show: { transition: { staggerChildren: reduceMotion ? 0 : stagger } },
       }}
     >
       {children}
@@ -36,15 +37,17 @@ export function StaggerItem({
   children: React.ReactNode;
   className?: string;
 }) {
+  const reduceMotion = useReducedMotion();
+
   return (
     <motion.div
       className={className}
       variants={{
-        hidden: { opacity: 0, y: 22 },
+        hidden: reduceMotion ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 },
         show: {
           opacity: 1,
           y: 0,
-          transition: { duration: 0.55, ease: [0.22, 1, 0.36, 1] },
+          transition: { duration: reduceMotion ? 0 : 0.5, ease: [0.22, 1, 0.36, 1] },
         },
       }}
     >

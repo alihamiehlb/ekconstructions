@@ -1,7 +1,7 @@
 "use client";
 
 import { GalleryCardPreview } from "@/components/gallery/GalleryCardPreview";
-import { SectionReveal } from "@/components/ui/SectionReveal";
+import { SectionHeading } from "@/components/ui/SectionHeading";
 import type { Project } from "@/content/projects";
 import { projectHasGallery } from "@/lib/project-images";
 import { motion } from "framer-motion";
@@ -95,18 +95,9 @@ export function GalleryGrid({
     : "grid grid-cols-1 gap-5 sm:grid-cols-2 sm:gap-6 lg:grid-cols-3 xl:gap-8";
 
   return (
-    <section id="gallery" className="bg-ek-gray/30 pb-10 pt-2 sm:pb-12">
-      <div className="landing-container mb-6 flex flex-col gap-4 sm:mb-8 sm:flex-row sm:items-end sm:justify-between">
-        <SectionReveal>
-          <div>
-            <p className="text-[10px] font-semibold tracking-[0.35em] text-ek-teal uppercase">
-              {subtitle}
-            </p>
-            <h2 className="mt-1 text-xl font-black tracking-tight text-ek-navy uppercase sm:text-2xl md:text-3xl">
-              {title}
-            </h2>
-          </div>
-        </SectionReveal>
+    <section id="gallery" className="section-block bg-ek-gray/30 pb-12 pt-4 sm:pb-16">
+      <div className="landing-container mb-8 flex flex-col gap-4 sm:mb-10 sm:flex-row sm:items-end sm:justify-between">
+        <SectionHeading eyebrow={subtitle} title={title} />
         {categories.length > 1 && (
           <div
             className={`flex flex-wrap gap-2 ${compact ? "sm:max-w-md sm:justify-end" : ""}`}
