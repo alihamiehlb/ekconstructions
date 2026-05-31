@@ -65,18 +65,38 @@ body {
 
 @media (min-width: 1024px) {
   .hero-cinematic {
-    min-height: min(88dvh, 820px);
+    min-height: min(92dvh, 860px);
+  }
+
+  .hero-cinematic-inner {
+    min-height: calc(min(92dvh, 860px) - 4.5rem);
+  }
+
+  .hero-desktop-copy h1,
+  .hero-desktop-copy p {
+    text-shadow: 0 2px 28px rgba(0, 0, 0, 0.55);
+  }
+
+  .hero-trust-bar--hero {
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 0.75rem;
+    background: rgba(8, 8, 8, 0.72);
+    backdrop-filter: blur(14px);
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.25);
+    padding: 1rem 1.5rem;
+  }
+
+  .hero-trust-item--stack {
+    flex-direction: row;
+    align-items: center;
+    gap: 0.75rem;
+    text-align: left;
+    padding: 0;
   }
 }
 
 .hero-cinematic-inner {
   min-height: calc(100dvh - 3.5rem);
-}
-
-@media (min-width: 1024px) {
-  .hero-cinematic-inner {
-    min-height: calc(min(88dvh, 820px) - 4.5rem);
-  }
 }
 
 .hero-mobile-title {
@@ -330,6 +350,73 @@ body {
   background: rgba(10, 10, 10, 0.72);
   backdrop-filter: blur(14px);
   box-shadow: 0 20px 50px rgba(0, 0, 0, 0.25);
+}
+
+.services-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 0.75rem;
+}
+
+@media (min-width: 640px) {
+  .services-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1rem;
+  }
+}
+
+@media (min-width: 1280px) {
+  .services-grid {
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: 1.25rem;
+  }
+}
+
+.service-card {
+  position: relative;
+  display: flex;
+  min-height: 11.5rem;
+  flex-direction: column;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 0.5rem;
+  background: rgba(10, 10, 10, 0.45);
+  padding: 1.25rem;
+  backdrop-filter: blur(8px);
+  transition:
+    transform 0.25s ease,
+    border-color 0.25s ease,
+    background-color 0.25s ease,
+    box-shadow 0.25s ease;
+}
+
+@media (min-width: 1024px) {
+  .service-card {
+    min-height: 15.5rem;
+    padding: 1.5rem;
+  }
+}
+
+.service-card:hover {
+  transform: translateY(-4px);
+  border-color: rgba(219, 32, 34, 0.35);
+  background: rgba(255, 255, 255, 0.04);
+  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.28);
+}
+
+.service-card-accent {
+  position: absolute;
+  inset: 0 auto auto 0;
+  height: 2px;
+  width: 100%;
+  transform: scaleX(0);
+  transform-origin: left;
+  background: #db2022;
+  transition: transform 0.25s ease;
+}
+
+.service-card:hover .service-card-accent {
+  transform: scaleX(1);
 }
 
 .hero-whatsapp-bar {

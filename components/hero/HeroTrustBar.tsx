@@ -49,17 +49,19 @@ export function HeroTrustBar({ className = "", variant = "default" }: Props) {
             key={label}
             className={
               isHero
-                ? "hero-trust-item hero-trust-item--stack flex flex-col items-center gap-1.5 text-center"
+                ? "hero-trust-item hero-trust-item--stack flex flex-col items-center gap-1.5 text-center lg:flex-row lg:items-center lg:gap-3 lg:text-left"
                 : "flex items-start gap-1.5 sm:gap-3"
             }
           >
             <span
               className={`flex shrink-0 items-center justify-center rounded-full border border-ek-teal/25 bg-ek-teal/12 text-ek-teal ${
-                isHero ? "h-7 w-7" : "h-7 w-7 sm:h-10 sm:w-10"
+                isHero ? "h-7 w-7 lg:h-10 lg:w-10" : "h-7 w-7 sm:h-10 sm:w-10"
               }`}
             >
               <Icon
-                className={isHero ? "h-3.5 w-3.5" : "h-3.5 w-3.5 sm:h-[18px] sm:w-[18px]"}
+                className={
+                  isHero ? "h-3.5 w-3.5 lg:h-[18px] lg:w-[18px]" : "h-3.5 w-3.5 sm:h-[18px] sm:w-[18px]"
+                }
                 aria-hidden
               />
             </span>
@@ -67,7 +69,7 @@ export function HeroTrustBar({ className = "", variant = "default" }: Props) {
               <p
                 className={`font-bold leading-snug text-white uppercase ${
                   isHero
-                    ? "text-[7px] tracking-[0.03em]"
+                    ? "text-[7px] tracking-[0.03em] lg:text-[10px] lg:tracking-[0.06em]"
                     : "text-[7px] tracking-[0.03em] sm:text-[10px] sm:tracking-[0.06em]"
                 }`}
               >

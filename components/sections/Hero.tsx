@@ -30,8 +30,8 @@ export function Hero() {
     >
       <HeroVisual />
 
-      <div className="landing-container hero-cinematic-inner relative z-10 flex min-h-0 flex-1 flex-col pb-3 lg:pb-8">
-        <div className="hero-content-enter max-w-[600px] flex-1 pt-3 lg:pt-14 xl:pt-16">
+      <div className="landing-container hero-cinematic-inner relative z-10 flex min-h-0 flex-1 flex-col pb-3 lg:justify-between lg:pb-8">
+        <div className="hero-content-enter hero-desktop-copy flex max-w-[640px] flex-1 flex-col justify-center pt-3 lg:flex-none lg:pt-10 xl:pt-12">
           <p className="inline-flex items-center gap-2 text-[10px] font-bold tracking-[0.22em] text-white/90 uppercase">
             <span className="h-3 w-0.5 rounded-full bg-ek-teal" aria-hidden />
             {site.location.area}
@@ -44,7 +44,7 @@ export function Hero() {
             <span className="hero-headline-mark" aria-hidden />
           </h1>
 
-          <h1 className="mt-4 hidden font-black leading-[1.02] tracking-tight text-white uppercase lg:block lg:text-[2.55rem] xl:text-[2.75rem]">
+          <h1 className="mt-4 hidden font-black leading-[1.02] tracking-tight text-white uppercase lg:block lg:text-[2.35rem] xl:text-[2.75rem]">
             {site.headline}
             <br />
             <span className="relative inline-block text-ek-teal">
@@ -94,7 +94,7 @@ export function Hero() {
             ) : null}
           </div>
 
-          <div className="mt-6 hidden items-center gap-3 lg:flex lg:mt-8">
+          <div className="hero-desktop-ctas mt-6 hidden flex-wrap items-center gap-3 lg:flex lg:mt-8">
             <Link
               href="#contact"
               className="btn-primary justify-center shadow-lg shadow-ek-teal/25"
@@ -123,7 +123,7 @@ export function Hero() {
           </div>
         </div>
 
-        <HeroTrustBar className="mt-auto shrink-0 pt-3 lg:pt-0" variant="hero" />
+        <HeroTrustBar className="shrink-0 pt-3 lg:pt-0" variant="hero" />
       </div>
     </section>
   );

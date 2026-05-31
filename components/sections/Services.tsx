@@ -7,7 +7,7 @@ import { ArrowRight } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 
-const iconClass = "h-6 w-6 text-ek-teal sm:h-9 sm:w-9";
+const iconClass = "h-7 w-7 text-ek-teal sm:h-8 sm:w-8 lg:h-9 lg:w-9";
 
 function WindowIcon() {
   return (
@@ -85,7 +85,8 @@ const icons = {
 export function Services({ services }: { services: CmsService[] }) {
   return (
     <section id="services" className="relative overflow-hidden bg-ek-navy">
-      <div className="pointer-events-none absolute inset-0 opacity-[0.07]" aria-hidden>
+      <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-ek-navy via-ek-navy/98 to-ek-navy" aria-hidden />
+      <div className="pointer-events-none absolute inset-0 opacity-[0.05]" aria-hidden>
         <Image
           src="/images/hero-building.png"
           alt=""
@@ -95,49 +96,57 @@ export function Services({ services }: { services: CmsService[] }) {
         />
       </div>
 
-      <div className="relative pb-8 pt-6 sm:pb-14 sm:pt-12 md:pb-16 md:pt-14 lg:pt-16">
+      <div className="relative pb-10 pt-8 sm:pb-16 sm:pt-12 lg:pb-20 lg:pt-16">
         <div className="landing-container">
           <SectionReveal>
-            <div className="flex items-center gap-2.5 sm:gap-3">
-              <p className="text-[9px] font-semibold tracking-[0.24em] text-ek-teal uppercase sm:text-[10px] sm:tracking-[0.28em]">
-                Our Expertise
+            <div className="max-w-2xl">
+              <div className="flex items-center gap-2.5 sm:gap-3">
+                <p className="text-[9px] font-semibold tracking-[0.24em] text-ek-teal uppercase sm:text-[10px] sm:tracking-[0.28em]">
+                  Our Expertise
+                </p>
+                <span className="h-px max-w-16 flex-1 bg-ek-teal/80 sm:max-w-32" aria-hidden />
+              </div>
+              <h2 className="mt-2 text-2xl font-black tracking-[0.14em] text-white uppercase sm:text-3xl lg:text-4xl lg:tracking-[0.16em]">
+                Services
+              </h2>
+              <p className="mt-3 hidden max-w-xl text-sm leading-relaxed text-white/55 lg:block">
+                Premium aluminium, glass, steel and carpentry — designed, supplied and installed with
+                precision across Sydney and Greater NSW.
               </p>
-              <span className="h-px max-w-16 flex-1 bg-ek-teal/80 sm:max-w-32" aria-hidden />
             </div>
-            <h2 className="mt-1.5 text-xl font-black tracking-[0.16em] text-white uppercase sm:mt-2 sm:text-3xl sm:tracking-[0.18em]">
-              Services
-            </h2>
           </SectionReveal>
 
-          <StaggerReveal className="mt-5 grid grid-cols-2 gap-2 sm:mt-10 sm:gap-4 lg:grid-cols-5 lg:gap-3">
+          <StaggerReveal className="services-grid mt-8 sm:mt-10 lg:mt-12">
             {services.map((service, index) => {
               const Icon = icons[service.icon as keyof typeof icons] ?? WindowIcon;
-              const isLastCentered = index === services.length - 1 && services.length % 2 === 1;
+              const isLastOdd =
+                index === services.length - 1 && services.length % 2 === 1;
 
               return (
                 <StaggerItem
                   key={service.id}
                   className={
-                    isLastCentered
-                      ? "col-span-2 mx-auto w-full max-w-[calc(50%-0.25rem)] lg:col-span-1 lg:mx-0 lg:max-w-none"
+                    isLastOdd
+                      ? "sm:col-span-2 sm:max-w-xl sm:justify-self-center xl:col-span-1 xl:max-w-none xl:justify-self-auto"
                       : ""
                   }
                 >
-                  <Link
-                    href="#contact"
-                    className="group relative flex min-h-[7.5rem] flex-col border border-white/10 bg-ek-navy/40 p-3.5 transition hover:border-white/24 hover:bg-white/[0.03] sm:min-h-[180px] sm:p-6"
-                  >
+                  <Link href="#contact" className="service-card group">
+                    <span className="service-card-accent" aria-hidden />
                     <Icon />
-                    <h3 className="mt-2.5 text-[9px] font-bold leading-snug tracking-[0.06em] text-white uppercase sm:mt-4 sm:max-w-[16rem] sm:text-xs sm:tracking-[0.08em]">
+                    <h3 className="mt-4 text-[10px] font-bold leading-snug tracking-[0.08em] text-white uppercase sm:text-xs lg:text-[13px]">
                       {service.title}
                     </h3>
-                    <p className="mt-1.5 hidden flex-1 text-[12px] leading-relaxed text-white/55 sm:mt-2 sm:block sm:max-w-[18rem] sm:text-[13px]">
+                    <p className="mt-2 flex-1 text-[12px] leading-relaxed text-white/55 sm:text-[13px] lg:text-sm lg:leading-[1.65]">
                       {service.description}
                     </p>
-                    <ArrowRight
-                      className="absolute right-2.5 bottom-2.5 h-3 w-3 text-white/60 transition group-hover:translate-x-0.5 group-hover:text-white sm:right-5 sm:bottom-5 sm:h-4 sm:w-4"
-                      aria-hidden
-                    />
+                    <span className="mt-4 inline-flex items-center gap-1.5 text-[10px] font-bold tracking-[0.14em] text-white/70 uppercase transition group-hover:text-ek-teal">
+                      Enquire
+                      <ArrowRight
+                        className="h-3.5 w-3.5 transition group-hover:translate-x-0.5"
+                        aria-hidden
+                      />
+                    </span>
                   </Link>
                 </StaggerItem>
               );
