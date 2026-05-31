@@ -281,8 +281,8 @@ body {
 
 .hero-visual-overlay {
   background:
-    linear-gradient(90deg, rgba(10, 10, 10, 0.88) 0%, rgba(10, 10, 10, 0.72) 34%, rgba(10, 10, 10, 0.28) 62%, rgba(10, 10, 10, 0.12) 100%),
-    linear-gradient(180deg, rgba(10, 10, 10, 0.55) 0%, rgba(10, 10, 10, 0.08) 42%, rgba(10, 10, 10, 0.72) 100%);
+    linear-gradient(90deg, rgba(10, 10, 10, 0.88) 0%, rgba(10, 10, 10, 0.72) 34%, rgba(10, 10, 10, 0.35) 62%, rgba(10, 10, 10, 0.18) 100%),
+    linear-gradient(180deg, rgba(10, 10, 10, 0.55) 0%, rgba(10, 10, 10, 0.12) 42%, rgba(10, 10, 10, 0.72) 100%);
 }
 
 .hero-visual-gradient {
