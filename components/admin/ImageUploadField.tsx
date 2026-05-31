@@ -1,7 +1,8 @@
 "use client";
 
+import { isValidGalleryImageSrc } from "@/lib/gallery-image";
 import { secureFormFetch } from "@/lib/security/client-fetch";
-import { ImagePlus, Loader2 } from "lucide-react";
+import { ImagePlus, Link2, Loader2 } from "lucide-react";
 import Image from "next/image";
 import { useRef, useState } from "react";
 
@@ -37,24 +38,41 @@ export function ImageUploadField({ label, value, onChange }: Props) {
     }
   }
 
-  const previewSrc = value.startsWith("http") ? value : value || null;
+  const previewSrc = value.trim();
+  const canPreview = isValidGalleryImageSrc(previewSrc);
 
   return (
     <div className="md:col-span-2">
       <span className="text-sm font-medium text-ek-navy">{label}</span>
-      <div className="mt-2 flex flex-col gap-3 sm:flex-row sm:items-start">
-        {previewSrc && (
-          <div className="relative h-24 w-36 shrink-0 overflow-hidden rounded-lg border border-ek-navy/10 bg-ek-gray">
-            <Image src={previewSrc} alt="" fill className="object-cover" sizes="144px" unoptimized={previewSrc.startsWith("http")} />
+      <div className="mt-2 grid gap-3 sm:grid-cols-[9rem_1fr]">
+        <div className="relative aspect-[4/3] overflow-hidden rounded-xl border border-ek-navy/10 bg-ek-gray">
+          {canPreview ? (
+            <Image
+              src={previewSrc}
+              alt=""
+              fill
+              className="object-cover"
+              sizes="144px"
+              unoptimized={previewSrc.startsWith("http")}
+            />
+          ) : (
+            <div className="gallery-image-empty absolute inset-0">
+              <span className="gallery-image-empty-label text-[9px]">Preview</span>
+            </div>
+          )}
+        </div>
+        <div className="min-w-0 space-y-2">
+          <div className="relative">
+            <Link2
+              className="pointer-events-none absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-ek-muted"
+              aria-hidden
+            />
+            <input
+              className="w-full rounded-lg border border-ek-navy/15 py-2 pr-3 pl-9 text-sm"
+              value={value}
+              onChange={(e) => onChange(e.target.value)}
+            />
           </div>
-        )}
-        <div className="min-w-0 flex-1 space-y-2">
-          <input
-            className="w-full rounded-lg border border-ek-navy/15 px-3 py-2 text-sm"
-            value={value}
-            onChange={(e) => onChange(e.target.value)}
-            placeholder="https://... or /images/gallery/photo.jpg"
-          />
           <input
             ref={inputRef}
             type="file"
@@ -77,16 +95,13 @@ export function ImageUploadField({ label, value, onChange }: Props) {
             ) : (
               <ImagePlus className="h-4 w-4" aria-hidden />
             )}
-            {uploading ? "Uploading…" : "Or upload to Supabase"}
+            {uploading ? "Uploading…" : "Upload image"}
           </button>
           {error && (
             <p className="text-xs text-red-600" role="alert">
               {error}
             </p>
           )}
-          <p className="text-xs text-ek-muted">
-            Paste a direct image URL above, or upload (max 5 MB) when Supabase is configured.
-          </p>
         </div>
       </div>
     </div>

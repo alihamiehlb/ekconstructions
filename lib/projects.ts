@@ -17,7 +17,7 @@ export function sortProjects(projects: Project[]): Project[] {
 }
 
 function isValidProject(project: Project): boolean {
-  return Boolean(project.src?.trim()) && isValidGalleryImageSrc(project.src);
+  return Boolean(project.title?.trim()) && Boolean(project.src?.trim()) && isValidGalleryImageSrc(project.src);
 }
 
 export async function getProjects(): Promise<Project[]> {

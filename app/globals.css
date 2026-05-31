@@ -879,6 +879,67 @@ body {
   opacity: 1;
 }
 
+.gallery-image-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  background:
+    linear-gradient(145deg, rgba(244, 244, 244, 1) 0%, rgba(230, 230, 230, 1) 100%);
+}
+
+.gallery-image-empty-icon {
+  width: 2rem;
+  height: 2rem;
+  border-radius: 0.5rem;
+  border: 1px dashed rgba(10, 10, 10, 0.15);
+  background: rgba(255, 255, 255, 0.6);
+}
+
+.gallery-image-empty-label {
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--color-ek-muted);
+}
+
+.gallery-empty-state {
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 1) 0%, rgba(244, 244, 244, 0.6) 100%);
+}
+
+.admin-gallery-intro {
+  background:
+    linear-gradient(135deg, rgba(255, 255, 255, 1) 0%, rgba(219, 32, 34, 0.04) 100%);
+}
+
+.admin-gallery-stat {
+  min-width: 6.5rem;
+  border: 1px solid rgba(10, 10, 10, 0.08);
+  border-radius: 0.75rem;
+  background: rgba(255, 255, 255, 0.9);
+  padding: 0.65rem 0.9rem;
+}
+
+.admin-gallery-stat--warn {
+  border-color: rgba(245, 158, 11, 0.35);
+  background: rgba(255, 251, 235, 0.9);
+  color: #92400e;
+}
+
+.admin-project-card:focus-within {
+  border-color: rgba(219, 32, 34, 0.25);
+  box-shadow: 0 12px 32px -24px rgba(219, 32, 34, 0.25);
+}
+
+.admin-gallery-actions {
+  box-shadow:
+    0 16px 40px -20px rgba(10, 10, 10, 0.25),
+    inset 0 1px 0 rgba(255, 255, 255, 0.8);
+}
+
 .carousel-nav-btn {
   @apply flex h-10 w-10 items-center justify-center rounded-full border border-white/25 bg-black/35 text-white backdrop-blur-md transition hover:border-ek-teal hover:bg-ek-teal/25 hover:text-ek-teal focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ek-teal;
 }

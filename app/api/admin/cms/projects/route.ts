@@ -17,14 +17,7 @@ export async function GET() {
   if (!ok) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
   const cms = await readCms();
-  const hiddenExampleCount = cms.projects.filter((p) =>
-    p.src.startsWith("/images/gallery/"),
-  ).length;
-
-  return NextResponse.json({
-    projects: cms.projects.filter((p) => !p.src.startsWith("/images/gallery/")),
-    hiddenExampleCount,
-  });
+  return NextResponse.json({ projects: cms.projects });
 }
 
 export async function PUT(request: Request) {

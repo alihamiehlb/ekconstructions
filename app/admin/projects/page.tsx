@@ -14,16 +14,18 @@ export default async function AdminProjectsPage() {
         <div className="min-w-0">
           <p className="text-xs font-semibold tracking-[0.3em] text-ek-teal uppercase">Admin</p>
           <h1 className="text-2xl font-black text-ek-navy uppercase sm:text-3xl">Gallery</h1>
-          <p className="mt-1 text-sm text-ek-muted">
-            Paste image URLs, set categories, and mark featured projects for the homepage.
+          <p className="mt-1 max-w-xl text-sm text-ek-muted">
+            Manage every project on the public site — images, categories, order, and featured picks
+            for the homepage.
           </p>
         </div>
         <div className="flex items-center gap-3">
           <Link
             href="/gallery"
+            target="_blank"
             className="text-xs font-semibold tracking-wide text-ek-teal uppercase hover:underline"
           >
-            View gallery
+            View live gallery
           </Link>
           <AdminLogoutButton />
         </div>

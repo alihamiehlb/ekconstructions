@@ -10,9 +10,10 @@ type Props = {
   project: Project;
   index: number;
   compact?: boolean;
+  featured?: boolean;
 };
 
-export function GalleryCardPreview({ project, index, compact }: Props) {
+export function GalleryCardPreview({ project, index, compact, featured }: Props) {
   const images = getProjectImages(project);
   const reduceMotion = useReducedMotion();
   const [slide, setSlide] = useState(0);
@@ -31,7 +32,11 @@ export function GalleryCardPreview({ project, index, compact }: Props) {
   return (
     <div
       className={`gallery-card-media relative w-full overflow-hidden rounded-xl bg-ek-gray ${
-        compact ? "aspect-[4/3]" : "aspect-[4/3] sm:aspect-[5/4]"
+        featured && !compact
+          ? "aspect-[16/10] sm:aspect-[2/1]"
+          : compact
+            ? "aspect-[4/3]"
+            : "aspect-[4/3] sm:aspect-[5/4]"
       }`}
     >
       <motion.div

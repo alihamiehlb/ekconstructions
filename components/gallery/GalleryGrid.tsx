@@ -24,10 +24,12 @@ function ProjectCard({
   project,
   index,
   compact,
+  featured,
 }: {
   project: Project;
   index: number;
   compact?: boolean;
+  featured?: boolean;
 }) {
   return (
     <motion.article
@@ -35,7 +37,7 @@ function ProjectCard({
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: "-30px" }}
       transition={{ delay: index * 0.05, duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
-      className="h-full"
+      className={`h-full ${featured && !compact ? "sm:col-span-2" : ""}`}
     >
       <Link
         href={`/gallery/${project.id}`}
@@ -43,7 +45,7 @@ function ProjectCard({
           compact ? "p-2 sm:p-2.5" : "p-3 sm:p-4"
         }`}
       >
-        <GalleryCardPreview project={project} index={index} compact={compact} />
+        <GalleryCardPreview project={project} index={index} compact={compact} featured={featured} />
         <span className="absolute top-3 right-3 z-10 flex h-9 w-9 items-center justify-center rounded-full bg-white text-ek-navy shadow-md opacity-0 transition-all duration-300 group-hover:opacity-100">
           <ArrowUpRight className="h-4 w-4" aria-hidden />
         </span>
@@ -58,6 +60,11 @@ function ProjectCard({
           <p className="text-[9px] font-semibold tracking-[0.16em] text-ek-teal uppercase sm:text-[10px]">
             {project.category}
           </p>
+          {featured && !compact && (
+            <span className="mt-2 inline-flex w-fit rounded-full bg-ek-teal/10 px-2.5 py-0.5 text-[9px] font-bold tracking-[0.12em] text-ek-teal uppercase">
+              Featured
+            </span>
+          )}
           <h3
             className={`mt-1.5 font-bold leading-snug text-ek-navy transition-colors group-hover:text-ek-teal ${
               compact ? "text-xs sm:text-sm" : "text-sm sm:text-base"
@@ -136,6 +143,25 @@ export function GalleryGrid({
 
   const showFilters = projects.length >= 2 && categories.length > 1;
 
+  if (projects.length === 0) {
+    return (
+      <section id="gallery" className="section-block bg-gradient-to-b from-white via-ek-gray/40 to-ek-gray/30 pb-16 pt-8">
+        <div className="landing-container">
+          <SectionHeading eyebrow={subtitle} title={title} />
+          <div className="gallery-empty-state mt-10 rounded-2xl border border-dashed border-ek-navy/12 bg-white px-6 py-14 text-center">
+            <p className="text-base font-bold text-ek-navy">Gallery coming soon</p>
+            <p className="mx-auto mt-2 max-w-md text-sm leading-relaxed text-ek-muted">
+              New project photos are being added. Check back shortly or contact us for recent work.
+            </p>
+            <Link href="/#contact" className="btn-primary mt-6 inline-flex">
+              Request a quote
+            </Link>
+          </div>
+        </div>
+      </section>
+    );
+  }
+
   return (
     <section id="gallery" className="section-block bg-gradient-to-b from-white via-ek-gray/40 to-ek-gray/30 pb-12 pt-6 sm:pb-16 sm:pt-8">
       <div className="landing-container mb-8 flex flex-col gap-4 sm:mb-10 sm:flex-row sm:items-end sm:justify-between">
@@ -172,14 +198,30 @@ export function GalleryGrid({
 
       <div className={`landing-container ${gridClass}`}>
         {filtered.map((project, i) => (
-          <ProjectCard key={project.id} project={project} index={i} compact={compact} />
+          <ProjectCard
+            key={project.id}
+            project={project}
+            index={i}
+            compact={compact}
+            featured={Boolean(project.featured) && !compact}
+          />
         ))}
       </div>
 
-      {filtered.length === 0 && (
-        <p className="landing-container py-12 text-center text-sm text-ek-muted">
-          No projects in this category yet.
-        </p>
+      {filtered.length === 0 && projects.length > 0 && (
+        <div className="landing-container py-12">
+          <div className="gallery-empty-state rounded-2xl border border-ek-navy/8 bg-white px-6 py-10 text-center">
+            <p className="text-sm font-medium text-ek-navy">No projects in this category</p>
+            <p className="mt-2 text-sm text-ek-muted">Try another filter or view all projects.</p>
+            <button
+              type="button"
+              onClick={() => setFilter("All")}
+              className="mt-4 text-xs font-semibold tracking-wide text-ek-teal uppercase hover:underline"
+            >
+              Show all
+            </button>
+          </div>
+        </div>
       )}
 
       {showAllLink && (
