@@ -35,7 +35,7 @@ export const metadata: Metadata = {
     siteName: siteConfig.name,
     title: siteConfig.name,
     description: siteConfig.tagline,
-    images: [{ url: "/images/design-reference.png" }],
+    images: [{ url: "/images/hero-home.jpg", width: 768, height: 1024, alt: "EK Constructions project" }],
   },
   robots: { index: true, follow: true },
   alternates: {
@@ -68,20 +68,7 @@ export default async function RootLayout({
   return (
     <html lang="en-AU" className={montserrat.variable}>
       <head>
-        <link
-          rel="preload"
-          as="image"
-          href="/images/hero-home.jpg"
-          media="(max-width: 1023px)"
-          fetchPriority="high"
-        />
-        <link
-          rel="preload"
-          as="image"
-          href="/images/hero-home-desktop.jpg"
-          media="(min-width: 1024px)"
-          fetchPriority="high"
-        />
+        <link rel="preload" as="image" href="/images/hero-home.jpg" fetchPriority="high" />
       </head>
       <body className="min-h-dvh antialiased">
         <SiteProvider cms={cms}>

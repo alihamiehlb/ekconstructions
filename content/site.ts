@@ -41,35 +41,30 @@ export const services = [
     title: "Aluminium Windows & Doors",
     description: "Sleek, durable and energy efficient solutions.",
     icon: "window",
-    iconSrc: "/images/icon-window.png",
   },
   {
     id: "balustrade",
     title: "Glass Balustrade",
     description: "Frameless or semi-frameless for a modern look.",
     icon: "balustrade",
-    iconSrc: "/images/icon-balustrade.png",
   },
   {
     id: "steel",
     title: "Steel Work",
     description: "Engineered for strength. Built for longevity.",
     icon: "steel",
-    iconSrc: "/images/icon-steel.png",
   },
   {
     id: "privacy",
     title: "Privacy Screens & Gates",
     description: "Stylish, functional and built to last.",
     icon: "fence",
-    iconSrc: "/images/icon-fence.png",
   },
   {
     id: "carpentry",
     title: "Carpentry",
     description: "Custom carpentry with precision and care.",
     icon: "hammer",
-    iconSrc: "/images/icon-hammer.png",
   },
 ] as const;
 
