@@ -20,6 +20,16 @@ const ProjectGallery = dynamic(
   },
 );
 
+const GalleryTeaser = dynamic(
+  () =>
+    import("@/components/sections/GalleryTeaser").then((m) => ({
+      default: m.GalleryTeaser,
+    })),
+  {
+    loading: () => <div className="section-skeleton min-h-[320px] bg-ek-gray/30" aria-hidden />,
+  },
+);
+
 export const revalidate = 120;
 
 export default async function HomePage() {
@@ -38,6 +48,7 @@ export default async function HomePage() {
             projectsDelivered={cms.site.projectsDelivered}
           />
           <ProjectGallery projects={projects} />
+          {projects.length === 0 && <GalleryTeaser />}
         </div>
 
         <About />

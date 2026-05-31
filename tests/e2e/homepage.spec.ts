@@ -37,10 +37,17 @@ test.describe("Homepage", () => {
 
   test("homepage gallery when present", async ({ page }) => {
     const gallery = page.locator("#gallery");
-    if ((await gallery.count()) === 0) return;
+    await expect(gallery).toBeVisible();
+
+    const cards = gallery.locator("article");
+    if ((await cards.count()) === 0) {
+      await expect(
+        gallery.getByRole("heading", { name: /new project photos on the way/i }),
+      ).toBeVisible();
+      return;
+    }
 
     await gallery.scrollIntoViewIfNeeded();
-    const cards = gallery.locator("article");
     await expect(cards.first()).toBeVisible();
   });
 });

@@ -34,7 +34,7 @@ export function GalleryEmptyState({
   }
 
   return (
-    <div className="gallery-empty-panel mt-10 overflow-hidden rounded-2xl border border-ek-navy/8 bg-white shadow-[0_20px_50px_-30px_rgba(10,10,10,0.25)]">
+    <div className="gallery-empty-panel overflow-hidden rounded-2xl border border-ek-navy/8 bg-white shadow-[0_20px_50px_-30px_rgba(10,10,10,0.25)]">
       <div className="gallery-empty-panel-glow pointer-events-none" aria-hidden />
       <div className="relative grid gap-8 px-6 py-12 sm:px-10 sm:py-14 lg:grid-cols-[1fr_auto] lg:items-center lg:gap-12">
         <div className="max-w-lg">

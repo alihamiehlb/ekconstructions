@@ -6,6 +6,17 @@ const UNRELIABLE_HOST_PATTERNS = [
   /fbcdn\.net/i,
 ];
 
+/** Site stock assets — never valid gallery project photos. */
+const STOCK_IMAGE_PATH_PATTERNS = [
+  /^\/images\/hero-/i,
+  /^\/images\/before-after-/i,
+  /^\/images\/project-/i,
+  /^\/images\/gallery\//i,
+  /^\/images\/icon-/i,
+  /^\/images\/ek-logo/i,
+  /^\/images\/placeholder/i,
+];
+
 export function isUnreliableImageSrc(src: string): boolean {
   const trimmed = src.trim();
   if (!trimmed) return true;
@@ -20,9 +31,16 @@ export function isUnreliableImageSrc(src: string): boolean {
   return false;
 }
 
+export function isStockGalleryImageSrc(src: string): boolean {
+  const trimmed = src.trim();
+  if (!trimmed.startsWith("/images/")) return false;
+  return STOCK_IMAGE_PATH_PATTERNS.some((pattern) => pattern.test(trimmed));
+}
+
 export function isValidGalleryImageSrc(src: string): boolean {
   const trimmed = src.trim();
   if (!trimmed) return false;
+  if (isStockGalleryImageSrc(trimmed)) return false;
   if (trimmed.startsWith("/images/")) return true;
   if (trimmed.startsWith("http://") || trimmed.startsWith("https://")) {
     return !isUnreliableImageSrc(trimmed);

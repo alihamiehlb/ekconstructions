@@ -1,5 +1,6 @@
 import { getDefaultCms } from "@/lib/cms/defaults";
 import { mergeCmsWithDefaults } from "@/lib/cms/merge";
+import { purgeLegacyGalleryProjects } from "@/lib/cms/purge-legacy-projects";
 import type { CmsData } from "@/lib/cms/types";
 import { cmsSchema } from "@/lib/cms/schema";
 import { createClient } from "@supabase/supabase-js";
@@ -33,10 +34,23 @@ export async function readCmsFromSupabase(): Promise<CmsData | null> {
   const parsed = cmsSchema.safeParse(row.data);
   if (!parsed.success) return getDefaultCms();
 
-  return mergeCmsWithDefaults({
+  const merged = mergeCmsWithDefaults({
     ...parsed.data,
     updatedAt: row.updated_at ?? undefined,
   });
+
+  const purged = purgeLegacyGalleryProjects(merged.projects);
+  if (purged.length !== merged.projects.length) {
+    const cleaned = { ...merged, projects: purged, updatedAt: new Date().toISOString() };
+    try {
+      await writeCmsToSupabase(cleaned);
+    } catch (e) {
+      console.error("purge legacy gallery projects:", e);
+    }
+    return cleaned;
+  }
+
+  return merged;
 }
 
 export async function writeCmsToSupabase(data: CmsData): Promise<void> {

@@ -1,5 +1,6 @@
 import type { Project } from "@/content/projects";
 import { getCmsProjects } from "@/lib/cms";
+import { purgeLegacyGalleryProjects } from "@/lib/cms/purge-legacy-projects";
 import {
   isValidGalleryImageSrc,
   normalizeProjectList,
@@ -22,7 +23,9 @@ function isValidProject(project: Project): boolean {
 
 /** Public gallery — CMS projects only (no hardcoded fallbacks). */
 export async function getProjects(): Promise<Project[]> {
-  const cmsProjects = normalizeProjectList(await getCmsProjects()).filter(isValidProject);
+  const cmsProjects = purgeLegacyGalleryProjects(
+    normalizeProjectList(await getCmsProjects()),
+  ).filter(isValidProject);
   return sortProjects(cmsProjects);
 }
 
