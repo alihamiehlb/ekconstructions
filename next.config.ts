@@ -55,6 +55,10 @@ const nextConfig: NextConfig = {
         source: "/images/hero-home.jpg",
         headers: [{ key: "Cache-Control", value: "public, max-age=0, must-revalidate" }],
       },
+      {
+        source: "/images/hero-home-desktop.jpg",
+        headers: [{ key: "Cache-Control", value: "public, max-age=0, must-revalidate" }],
+      },
       { source: "/(.*)", headers: securityHeaders },
     ];
   },
