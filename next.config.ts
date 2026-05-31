@@ -50,7 +50,13 @@ const nextConfig: NextConfig = {
     ],
   },
   async headers() {
-    return [{ source: "/(.*)", headers: securityHeaders }];
+    return [
+      {
+        source: "/images/hero-phone.jpg",
+        headers: [{ key: "Cache-Control", value: "public, max-age=0, must-revalidate" }],
+      },
+      { source: "/(.*)", headers: securityHeaders },
+    ];
   },
 };
 

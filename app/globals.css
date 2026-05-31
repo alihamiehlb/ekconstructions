@@ -79,13 +79,6 @@ body {
   }
 }
 
-.hero-visual-mobile-bg {
-  background-image: url("/images/hero-mobile.jpg");
-  background-size: cover;
-  background-position: center 42%;
-  background-repeat: no-repeat;
-}
-
 .hero-mobile-title {
   font-size: clamp(2rem, 9.5vw, 2.65rem);
   line-height: 0.95;

@@ -2,10 +2,20 @@
 
 import Image from "next/image";
 
+const MOBILE_HERO_SRC = "/images/hero-phone.jpg";
+
 export function HeroVisual() {
   return (
     <div className="hero-visual pointer-events-none absolute inset-0 overflow-hidden">
-      <div className="hero-visual-mobile-bg hero-ken-burns absolute inset-0 lg:hidden" aria-hidden />
+      <Image
+        src={MOBILE_HERO_SRC}
+        alt=""
+        fill
+        priority
+        unoptimized
+        sizes="100vw"
+        className="hero-ken-burns object-cover object-[center_42%] lg:hidden"
+      />
       <Image
         src="/images/hero-bg.jpg"
         alt=""
