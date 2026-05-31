@@ -34,10 +34,12 @@ export class GalleryPage {
   readonly page: Page;
   readonly heading: Locator;
   readonly filterGroup: Locator;
+  readonly showcase: Locator;
 
   constructor(page: Page) {
     this.page = page;
     this.heading = page.getByRole("heading", { name: /project gallery/i });
+    this.showcase = page.locator("#gallery-showcase");
     this.filterGroup = page.getByRole("group", { name: /filter projects by category/i });
   }
 
@@ -45,5 +47,6 @@ export class GalleryPage {
     await preparePage(this.page);
     await this.page.goto("/gallery", { waitUntil: "domcontentloaded" });
     await this.heading.waitFor({ state: "visible" });
+    await this.page.locator("#gallery-showcase").waitFor({ state: "visible" });
   }
 }

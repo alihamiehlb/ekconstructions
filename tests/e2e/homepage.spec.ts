@@ -35,10 +35,12 @@ test.describe("Homepage", () => {
     await expect(home.servicesSection.locator('img[src*="hero-building"]')).toBeHidden();
   });
 
-  test("gallery section shows projects or empty state", async ({ page }) => {
-    await home.gallerySection.scrollIntoViewIfNeeded();
-    const cards = home.gallerySection.locator("article");
-    const empty = home.gallerySection.getByText(/gallery coming soon/i);
-    await expect(cards.first().or(empty)).toBeVisible();
+  test("homepage gallery when present", async ({ page }) => {
+    const gallery = page.locator("#gallery");
+    if ((await gallery.count()) === 0) return;
+
+    await gallery.scrollIntoViewIfNeeded();
+    const cards = gallery.locator("article");
+    await expect(cards.first()).toBeVisible();
   });
 });

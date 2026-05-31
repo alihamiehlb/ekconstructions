@@ -9,18 +9,28 @@ test.describe("Gallery page", () => {
     await gallery.goto();
   });
 
-  test("renders gallery heading", async () => {
+  test("renders gallery page heading", async () => {
     await expect(gallery.heading).toBeVisible();
   });
 
-  test("shows filters when multiple projects exist", async ({ page }) => {
-    const filters = gallery.filterGroup;
-    const cards = page.locator("#gallery article");
+  test("shows empty or project grid", async () => {
+    const section = gallery.showcase;
+    await expect(section).toBeVisible();
+    const cards = section.locator("article");
+    if ((await cards.count()) > 0) {
+      await expect(cards.first()).toBeVisible();
+    } else {
+      await expect(section.getByRole("heading", { name: /new project photos on the way/i })).toBeVisible();
+    }
+  });
+
+  test("shows filters when multiple projects exist", async () => {
+    const cards = gallery.showcase.locator("article");
     if ((await cards.count()) < 2) {
       test.skip(true, "Need at least two projects for category filters");
     }
-    await expect(filters).toBeVisible();
-    await expect(filters.getByRole("button", { name: /^All/i })).toBeVisible();
+    await expect(gallery.filterGroup).toBeVisible();
+    await expect(gallery.filterGroup.getByRole("button", { name: /^All/i })).toBeVisible();
   });
 
   test("category filter updates URL and results", async ({ page }) => {
@@ -36,7 +46,7 @@ test.describe("Gallery page", () => {
   });
 
   test("project card links to detail page", async ({ page }) => {
-    const firstCard = page.locator("#gallery article").first();
+    const firstCard = gallery.showcase.locator("article").first();
     test.skip((await firstCard.count()) === 0, "No gallery projects available");
 
     const href = await firstCard.locator("a").first().getAttribute("href");
