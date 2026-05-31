@@ -1,6 +1,5 @@
 "use client";
 
-import { HeroHotspots } from "@/components/hero/HeroHotspots";
 import { HeroVisual } from "@/components/hero/HeroVisual";
 import { HeroTrustBar } from "@/components/hero/HeroTrustBar";
 import { useSite } from "@/components/providers/SiteProvider";
@@ -30,7 +29,6 @@ export function Hero() {
       className="hero-cinematic relative flex flex-col overflow-hidden bg-ek-navy pt-14 lg:pt-[72px]"
     >
       <HeroVisual />
-      <HeroHotspots />
 
       <div className="landing-container hero-cinematic-inner relative z-10 flex min-h-0 flex-1 flex-col pb-3 lg:pb-8">
         <div className="hero-content-enter max-w-[600px] flex-1 pt-3 lg:pt-14 xl:pt-16">
@@ -74,7 +72,11 @@ export function Hero() {
             {site.tagline}
           </p>
 
-          <div className="hero-mobile-ctas mt-4 lg:hidden">
+          <div className="hero-mobile-ctas mt-5 lg:hidden">
+            <Link href="#contact" className="hero-btn-primary">
+              <span>Get a Quote</span>
+              <ArrowRight className="h-3.5 w-3.5 shrink-0" aria-hidden />
+            </Link>
             <Link href="/gallery" className="hero-btn-outline">
               <span>View Our Work</span>
               <ArrowUpRight className="h-3.5 w-3.5 shrink-0" aria-hidden />

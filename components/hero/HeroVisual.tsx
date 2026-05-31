@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 
-const MOBILE_HERO_SRC = "/images/hero-phone.jpg";
+const MOBILE_HERO_SRC = "/images/hero-phone-v2.jpg";
 
 export function HeroVisual() {
   return (
@@ -14,7 +14,7 @@ export function HeroVisual() {
         priority
         unoptimized
         sizes="100vw"
-        className="hero-ken-burns object-cover object-[center_42%] lg:hidden"
+        className="object-cover object-[62%_58%] lg:hidden"
       />
       <Image
         src="/images/hero-bg.jpg"
@@ -27,7 +27,7 @@ export function HeroVisual() {
       />
       <div className="hero-visual-overlay hero-visual-overlay--mobile absolute inset-0 lg:hidden" aria-hidden />
       <div className="hero-visual-overlay absolute inset-0 hidden lg:block" aria-hidden />
-      <div className="hero-visual-vignette absolute inset-0" aria-hidden />
+      <div className="hero-visual-vignette absolute inset-0 hidden lg:block" aria-hidden />
     </div>
   );
 }

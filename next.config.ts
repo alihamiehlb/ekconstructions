@@ -52,6 +52,10 @@ const nextConfig: NextConfig = {
   async headers() {
     return [
       {
+        source: "/images/hero-phone-v2.jpg",
+        headers: [{ key: "Cache-Control", value: "public, max-age=0, must-revalidate" }],
+      },
+      {
         source: "/images/hero-phone.jpg",
         headers: [{ key: "Cache-Control", value: "public, max-age=0, must-revalidate" }],
       },
