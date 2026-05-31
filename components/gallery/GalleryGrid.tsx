@@ -157,8 +157,8 @@ export function GalleryGrid({
                   aria-pressed={active}
                   className={`min-h-[36px] rounded-full px-4 py-2 text-[10px] font-semibold tracking-wide uppercase transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ek-teal ${
                     active
-                      ? "bg-ek-teal text-white shadow-sm"
-                      : "border border-ek-navy/10 bg-white text-ek-muted hover:border-ek-teal/30 hover:text-ek-navy"
+                      ? "bg-ek-teal text-white shadow-md ring-2 ring-ek-teal/30 ring-offset-1 ring-offset-white"
+                      : "border border-ek-navy/10 bg-white text-ek-muted hover:border-ek-teal/35 hover:text-ek-navy hover:shadow-sm"
                   }`}
                 >
                   {cat}

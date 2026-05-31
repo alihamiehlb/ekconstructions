@@ -129,11 +129,13 @@ export function Services({ services }: { services: CmsService[] }) {
                 >
                   <Link href="#contact" className="service-card group">
                     <span className="service-card-accent" aria-hidden />
-                    <Icon />
-                    <h3 className="mt-4 text-[10px] font-bold leading-snug tracking-[0.08em] text-white uppercase sm:text-xs lg:text-[13px]">
+                    <span className="service-card-icon">
+                      <Icon />
+                    </span>
+                    <h3 className="mt-4 text-[10px] font-bold leading-snug tracking-[0.1em] text-white uppercase sm:text-xs lg:text-[13px]">
                       {service.title}
                     </h3>
-                    <p className="mt-2 flex-1 text-[12px] leading-relaxed text-white/55 sm:text-[13px] lg:text-sm lg:leading-[1.65]">
+                    <p className="mt-2 flex-1 text-[12px] leading-relaxed text-white/60 sm:text-[13px] lg:text-sm lg:leading-[1.65]">
                       {service.description}
                     </p>
                     <span className="mt-4 inline-flex items-center gap-1.5 text-[10px] font-bold tracking-[0.14em] text-white/70 uppercase transition group-hover:text-ek-teal">
