@@ -1,57 +1,91 @@
 import type { Project } from "@/content/projects";
-import { resolveGalleryImageSource } from "@/lib/instagram/resolve-image";
+import { mergeProjectSlides } from "@/lib/gallery-slides";
+import {
+  isInstagramCdnImageUrl,
+  isInstagramPostUrl,
+  resolveGalleryImageSource,
+} from "@/lib/instagram/resolve-image";
+import { mirrorRemoteImageToStorage } from "@/lib/media/mirror-to-storage";
 
 export type ResolveProjectMediaResult = {
   project: Project;
-  resolvedFromInstagram: string[];
+  resolvedFromInstagram: number;
+  mirroredToStorage: number;
 };
 
-/** Resolve Instagram post URLs in cover + slides to CDN image URLs. */
+async function persistGalleryImageUrl(url: string): Promise<{
+  url: string;
+  resolvedFromInstagram: boolean;
+  mirroredToStorage: boolean;
+}> {
+  const trimmed = url.trim();
+  if (!trimmed) return { url: "", resolvedFromInstagram: false, mirroredToStorage: false };
+
+  const wasPost = isInstagramPostUrl(trimmed);
+  const resolved = await resolveGalleryImageSource(trimmed);
+  if (!resolved) {
+    return { url: "", resolvedFromInstagram: false, mirroredToStorage: false };
+  }
+
+  const resolvedFromInstagram = wasPost && resolved !== trimmed;
+
+  if (!isInstagramCdnImageUrl(resolved)) {
+    return { url: resolved, resolvedFromInstagram, mirroredToStorage: false };
+  }
+
+  const stored = await mirrorRemoteImageToStorage(resolved);
+  return {
+    url: stored,
+    resolvedFromInstagram,
+    mirroredToStorage: stored !== resolved,
+  };
+}
+
+/** Resolve Instagram URLs and mirror ephemeral CDN links to Supabase for cover + slides. */
 export async function resolveProjectMedia(project: Project): Promise<ResolveProjectMediaResult> {
-  const resolvedFromInstagram: string[] = [];
+  let resolvedFromInstagram = 0;
+  let mirroredToStorage = 0;
 
-  let src = project.src.trim();
-  if (src) {
-    const next = await resolveGalleryImageSource(src);
-    if (next && next !== src) resolvedFromInstagram.push("cover");
-    src = next;
+  const coverResult = await persistGalleryImageUrl(project.src);
+  if (coverResult.resolvedFromInstagram) resolvedFromInstagram += 1;
+  if (coverResult.mirroredToStorage) mirroredToStorage += 1;
+
+  const src = coverResult.url;
+  const extraInputs =
+    project.images && project.images.length > 0 && project.images[0] === project.src.trim()
+      ? project.images.slice(1)
+      : (project.images ?? []).filter((url) => url.trim() !== project.src.trim());
+
+  const resolvedExtras: string[] = [];
+  for (const raw of extraInputs) {
+    const result = await persistGalleryImageUrl(raw);
+    if (result.resolvedFromInstagram) resolvedFromInstagram += 1;
+    if (result.mirroredToStorage) mirroredToStorage += 1;
+    if (result.url) resolvedExtras.push(result.url);
   }
 
-  const extras: string[] = [];
-  for (const raw of project.images ?? []) {
-    const trimmed = raw.trim();
-    if (!trimmed) continue;
-    const next = await resolveGalleryImageSource(trimmed);
-    if (next && next !== trimmed) resolvedFromInstagram.push("slide");
-    if (next) extras.push(next);
-  }
-
-  const uniqueExtras = [...new Set(extras.filter((url) => url && url !== src))];
-
-  const images =
-    src && uniqueExtras.length > 0
-      ? [src, ...uniqueExtras]
-      : !src && uniqueExtras.length > 0
-        ? uniqueExtras
-        : undefined;
+  const images = mergeProjectSlides(src, resolvedExtras);
 
   return {
     project: { ...project, src, images },
     resolvedFromInstagram,
+    mirroredToStorage,
   };
 }
 
 export async function resolveAllProjectMedia(
   projects: Project[],
-): Promise<{ projects: Project[]; instagramResolved: number }> {
+): Promise<{ projects: Project[]; instagramResolved: number; mirroredToStorage: number }> {
   let instagramResolved = 0;
+  let mirroredToStorage = 0;
   const resolved: Project[] = [];
 
   for (const project of projects) {
     const result = await resolveProjectMedia(project);
-    if (result.resolvedFromInstagram.length > 0) instagramResolved += 1;
+    instagramResolved += result.resolvedFromInstagram;
+    mirroredToStorage += result.mirroredToStorage;
     resolved.push(result.project);
   }
 
-  return { projects: resolved, instagramResolved };
+  return { projects: resolved, instagramResolved, mirroredToStorage };
 }

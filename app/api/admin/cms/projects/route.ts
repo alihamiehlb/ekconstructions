@@ -69,22 +69,32 @@ export async function PUT(request: Request) {
 
     let resolvedProjects = sanitizedProjects;
     let instagramResolved = 0;
+    let mirroredToStorage = 0;
     try {
       const resolved = await resolveAllProjectMedia(sanitizedProjects);
       resolvedProjects = resolved.projects;
       instagramResolved = resolved.instagramResolved;
+      mirroredToStorage = resolved.mirroredToStorage;
     } catch (error) {
       const message =
         error instanceof Error ? error.message : "Could not fetch image from Instagram.";
       return NextResponse.json({ error: message }, { status: 400 });
     }
 
-    const invalidAfterResolve = resolvedProjects.filter((p) => !isValidGalleryImageSrc(p.src));
+    function projectMediaValid(project: (typeof resolvedProjects)[0]): boolean {
+      if (!isValidGalleryImageSrc(project.src)) return false;
+      for (const img of project.images ?? []) {
+        if (!isValidGalleryImageSrc(img)) return false;
+      }
+      return true;
+    }
+
+    const invalidAfterResolve = resolvedProjects.filter((p) => !projectMediaValid(p));
     if (invalidAfterResolve.length > 0) {
       return NextResponse.json(
         {
           error:
-            "Cover image could not be resolved. Check Instagram links are public, or upload the image instead.",
+            "An image could not be resolved. Use public Instagram post links, upload files, or your own hosted image URLs — not copied cdninstagram links.",
         },
         { status: 400 },
       );
@@ -110,7 +120,7 @@ export async function PUT(request: Request) {
       ip: getClientIp(request),
       detail: `Projects updated (${merged.projects.length} items${
         instagramResolved > 0 ? `, ${instagramResolved} from Instagram` : ""
-      })`,
+      }${mirroredToStorage > 0 ? `, ${mirroredToStorage} mirrored to storage` : ""})`,
     });
 
     return NextResponse.json({
@@ -118,6 +128,7 @@ export async function PUT(request: Request) {
       count: merged.projects.length,
       projects: merged.projects,
       instagramResolved,
+      mirroredToStorage,
     });
   } catch (error) {
     const message = error instanceof Error ? error.message : "Save failed";

@@ -1,6 +1,7 @@
 "use client";
 
 import { AdminFeedbackDialog, type AdminFeedbackVariant } from "@/components/admin/AdminFeedbackDialog";
+import { GallerySlidesField } from "@/components/admin/GallerySlidesField";
 import { ImageUploadField } from "@/components/admin/ImageUploadField";
 import type { Project } from "@/content/projects";
 import {
@@ -13,6 +14,7 @@ import {
   isInstagramPostUrl,
   isValidGalleryImageSrc,
 } from "@/lib/gallery-image";
+import { getProjectExtraSlides, mergeProjectSlides } from "@/lib/gallery-slides";
 import { secureJsonFetch } from "@/lib/security/client-fetch";
 import {
   ChevronDown,
@@ -41,7 +43,10 @@ function newProject(sortOrder: number): Project {
 
 function normalizeForSave(projects: Project[]): Project[] {
   return projects.map((project, index) => {
-    const images = (project.images ?? []).map((img) => img.trim()).filter(Boolean);
+    const images = mergeProjectSlides(
+      project.src,
+      getProjectExtraSlides(project),
+    );
     const highlights = (project.highlights ?? []).map((h) => h.trim()).filter(Boolean);
     const category = isProjectCategory(project.category)
       ? project.category
@@ -56,7 +61,7 @@ function normalizeForSave(projects: Project[]): Project[] {
       alt: project.alt.trim() || project.title.trim(),
       description: project.description.trim(),
       objectPosition: project.objectPosition?.trim() || undefined,
-      images: images.length ? images : undefined,
+      images,
       highlights: highlights.length ? highlights : undefined,
       sortOrder: index + 1,
     };
@@ -134,7 +139,12 @@ export function AdminProjectsEditor() {
   function updateProject(i: number, patch: Partial<Project>) {
     setProjects((prev) => {
       const next = [...prev];
-      next[i] = { ...next[i], ...patch };
+      const current = next[i];
+      const updated = { ...current, ...patch };
+      if (patch.src !== undefined && patch.src !== current.src) {
+        updated.images = mergeProjectSlides(patch.src, getProjectExtraSlides(current));
+      }
+      next[i] = updated;
       return next;
     });
   }
@@ -169,15 +179,19 @@ export function AdminProjectsEditor() {
 
   async function saveProjects() {
     const payload = normalizeForSave(projects);
-    const invalid = payload.filter((p) => !p.title || !p.src || !isAcceptableGalleryImageInput(p.src));
+    const invalid = payload.filter((p) => {
+      if (!p.title || !p.src || !isAcceptableGalleryImageInput(p.src)) return true;
+      return getProjectExtraSlides(p).some((slide) => !isAcceptableGalleryImageInput(slide));
+    });
     if (invalid.length > 0) {
       setExpandedId(invalid[0].id);
       openFeedback({
         variant: "error",
         title: "Cannot save yet",
         lines: [
-          "Every project needs a title and a cover image.",
-          "Use Upload image, a direct image URL, or a public Instagram post link.",
+          "Every project needs a title, cover image, and valid slide links (if any).",
+          "Use Upload image, your own image URL, or a public Instagram post link (instagram.com/p/…).",
+          "Do not paste copied cdninstagram.com links — they expire.",
           invalid.length === 1
             ? `Fix “${invalid[0].title}” and try again.`
             : `${invalid.length} projects are missing required fields.`,
@@ -209,6 +223,7 @@ export function AdminProjectsEditor() {
         count?: number;
         projects?: Project[];
         instagramResolved?: number;
+        mirroredToStorage?: number;
       };
 
       if (!res.ok) {
@@ -240,6 +255,7 @@ export function AdminProjectsEditor() {
       const count = data.count ?? saved.length;
       const featured = saved.filter((p) => p.featured).length;
       const instagramCount = data.instagramResolved ?? 0;
+      const mirroredCount = data.mirroredToStorage ?? 0;
 
       setProjects(saved);
       setMessage("");
@@ -249,7 +265,12 @@ export function AdminProjectsEditor() {
       ];
       if (instagramCount > 0) {
         successLines.push(
-          `${instagramCount} image${instagramCount === 1 ? "" : "s"} fetched from Instagram and stored.`,
+          `${instagramCount} image${instagramCount === 1 ? "" : "s"} fetched from Instagram.`,
+        );
+      }
+      if (mirroredCount > 0) {
+        successLines.push(
+          `${mirroredCount} image${mirroredCount === 1 ? "" : "s"} saved to your site storage (stable URLs).`,
         );
       }
       if (featured > 0) {
@@ -308,9 +329,10 @@ export function AdminProjectsEditor() {
       />
       <div className="admin-gallery-intro rounded-2xl border border-ek-navy/8 bg-white p-5 shadow-sm sm:p-6">
         <p className="text-sm leading-relaxed text-ek-muted">
-          This is the only source for the public gallery and homepage section. Upload images, paste
-          a direct image URL, or paste a public Instagram post link — on save we fetch the photo
-          from Instagram automatically. For best long-term reliability, use Upload image.
+          This is the only source for the public gallery and homepage section. Use Upload image,
+          a public Instagram post link (instagram.com/p/…), or your own hosted image URL. On save,
+          Instagram photos are downloaded to your site — copied cdninstagram links will not work
+          long term.
         </p>
         <dl className="mt-4 flex flex-wrap gap-3">
           <div className="admin-gallery-stat">
@@ -498,24 +520,14 @@ export function AdminProjectsEditor() {
                             value={project.src}
                             onChange={(url) => updateProject(i, { src: url })}
                           />
-                          <label className="block text-sm md:col-span-2">
-                            <span className="font-medium text-ek-navy">
-                              Extra slides (one URL per line)
-                            </span>
-                            <textarea
-                              rows={3}
-                              className="mt-1 w-full rounded-lg border border-ek-navy/15 px-3 py-2 font-mono text-xs"
-                              value={(project.images ?? []).join("\n")}
-                              onChange={(e) =>
-                                updateProject(i, {
-                                  images: e.target.value
-                                    .split(/\r?\n/)
-                                    .map((l) => l.trim())
-                                    .filter(Boolean),
-                                })
-                              }
-                            />
-                          </label>
+                          <GallerySlidesField
+                            slides={getProjectExtraSlides(project)}
+                            onChange={(extras) =>
+                              updateProject(i, {
+                                images: mergeProjectSlides(project.src, extras),
+                              })
+                            }
+                          />
                           <label className="block text-sm md:col-span-2">
                             <span className="font-medium text-ek-navy">
                               Highlights (one per line)

@@ -1,6 +1,7 @@
 "use client";
 
 import {
+  isInstagramCdnImageUrl,
   isInstagramPostUrl,
   isValidGalleryImageSrc,
 } from "@/lib/gallery-image";
@@ -24,7 +25,8 @@ export function ImageUploadField({ label, value, onChange }: Props) {
 
   const trimmed = value.trim();
   const isInstagram = isInstagramPostUrl(trimmed);
-  const canPreviewDirect = isValidGalleryImageSrc(trimmed);
+  const isEphemeralCdn = isInstagramCdnImageUrl(trimmed);
+  const canPreviewDirect = isValidGalleryImageSrc(trimmed) && !isEphemeralCdn;
   const displayPreview = previewUrl ?? (canPreviewDirect ? trimmed : "");
 
   async function onFile(file: File) {
@@ -130,6 +132,11 @@ export function ImageUploadField({ label, value, onChange }: Props) {
           {isInstagram ? (
             <p className="text-xs text-ek-muted">
               Public Instagram post link — click Save gallery to store the image on your site.
+            </p>
+          ) : isEphemeralCdn ? (
+            <p className="text-xs text-amber-800">
+              This is a temporary Instagram CDN link — it will break on the live site. Paste the
+              instagram.com/p/… post link instead, or upload the image.
             </p>
           ) : null}
           <input

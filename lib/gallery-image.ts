@@ -2,7 +2,7 @@ import type { Project } from "@/content/projects";
 import { isInstagramPostUrl } from "@/lib/instagram/resolve-image";
 
 /** Instagram post/reel pages — not image files; resolved to CDN URLs on save. */
-export { isInstagramPostUrl };
+export { isInstagramPostUrl, isInstagramCdnImageUrl } from "@/lib/instagram/resolve-image";
 
 /** Site stock assets — never valid gallery project photos. */
 const STOCK_IMAGE_PATH_PATTERNS = [
