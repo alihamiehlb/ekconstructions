@@ -6,7 +6,6 @@ import { MobileChromeProvider } from "@/components/providers/MobileChromeProvide
 import { BackToTop } from "@/components/ui/BackToTop";
 import { MobileQuoteBar } from "@/components/ui/MobileQuoteBar";
 import { SkipLink } from "@/components/ui/SkipLink";
-import { SceneScrollSync } from "@/components/three/SceneScrollSync";
 import { siteConfig } from "@/content/site";
 import { readCms } from "@/lib/cms";
 import type { Metadata, Viewport } from "next";
@@ -73,7 +72,6 @@ export default async function RootLayout({
           <MobileChromeProvider>
             <CsrfBootstrap />
             <SkipLink />
-            <SceneScrollSync />
             <PageViewTracker />
             {children}
             <MobileQuoteBar />

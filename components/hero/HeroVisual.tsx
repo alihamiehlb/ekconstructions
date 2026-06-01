@@ -1,11 +1,10 @@
-import { Hero3DCanvas } from "@/components/three/Hero3DCanvas";
 import Image from "next/image";
 
 const HERO_IMAGE = "/images/hero-home.jpg";
 
 export function HeroVisual() {
   return (
-    <div className="hero-media" aria-hidden>
+    <div className="hero-unified-bg" aria-hidden>
       <Image
         src={HERO_IMAGE}
         alt=""
@@ -13,12 +12,10 @@ export function HeroVisual() {
         priority
         fetchPriority="high"
         quality={88}
-        sizes="(max-width: 1023px) 100vw, 58vw"
-        className="hero-media-img object-cover"
+        sizes="100vw"
+        className="object-cover object-center"
       />
-      <Hero3DCanvas />
-      <div className="hero-media-shade" aria-hidden />
-      <div className="hero-glass-frame" aria-hidden />
+      <div className="hero-unified-gradient" />
     </div>
   );
 }

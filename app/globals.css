@@ -1478,190 +1478,133 @@ html[data-admin="true"] body {
   z-index: 40;
 }
 
-/* ========== Hero Pro + 3D glass ========== */
+/* ========== Unified hero (all devices, no animation) ========== */
 
-.hero-pro {
+.hero-unified {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  min-height: 100svh;
+  min-height: 100dvh;
   padding-top: 3.75rem;
+  padding-bottom: 1.5rem;
+  overflow: hidden;
   background: #0a0a0a;
 }
 
 @media (min-width: 1024px) {
-  .hero-pro {
+  .hero-unified {
+    justify-content: center;
     padding-top: 4.5rem;
+    padding-bottom: 0;
+    min-height: min(100svh, 860px);
   }
 }
 
-.hero-pro-grid {
-  display: grid;
-  grid-template-columns: 1fr;
-}
-
-@media (min-width: 1024px) {
-  .hero-pro-grid {
-    grid-template-columns: minmax(0, 0.95fr) minmax(0, 1.05fr);
-    min-height: min(88vh, 820px);
-  }
-}
-
-.hero-pro-panel {
-  order: 2;
-  display: flex;
-  align-items: center;
-  background: linear-gradient(165deg, #0a0a0a 0%, #121212 55%, #0d0d0d 100%);
-  padding: 2.25rem 0 2.5rem;
-  position: relative;
-}
-
-.hero-pro-panel::after {
-  content: "";
+.hero-unified-bg {
   position: absolute;
   inset: 0;
-  background: radial-gradient(ellipse 80% 60% at 0% 50%, rgba(219, 32, 34, 0.08), transparent 55%);
-  pointer-events: none;
+  z-index: 0;
+}
+
+.hero-unified-bg img {
+  object-position: center 32%;
 }
 
 @media (min-width: 1024px) {
-  .hero-pro-panel {
-    order: 1;
-    padding: 3rem 0;
+  .hero-unified-bg img {
+    object-position: center 38%;
   }
 }
 
-.hero-pro-panel-inner {
-  position: relative;
-  z-index: 1;
-  width: 100%;
-}
-
-.hero-pro-visual {
-  order: 1;
-  position: relative;
-  min-height: 46vh;
-  background: #111;
-}
-
-@media (min-width: 1024px) {
-  .hero-pro-visual {
-    order: 2;
-    min-height: auto;
-    height: 100%;
-  }
-}
-
-.hero-media {
-  position: relative;
-  width: 100%;
-  height: 100%;
-  min-height: inherit;
-}
-
-.hero-media-img {
-  object-position: center 30%;
-}
-
-@media (min-width: 1024px) {
-  .hero-media-img {
-    object-position: center 36%;
-  }
-}
-
-.hero-media-shade {
+.hero-unified-gradient {
   position: absolute;
   inset: 0;
   z-index: 1;
   background:
-    linear-gradient(90deg, rgba(10, 10, 10, 0.85) 0%, transparent 28%),
-    linear-gradient(180deg, rgba(10, 10, 10, 0.35) 0%, transparent 40%, rgba(10, 10, 10, 0.5) 100%);
-  pointer-events: none;
-}
-
-@media (max-width: 1023px) {
-  .hero-media-shade {
-    background: linear-gradient(
+    linear-gradient(
       180deg,
-      transparent 0%,
-      rgba(10, 10, 10, 0.15) 45%,
-      rgba(10, 10, 10, 0.55) 100%
+      rgba(10, 10, 10, 0.35) 0%,
+      rgba(10, 10, 10, 0.55) 45%,
+      rgba(10, 10, 10, 0.94) 100%
+    ),
+    linear-gradient(
+      90deg,
+      rgba(10, 10, 10, 0.96) 0%,
+      rgba(10, 10, 10, 0.88) 32%,
+      rgba(10, 10, 10, 0.45) 58%,
+      rgba(10, 10, 10, 0.15) 100%
     );
-  }
+  pointer-events: none;
 }
 
-.hero-glass-frame {
-  position: absolute;
-  inset: 12% 8% 14% 18%;
-  z-index: 3;
-  border: 1px solid rgba(255, 255, 255, 0.22);
-  border-radius: 2px;
-  box-shadow:
-    inset 0 0 0 1px rgba(255, 255, 255, 0.06),
-    0 24px 60px rgba(0, 0, 0, 0.35);
-  pointer-events: none;
+.hero-unified-body {
+  position: relative;
+  z-index: 2;
+  width: 100%;
+  max-width: 40rem;
+  padding-top: 0.5rem;
+  padding-bottom: 0.5rem;
 }
 
 @media (min-width: 1024px) {
-  .hero-glass-frame {
-    display: none;
+  .hero-unified-body {
+    padding-top: 2rem;
+    padding-bottom: 2rem;
   }
 }
 
-.hero-3d-layer {
-  mask-image: linear-gradient(100deg, transparent 0%, black 35%, black 100%);
-}
-
-.hero-3d-canvas {
-  width: 100% !important;
-  height: 100% !important;
-}
-
-.hero-pro-heading {
+.hero-unified-heading {
   margin-top: 0.75rem;
-  font-size: clamp(1.75rem, 6vw, 2.75rem);
+  font-size: clamp(1.65rem, 7vw, 2.85rem);
   font-weight: 900;
-  line-height: 1.05;
+  line-height: 1.06;
   letter-spacing: -0.02em;
   text-transform: uppercase;
   color: #fff;
+  text-shadow: 0 2px 20px rgba(0, 0, 0, 0.35);
 }
 
-.hero-pro-accent {
+.hero-unified-accent {
   display: block;
   color: var(--color-ek-teal);
 }
 
-@media (min-width: 640px) {
-  .hero-pro-accent {
+@media (min-width: 480px) {
+  .hero-unified-accent {
     display: inline;
   }
 }
 
-.hero-pro-lead {
+.hero-unified-lead {
   margin-top: 1rem;
   max-width: 32rem;
-  font-size: 0.9375rem;
+  font-size: clamp(0.875rem, 2.8vw, 1rem);
   line-height: 1.65;
-  color: rgba(255, 255, 255, 0.72);
+  color: rgba(255, 255, 255, 0.78);
 }
 
-.hero-pro-actions {
+.hero-unified-actions {
   display: flex;
   flex-direction: column;
   gap: 0.625rem;
-  margin-top: 1.5rem;
+  margin-top: 1.35rem;
 }
 
-@media (min-width: 640px) {
-  .hero-pro-actions {
+@media (min-width: 480px) {
+  .hero-unified-actions {
     flex-direction: row;
     flex-wrap: wrap;
     align-items: center;
   }
 }
 
-.hero-pro-cta-primary {
+.hero-unified-cta-primary {
   box-shadow: 0 8px 24px rgba(219, 32, 34, 0.35);
 }
 
-.hero-pro-cta-secondary {
+.hero-unified-cta-secondary {
   display: inline-flex;
   min-height: 2.75rem;
   align-items: center;
@@ -1669,23 +1612,22 @@ html[data-admin="true"] body {
   gap: 0.5rem;
   border-radius: 4px;
   border: 1px solid rgba(255, 255, 255, 0.35);
-  background: rgba(255, 255, 255, 0.06);
+  background: rgba(255, 255, 255, 0.08);
   padding: 0.7rem 1.15rem;
   font-size: 11px;
   font-weight: 700;
   letter-spacing: 0.14em;
   text-transform: uppercase;
   color: #fff;
-  transition: border-color 0.2s ease, background-color 0.2s ease;
 }
 
-.hero-pro-cta-secondary:hover {
+.hero-unified-cta-secondary:hover {
   border-color: rgba(255, 255, 255, 0.55);
-  background: rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.12);
 }
 
 .hero-trust-pro {
-  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  border-top: 1px solid rgba(255, 255, 255, 0.12);
   padding-top: 1.25rem;
 }
 
@@ -1715,7 +1657,6 @@ html[data-admin="true"] body {
 }
 
 .service-card-v2:hover {
-  transform: translateY(-4px);
   border-color: rgba(219, 32, 34, 0.45);
   box-shadow: 0 20px 48px -20px rgba(219, 32, 34, 0.25);
 }
@@ -1766,5 +1707,5 @@ html[data-admin="true"] body {
 }
 
 .gallery-card:hover {
-  transform: translateY(-4px);
+  border-color: rgba(219, 32, 34, 0.28);
 }

@@ -32,45 +32,40 @@ export function Hero() {
   return (
     <section
       id="home"
-      className="hero-pro section-block scroll-mt-20 lg:scroll-mt-[5.5rem]"
+      className="hero-unified section-block scroll-mt-20 lg:scroll-mt-[5.5rem]"
       aria-labelledby="hero-heading"
     >
-      <div className="hero-pro-grid">
-        <div className="hero-pro-panel">
-          <div className="landing-container hero-pro-panel-inner">
-            <p className="section-eyebrow section-eyebrow--dark">{site.location.area}</p>
-            <h1 id="hero-heading" className="hero-pro-heading">
-              {site.headline}
-              {accent ? <span className="hero-pro-accent">{accent}</span> : null}
-            </h1>
-            <p className="hero-pro-lead">{site.tagline}</p>
-            <div className="hero-pro-actions">
-              <Link href="#contact" className="btn-primary hero-pro-cta-primary">
-                Get a Quote
-                <ArrowRight className="h-4 w-4" aria-hidden />
-              </Link>
-              <Link href="/gallery" className="hero-pro-cta-secondary">
-                View Our Work
-                <ArrowUpRight className="h-4 w-4" aria-hidden />
-              </Link>
-              {whatsappUrl ? (
-                <a
-                  href={whatsappUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="hero-pro-cta-secondary hero-pro-cta-whatsapp"
-                >
-                  <WhatsAppIcon className="h-4 w-4 text-[#25D366]" />
-                  WhatsApp
-                </a>
-              ) : null}
-            </div>
-            <HeroTrustBar className="mt-8" variant="hero" />
-          </div>
+      <HeroVisual />
+
+      <div className="landing-container hero-unified-body">
+        <p className="section-eyebrow section-eyebrow--dark">{site.location.area}</p>
+        <h1 id="hero-heading" className="hero-unified-heading">
+          {site.headline}
+          {accent ? <span className="hero-unified-accent">{accent}</span> : null}
+        </h1>
+        <p className="hero-unified-lead">{site.tagline}</p>
+        <div className="hero-unified-actions">
+          <Link href="#contact" className="btn-primary hero-unified-cta-primary">
+            Get a Quote
+            <ArrowRight className="h-4 w-4" aria-hidden />
+          </Link>
+          <Link href="/gallery" className="hero-unified-cta-secondary">
+            View Our Work
+            <ArrowUpRight className="h-4 w-4" aria-hidden />
+          </Link>
+          {whatsappUrl ? (
+            <a
+              href={whatsappUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="hero-unified-cta-secondary"
+            >
+              <WhatsAppIcon className="h-4 w-4 text-[#25D366]" />
+              WhatsApp
+            </a>
+          ) : null}
         </div>
-        <div className="hero-pro-visual">
-          <HeroVisual />
-        </div>
+        <HeroTrustBar className="mt-8" variant="hero" />
       </div>
     </section>
   );
