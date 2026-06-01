@@ -62,6 +62,7 @@ export function ProjectImage({
       alt={alt}
       onError={handleError}
       unoptimized={isRemote}
+      referrerPolicy={isRemote ? "no-referrer" : undefined}
     />
   );
 }

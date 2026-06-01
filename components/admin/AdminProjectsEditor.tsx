@@ -1,5 +1,6 @@
 "use client";
 
+import { AdminFeedbackDialog, type AdminFeedbackVariant } from "@/components/admin/AdminFeedbackDialog";
 import { ImageUploadField } from "@/components/admin/ImageUploadField";
 import type { Project } from "@/content/projects";
 import {
@@ -85,6 +86,13 @@ export function AdminProjectsEditor() {
   const [expandedId, setExpandedId] = useState<string | null>(null);
   const [message, setMessage] = useState("");
   const [messageTone, setMessageTone] = useState<"ok" | "warn" | "error">("ok");
+  const [feedback, setFeedback] = useState<{
+    open: boolean;
+    variant: AdminFeedbackVariant;
+    title: string;
+    lines: string[];
+    secondaryHref?: string;
+  } | null>(null);
 
   useEffect(() => {
     loadProjects()
@@ -108,6 +116,19 @@ export function AdminProjectsEditor() {
   function showMessage(text: string, tone: "ok" | "warn" | "error" = "ok") {
     setMessage(text);
     setMessageTone(tone);
+  }
+
+  function openFeedback(state: {
+    variant: AdminFeedbackVariant;
+    title: string;
+    lines: string[];
+    secondaryHref?: string;
+  }) {
+    setFeedback({ open: true, ...state });
+  }
+
+  function closeFeedback() {
+    setFeedback((prev) => (prev ? { ...prev, open: false } : null));
   }
 
   function updateProject(i: number, patch: Partial<Project>) {
@@ -150,16 +171,31 @@ export function AdminProjectsEditor() {
     const payload = normalizeForSave(projects);
     const invalid = payload.filter((p) => !p.title || !p.src || !isAcceptableGalleryImageInput(p.src));
     if (invalid.length > 0) {
-      showMessage(
-        "Each project needs a title and a cover image (upload, image URL, or Instagram post link).",
-        "error",
-      );
       setExpandedId(invalid[0].id);
+      openFeedback({
+        variant: "error",
+        title: "Cannot save yet",
+        lines: [
+          "Every project needs a title and a cover image.",
+          "Use Upload image, a direct image URL, or a public Instagram post link.",
+          invalid.length === 1
+            ? `Fix “${invalid[0].title}” and try again.`
+            : `${invalid.length} projects are missing required fields.`,
+        ],
+      });
       return;
     }
 
     setSaving(true);
     setMessage("");
+    openFeedback({
+      variant: "loading",
+      title: "Saving gallery…",
+      lines: [
+        "Resolving Instagram links to image files (if any).",
+        "Writing to your live site content.",
+      ],
+    });
 
     try {
       const res = await secureJsonFetch("/api/admin/cms/projects", {
@@ -172,6 +208,7 @@ export function AdminProjectsEditor() {
         details?: { fieldErrors?: Record<string, string[]> };
         count?: number;
         projects?: Project[];
+        instagramResolved?: number;
       };
 
       if (!res.ok) {
@@ -180,20 +217,64 @@ export function AdminProjectsEditor() {
               .map(([k, v]) => `${k}: ${v?.join(", ")}`)
               .join(" · ")
           : "";
-        const hint =
-          res.status === 503 || data.error?.includes("Supabase")
-            ? " Check Vercel env: NEXT_PUBLIC_SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY."
-            : "";
-        showMessage([data.error ?? "Save failed", detail].filter(Boolean).join(" — ") + hint, "error");
+        const lines = [data.error ?? "Something went wrong while saving."];
+        if (detail) lines.push(detail);
+        if (res.status === 503 || data.error?.includes("Supabase")) {
+          lines.push(
+            "Check Vercel environment variables: NEXT_PUBLIC_SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY.",
+          );
+        } else if (data.error?.includes("Instagram")) {
+          lines.push("Try Upload image instead of an Instagram link, then save again.");
+        } else {
+          lines.push("Check your connection and try again.");
+        }
+        openFeedback({
+          variant: "error",
+          title: "Gallery not saved",
+          lines,
+        });
         return;
       }
 
       const saved = data.projects ?? payload;
+      const count = data.count ?? saved.length;
+      const featured = saved.filter((p) => p.featured).length;
+      const instagramCount = data.instagramResolved ?? 0;
+
       setProjects(saved);
-      showMessage(`Saved ${data.count ?? saved.length} project(s) to the live site.`, "ok");
+      setMessage("");
+
+      const successLines = [
+        `${count} project${count === 1 ? "" : "s"} published to the live site.`,
+      ];
+      if (instagramCount > 0) {
+        successLines.push(
+          `${instagramCount} image${instagramCount === 1 ? "" : "s"} fetched from Instagram and stored.`,
+        );
+      }
+      if (featured > 0) {
+        successLines.push(
+          `${featured} project${featured === 1 ? "" : "s"} marked featured for the homepage gallery.`,
+        );
+      }
+      successLines.push("Open the public gallery to confirm photos look correct.");
+
+      openFeedback({
+        variant: "success",
+        title: "Gallery saved",
+        lines: successLines,
+        secondaryHref: "/gallery",
+      });
       router.refresh();
     } catch {
-      showMessage("Save failed — check your connection and try again.", "error");
+      openFeedback({
+        variant: "error",
+        title: "Gallery not saved",
+        lines: [
+          "Could not reach the server.",
+          "Check your internet connection and try again.",
+        ],
+      });
     } finally {
       setSaving(false);
     }
@@ -216,6 +297,15 @@ export function AdminProjectsEditor() {
 
   return (
     <div className="space-y-6 pb-24">
+      <AdminFeedbackDialog
+        open={Boolean(feedback?.open)}
+        variant={feedback?.variant ?? "info"}
+        title={feedback?.title ?? ""}
+        lines={feedback?.lines}
+        secondaryLabel={feedback?.secondaryHref ? "View live gallery" : undefined}
+        secondaryHref={feedback?.secondaryHref}
+        onClose={closeFeedback}
+      />
       <div className="admin-gallery-intro rounded-2xl border border-ek-navy/8 bg-white p-5 shadow-sm sm:p-6">
         <p className="text-sm leading-relaxed text-ek-muted">
           This is the only source for the public gallery and homepage section. Upload images, paste
@@ -312,6 +402,7 @@ export function AdminProjectsEditor() {
                             src={project.src}
                             alt=""
                             className="h-full w-full object-cover"
+                            referrerPolicy="no-referrer"
                           />
                         ) : (
                           <div className="gallery-image-empty absolute inset-0">

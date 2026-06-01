@@ -90,6 +90,7 @@ export function ImageUploadField({ label, value, onChange }: Props) {
               className="object-cover"
               sizes="144px"
               unoptimized={displayPreview.startsWith("http")}
+              referrerPolicy={displayPreview.startsWith("http") ? "no-referrer" : undefined}
             />
           ) : isInstagram && resolving ? (
             <div className="gallery-image-empty absolute inset-0">

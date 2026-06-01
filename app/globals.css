@@ -1340,6 +1340,169 @@ body {
     inset 0 1px 0 rgba(255, 255, 255, 0.8);
 }
 
+.admin-feedback-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1.25rem;
+  background: rgba(10, 10, 10, 0.45);
+  backdrop-filter: blur(4px);
+  animation: adminFeedbackFadeIn 0.2s ease;
+}
+
+.admin-feedback-panel {
+  position: relative;
+  width: min(100%, 26rem);
+  border-radius: 1.25rem;
+  border: 1px solid rgba(10, 10, 10, 0.08);
+  background: #fff;
+  padding: 1.75rem 1.5rem 1.5rem;
+  text-align: center;
+  box-shadow:
+    0 24px 60px -28px rgba(10, 10, 10, 0.35),
+    inset 0 1px 0 rgba(255, 255, 255, 0.9);
+  animation: adminFeedbackPopIn 0.28s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.admin-feedback-panel--success {
+  border-color: rgba(16, 185, 129, 0.25);
+}
+
+.admin-feedback-panel--error {
+  border-color: rgba(239, 68, 68, 0.3);
+}
+
+.admin-feedback-panel--loading {
+  border-color: rgba(219, 32, 34, 0.15);
+}
+
+.admin-feedback-close {
+  position: absolute;
+  top: 0.85rem;
+  right: 0.85rem;
+  display: flex;
+  height: 2rem;
+  width: 2rem;
+  align-items: center;
+  justify-content: center;
+  border-radius: 9999px;
+  color: var(--color-ek-muted);
+  transition: background 0.15s ease, color 0.15s ease;
+}
+
+.admin-feedback-close:hover {
+  background: rgba(10, 10, 10, 0.06);
+  color: var(--color-ek-navy);
+}
+
+.admin-feedback-icon-wrap {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 0.75rem;
+}
+
+.admin-feedback-title {
+  font-size: 1.125rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  color: var(--color-ek-navy);
+}
+
+.admin-feedback-lines {
+  margin-top: 1rem;
+  text-align: left;
+  font-size: 0.875rem;
+  line-height: 1.55;
+  color: var(--color-ek-muted);
+  list-style: none;
+  padding: 0;
+}
+
+.admin-feedback-lines li {
+  position: relative;
+  padding-left: 1.1rem;
+  margin-top: 0.45rem;
+}
+
+.admin-feedback-lines li::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0.55em;
+  width: 0.35rem;
+  height: 0.35rem;
+  border-radius: 9999px;
+  background: var(--color-ek-teal);
+}
+
+.admin-feedback-panel--error .admin-feedback-lines li::before {
+  background: #ef4444;
+}
+
+.admin-feedback-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.65rem;
+  margin-top: 1.35rem;
+}
+
+.admin-feedback-btn {
+  display: inline-flex;
+  min-height: 2.5rem;
+  align-items: center;
+  justify-content: center;
+  border-radius: 9999px;
+  padding: 0 1.25rem;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  transition: opacity 0.15s ease, transform 0.15s ease;
+}
+
+.admin-feedback-btn--primary {
+  background: var(--color-ek-teal);
+  color: #fff;
+}
+
+.admin-feedback-btn--primary:hover {
+  opacity: 0.92;
+}
+
+.admin-feedback-btn--secondary {
+  border: 1px solid rgba(10, 10, 10, 0.12);
+  color: var(--color-ek-navy);
+  background: #fff;
+}
+
+.admin-feedback-btn--secondary:hover {
+  background: rgba(244, 244, 244, 1);
+}
+
+@keyframes adminFeedbackFadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes adminFeedbackPopIn {
+  from {
+    opacity: 0;
+    transform: scale(0.94) translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
 .carousel-nav-btn {
   @apply flex h-10 w-10 items-center justify-center rounded-full border border-white/25 bg-black/35 text-white backdrop-blur-md transition hover:border-ek-teal hover:bg-ek-teal/25 hover:text-ek-teal focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ek-teal;
 }
