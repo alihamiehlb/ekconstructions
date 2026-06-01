@@ -1,74 +1,139 @@
 "use client";
 
 import { sceneState, setScenePointer } from "@/lib/stores/scene-store";
-import { Edges, Float, Grid, Sparkles } from "@react-three/drei";
+import { Environment, Float, MeshTransmissionMaterial } from "@react-three/drei";
 import { useFrame } from "@react-three/fiber";
 import { damp3, dampE } from "maath/easing";
-import { useRef } from "react";
+import { useMemo, useRef } from "react";
 import { useSnapshot } from "valtio";
 import type { Group } from "three";
 
 const BRAND_RED = "#db2022";
-const FRAME_COLOR = "#e8e8e8";
+const FRAME = "#1c1c1c";
+const GLASS = "#b8d9f0";
 
-function AluminiumFrame({
-  position,
-  scale,
-  rotation = [0, 0, 0],
-}: {
+type GlassWindowProps = {
+  width: number;
+  height: number;
   position: [number, number, number];
-  scale: [number, number, number];
   rotation?: [number, number, number];
-}) {
+  panes?: [number, number];
+};
+
+function GlassWindow({
+  width,
+  height,
+  position,
+  rotation = [0, 0, 0],
+  panes = [2, 3],
+}: GlassWindowProps) {
+  const snap = useSnapshot(sceneState);
+  const samples =
+    snap.quality === "high" ? 6 : snap.quality === "medium" ? 4 : 2;
+  const [cols, rows] = panes;
+  const frameDepth = 0.07;
+  const glassInset = 0.035;
+
+  const mullions = useMemo(() => {
+    const items: { pos: [number, number, number]; scale: [number, number, number] }[] = [];
+    const pw = width * 0.9;
+    const ph = height * 0.9;
+
+    for (let c = 1; c < cols; c++) {
+      const x = -pw / 2 + (pw / cols) * c;
+      items.push({ pos: [x, 0, glassInset], scale: [0.025, ph, frameDepth * 0.6] });
+    }
+    for (let r = 1; r < rows; r++) {
+      const y = -ph / 2 + (ph / rows) * r;
+      items.push({ pos: [0, y, glassInset], scale: [pw, 0.025, frameDepth * 0.6] });
+    }
+    return items;
+  }, [cols, rows, width, height]);
+
   return (
-    <Float speed={1.2} rotationIntensity={0.15} floatIntensity={0.4}>
-      <group position={position} scale={scale} rotation={rotation}>
-        <mesh>
+    <group position={position} rotation={rotation}>
+      <mesh>
+        <boxGeometry args={[width, height, frameDepth]} />
+        <meshStandardMaterial color={FRAME} metalness={0.94} roughness={0.22} />
+      </mesh>
+      <mesh position={[0, 0, glassInset]}>
+        <planeGeometry args={[width * 0.9, height * 0.9]} />
+        <MeshTransmissionMaterial
+          transmission={0.94}
+          thickness={0.12}
+          roughness={0.04}
+          ior={1.45}
+          chromaticAberration={0.04}
+          color={GLASS}
+          attenuationColor={BRAND_RED}
+          attenuationDistance={3}
+          samples={samples}
+        />
+      </mesh>
+      {mullions.map((m, i) => (
+        <mesh key={i} position={m.pos} scale={m.scale}>
           <boxGeometry args={[1, 1, 1]} />
-          <meshStandardMaterial
-            color={FRAME_COLOR}
-            metalness={0.92}
-            roughness={0.18}
-            envMapIntensity={1.2}
-          />
-          <Edges color={BRAND_RED} threshold={15} />
+          <meshStandardMaterial color={FRAME} metalness={0.9} roughness={0.25} />
         </mesh>
-      </group>
-    </Float>
+      ))}
+      <mesh position={[0, 0, glassInset + 0.02]}>
+        <planeGeometry args={[width * 0.88, height * 0.88]} />
+        <meshBasicMaterial color={BRAND_RED} transparent opacity={0.06} />
+      </mesh>
+    </group>
   );
 }
 
-function ArchitecturalCluster() {
-  const cluster = useRef<Group>(null);
+function GlassFacade() {
+  const group = useRef<Group>(null);
   const snap = useSnapshot(sceneState);
 
   useFrame((state, delta) => {
-    if (!cluster.current || snap.reducedMotion) return;
-    damp3(cluster.current.position, [0, snap.scroll * -0.15, 0], 0.5, delta);
+    if (!group.current || snap.reducedMotion) return;
+    damp3(
+      group.current.position,
+      [1.8 + snap.scroll * -0.2, snap.pointer.y * 0.08, snap.scroll * 0.05],
+      0.55,
+      delta,
+    );
     dampE(
-      cluster.current.rotation,
-      [snap.pointer.y * 0.06, snap.pointer.x * 0.1 + state.clock.elapsedTime * 0.04, 0],
-      0.4,
+      group.current.rotation,
+      [snap.pointer.y * 0.04, snap.pointer.x * 0.08 + state.clock.elapsedTime * 0.02, 0],
+      0.45,
       delta,
     );
   });
 
   return (
-    <group ref={cluster}>
-      <AluminiumFrame position={[-1.4, 0.6, 0.8]} scale={[1.8, 2.4, 0.08]} rotation={[0, 0.4, 0]} />
-      <AluminiumFrame position={[1.2, -0.2, 0.5]} scale={[1.2, 1.6, 0.06]} rotation={[0, -0.25, 0.05]} />
-      <AluminiumFrame position={[0.2, 1.1, -0.3]} scale={[2.2, 0.9, 0.05]} rotation={[0.1, 0.15, 0]} />
-      <AluminiumFrame position={[-0.5, -1, 0.2]} scale={[1.4, 1.4, 0.07]} rotation={[0, 0.6, 0]} />
+    <group ref={group}>
+      <Float speed={1.1} rotationIntensity={0.12} floatIntensity={0.25}>
+        <GlassWindow
+          width={2.4}
+          height={3.2}
+          position={[0, 0.2, 0]}
+          rotation={[0, -0.35, 0]}
+          panes={[3, 4]}
+        />
+      </Float>
+      <Float speed={1.4} rotationIntensity={0.18} floatIntensity={0.3}>
+        <GlassWindow
+          width={1.6}
+          height={2.1}
+          position={[-1.6, -0.5, 0.6]}
+          rotation={[0.08, 0.25, 0.05]}
+          panes={[2, 3]}
+        />
+      </Float>
+      <Float speed={0.9} rotationIntensity={0.1} floatIntensity={0.2}>
+        <GlassWindow
+          width={1.1}
+          height={1.5}
+          position={[1.5, 1.1, -0.4]}
+          rotation={[-0.05, -0.55, 0]}
+          panes={[2, 2]}
+        />
+      </Float>
     </group>
-  );
-}
-
-function ReflectiveFloor() {
-  return (
-    <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -2.2, 0]}>
-      <planeGeometry args={[12, 12]} />
-      <meshStandardMaterial color="#0a0a0a" metalness={0.9} roughness={0.35} transparent opacity={0.55} />
-    </mesh>
   );
 }
 
@@ -77,39 +142,16 @@ export function Hero3DContent() {
 
   return (
     <>
-      <color attach="background" args={["transparent"]} />
-      <ambientLight intensity={0.5} />
-      <directionalLight position={[6, 8, 4]} intensity={1.1} />
-      <directionalLight position={[-4, 2, -2]} intensity={0.35} color={BRAND_RED} />
-      <pointLight position={[0, 2, 3]} intensity={0.6} color={BRAND_RED} distance={12} />
+      <ambientLight intensity={0.55} />
+      <directionalLight position={[5, 8, 6]} intensity={1.15} color="#ffffff" />
+      <directionalLight position={[-6, 3, 2]} intensity={0.4} color={BRAND_RED} />
+      <pointLight position={[2, 1, 4]} intensity={0.5} color="#ffffff" distance={14} />
 
-      <group position={[0, -0.2, 0]}>
-        <ArchitecturalCluster />
-        <ReflectiveFloor />
-        <Grid
-          position={[0, -2.19, 0]}
-          args={[14, 14]}
-          cellSize={0.45}
-          cellThickness={0.35}
-          cellColor={BRAND_RED}
-          sectionSize={2.25}
-          sectionThickness={0.6}
-          sectionColor="#ffffff"
-          fadeDistance={16}
-          fadeStrength={1.2}
-          infiniteGrid
-        />
-        {!snap.reducedMotion && (
-          <Sparkles
-            count={snap.quality === "high" ? 48 : 24}
-            scale={[8, 5, 4]}
-            size={2}
-            speed={0.25}
-            opacity={0.35}
-            color={BRAND_RED}
-          />
-        )}
-      </group>
+      {!snap.reducedMotion && snap.quality === "high" ? (
+        <Environment preset="city" environmentIntensity={0.35} />
+      ) : null}
+
+      <GlassFacade />
     </>
   );
 }

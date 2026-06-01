@@ -22,11 +22,11 @@ function WhatsAppIcon({ className }: { className?: string }) {
 }
 
 const fadeUp = {
-  hidden: { opacity: 0, y: 28 },
+  hidden: { opacity: 0, y: 24 },
   show: (i: number) => ({
     opacity: 1,
     y: 0,
-    transition: { delay: 0.12 + i * 0.08, duration: 0.55, ease: [0.22, 1, 0.36, 1] as const },
+    transition: { delay: 0.1 + i * 0.07, duration: 0.5, ease: [0.22, 1, 0.36, 1] as const },
   }),
 };
 
@@ -43,13 +43,13 @@ export function Hero() {
   return (
     <section
       id="home"
-      className="hero-cinematic section-block relative flex flex-col overflow-hidden bg-ek-navy pt-14 lg:grid lg:grid-cols-[minmax(0,1fr)_minmax(420px,48vw)] lg:pt-[4.5rem]"
+      className="hero-cinematic section-block relative flex min-h-[100dvh] flex-col overflow-hidden bg-ek-navy pt-14 lg:min-h-[min(100dvh,900px)] lg:pt-[4.5rem]"
       aria-labelledby="hero-heading"
     >
       <HeroVisual />
 
-      <div className="landing-container hero-cinematic-inner relative z-10 flex min-h-0 flex-1 flex-col pb-3 lg:col-start-1 lg:row-start-1 lg:mx-0 lg:max-w-none lg:justify-between lg:bg-ek-navy lg:pb-8 lg:pl-10 lg:pr-8 xl:pl-12 xl:pr-10">
-        <div className="hero-desktop-copy flex max-w-[680px] flex-1 flex-col justify-center pt-3 lg:max-w-[34rem] lg:flex-none lg:pt-8 xl:max-w-[38rem] xl:pt-10">
+      <div className="landing-container hero-cinematic-inner relative z-10 flex min-h-0 flex-1 flex-col justify-between pb-4 pt-2 sm:pb-6 sm:pt-4 lg:pb-8 lg:pt-6">
+        <div className="hero-copy flex max-w-xl flex-col justify-center lg:max-w-2xl xl:max-w-[40rem]">
           <MotionDiv
             custom={0}
             initial={reduceMotion ? false : "hidden"}
@@ -67,13 +67,13 @@ export function Hero() {
           >
             <h1
               id="hero-heading"
-              className="hero-mobile-title mt-3 font-black uppercase text-white lg:mt-4 lg:text-[2.35rem] lg:leading-[1.02] lg:tracking-tight xl:text-[2.75rem]"
+              className="hero-title mt-3 font-black uppercase text-white lg:mt-4"
             >
               {site.headline}{" "}
               <span className="hero-title-accent">
                 {accent}
                 <svg
-                  className="hero-brush-stroke absolute -bottom-1 left-0 hidden w-full lg:block"
+                  className="hero-brush-stroke absolute -bottom-1 left-0 w-full"
                   viewBox="0 0 200 12"
                   preserveAspectRatio="none"
                   aria-hidden
@@ -130,7 +130,7 @@ export function Hero() {
           </MotionDiv>
         </div>
 
-        <HeroTrustBar className="shrink-0 pt-3 lg:pt-0" variant="hero" />
+        <HeroTrustBar className="mt-6 shrink-0 sm:mt-8" variant="hero" />
       </div>
     </section>
   );

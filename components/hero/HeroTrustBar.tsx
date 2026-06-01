@@ -40,8 +40,8 @@ export function HeroTrustBar({ className = "", variant = "default" }: Props) {
       <div
         className={`hero-trust-bar hero-trust-bar--mobile ${
           isHero ? "hero-trust-bar--hero" : ""
-        } grid gap-2 px-2 py-2.5 sm:grid-cols-4 sm:gap-4 sm:px-6 sm:py-5 lg:grid-cols-4 ${
-          isHero ? "grid-cols-4" : "grid-cols-2 gap-x-2.5 gap-y-3"
+        } grid gap-3 px-3 py-3 sm:grid-cols-4 sm:gap-4 sm:px-5 sm:py-4 ${
+          isHero ? "grid-cols-2 sm:grid-cols-4" : "grid-cols-2 gap-x-2.5 gap-y-3"
         }`}
       >
         {items.map(({ icon: Icon, label, sublabel }) => (
@@ -69,7 +69,7 @@ export function HeroTrustBar({ className = "", variant = "default" }: Props) {
               <p
                 className={`font-bold leading-snug text-white uppercase ${
                   isHero
-                    ? "text-[7px] tracking-[0.03em] lg:text-[10px] lg:tracking-[0.06em]"
+                    ? "text-[9px] tracking-[0.04em] sm:text-[10px] sm:tracking-[0.06em]"
                     : "text-[7px] tracking-[0.03em] sm:text-[10px] sm:tracking-[0.06em]"
                 }`}
               >

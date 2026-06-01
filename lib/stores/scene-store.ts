@@ -5,7 +5,7 @@ export const sceneState = proxy({
   scroll: 0,
   reducedMotion: false,
   webglReady: false,
-  quality: "high" as "high" | "low",
+  quality: "high" as "high" | "medium" | "low",
 });
 
 export function setScenePointer(x: number, y: number) {

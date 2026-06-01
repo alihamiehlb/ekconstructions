@@ -62,13 +62,9 @@ export function Header() {
   }
 
   const onHomeHero = pathname === "/" && !scrolled;
-  const mobileDark = immersiveMobile;
   const headerTone =
-    onHomeHero || mobileDark
-      ? "dark"
-      : scrolled || pathname !== "/"
-        ? "light"
-        : "dark";
+    onHomeHero || immersiveMobile ? "dark" : pathname !== "/" || scrolled ? "light" : "dark";
+  const isDarkHeader = headerTone === "dark";
 
   return (
     <header
@@ -76,13 +72,9 @@ export function Header() {
       className={`fixed inset-x-0 top-0 z-50 border-b transition-[transform,background-color,border-color,box-shadow] duration-300 ${
         headerHidden ? "-translate-y-full lg:translate-y-0" : "translate-y-0"
       } ${
-        onHomeHero
-          ? "border-white/10 bg-ek-navy/92 shadow-sm backdrop-blur-md lg:border-ek-navy/10 lg:bg-white/97 lg:shadow-sm"
-          : mobileDark
-            ? "border-white/10 bg-ek-navy/90 backdrop-blur-md lg:border-ek-navy/10 lg:bg-white/97 lg:shadow-sm"
-            : scrolled
-              ? "border-ek-navy/10 bg-white/97 shadow-sm backdrop-blur-md"
-              : "border-ek-navy/8 bg-white/97 shadow-sm"
+        isDarkHeader
+          ? "border-white/10 bg-ek-navy/88 shadow-sm backdrop-blur-xl"
+          : "border-ek-navy/10 bg-white/97 shadow-sm backdrop-blur-md"
       }`}
     >
       <div className="landing-container flex h-[3.75rem] items-center justify-between gap-3 sm:h-16 lg:h-[4.5rem]">
@@ -93,10 +85,11 @@ export function Header() {
           className="min-w-0 shrink-0"
         >
           <Logo
-            variant="dark"
-            className={`logo-header-mobile lg:hidden ${headerTone === "dark" ? "logo-header-mobile--on-dark" : "logo-header-mobile--on-light"}`}
+            variant={isDarkHeader ? "dark" : "light"}
+            className={
+              isDarkHeader ? "logo-header-mobile--on-dark" : "logo-header-mobile--on-light"
+            }
           />
-          <Logo variant="light" className="hidden lg:inline-flex" />
         </motion.div>
 
         <nav className="hidden min-w-0 flex-1 justify-center lg:flex" aria-label="Main">
@@ -109,7 +102,11 @@ export function Header() {
                     href={link.href}
                     aria-current={active ? "page" : undefined}
                     className={`nav-link relative whitespace-nowrap px-1 py-2.5 text-[10px] font-semibold tracking-[0.22em] uppercase xl:text-[11px] xl:tracking-[0.24em] ${
-                      active ? "nav-link-active text-ek-teal" : "text-ek-navy/65 hover:text-ek-teal"
+                      active
+                        ? "nav-link-active text-ek-teal"
+                        : isDarkHeader
+                          ? "text-white/75 hover:text-white"
+                          : "text-ek-navy/65 hover:text-ek-teal"
                     }`}
                   >
                     {link.label}
@@ -134,7 +131,7 @@ export function Header() {
             ref={menuButtonRef}
             type="button"
             className={`inline-flex h-11 w-11 items-center justify-center rounded-md border transition lg:hidden ${
-              headerTone === "dark" || open
+              isDarkHeader || open
                 ? "border-white/25 bg-white text-ek-navy hover:bg-white/90"
                 : "border-ek-navy/10 text-ek-navy hover:border-ek-teal/30 hover:bg-ek-gray"
             }`}
@@ -168,7 +165,7 @@ export function Header() {
               exit={{ opacity: 0, y: -8 }}
               transition={{ duration: 0.22 }}
               className={`absolute inset-x-0 top-full z-50 max-h-[calc(100dvh-3.75rem)] overflow-y-auto border-t shadow-lg sm:max-h-[calc(100dvh-4rem)] lg:hidden ${
-                mobileDark
+                isDarkHeader
                   ? "border-white/10 bg-ek-navy/95 backdrop-blur-md"
                   : "border-ek-navy/10 bg-white"
               }`}
@@ -184,10 +181,10 @@ export function Header() {
                         aria-current={active ? "page" : undefined}
                         className={`flex min-h-[44px] items-center rounded-lg px-3 py-3 text-xs font-semibold tracking-[0.18em] uppercase transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ek-teal ${
                           active
-                            ? mobileDark
+                            ? isDarkHeader
                               ? "bg-ek-teal/15 text-ek-teal"
                               : "bg-ek-teal/8 text-ek-teal"
-                            : mobileDark
+                            : isDarkHeader
                               ? "text-white/90 hover:bg-white/8"
                               : "text-ek-navy hover:bg-ek-gray"
                         }`}

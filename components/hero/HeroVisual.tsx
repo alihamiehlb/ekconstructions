@@ -10,7 +10,7 @@ export function HeroVisual() {
   const reduceMotion = useReducedMotion();
 
   return (
-    <div className="hero-visual pointer-events-none relative h-full w-full overflow-hidden" aria-hidden>
+    <div className="hero-visual pointer-events-none absolute inset-0 overflow-hidden" aria-hidden>
       <Image
         src={HERO_IMAGE}
         alt=""
@@ -18,19 +18,13 @@ export function HeroVisual() {
         priority
         fetchPriority="high"
         quality={90}
-        sizes="(min-width: 1024px) 48vw, 100vw"
-        className={`hero-photo relative h-full w-full ${reduceMotion ? "" : "hero-ken-burns lg:hero-ken-burns-off"}`}
+        sizes="100vw"
+        className={`hero-photo object-cover ${reduceMotion ? "" : "hero-ken-burns"}`}
       />
       <Hero3DCanvas />
-      <div className="hero-visual-glow absolute inset-0 z-[2] lg:hidden" aria-hidden />
-      <div
-        className="hero-visual-overlay hero-visual-overlay--mobile absolute inset-0 z-[2] lg:hidden"
-        aria-hidden
-      />
-      <div className="hero-visual-vignette absolute inset-0 z-[2] lg:hidden" aria-hidden />
-      <div className="hero-visual-panel-fade absolute inset-0 z-[2] hidden lg:block" aria-hidden />
-      <div className="hero-visual-panel-vignette absolute inset-0 z-[2] hidden lg:block" aria-hidden />
-      <div className="hero-visual-3d-scrim absolute inset-0 z-[2] hidden lg:block" aria-hidden />
+      <div className="hero-visual-overlay absolute inset-0 z-[2]" aria-hidden />
+      <div className="hero-visual-vignette absolute inset-0 z-[2]" aria-hidden />
+      <div className="hero-visual-glow absolute inset-0 z-[2]" aria-hidden />
     </div>
   );
 }

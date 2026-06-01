@@ -7,12 +7,7 @@ const Hero3DScene = dynamic(
   () => import("@/components/three/Hero3DScene").then((m) => ({ default: m.Hero3DScene })),
   {
     ssr: false,
-    loading: () => (
-      <div
-        className="hero-3d-canvas hero-3d-canvas--loading absolute inset-0"
-        aria-hidden
-      />
-    ),
+    loading: () => null,
   },
 );
 
@@ -22,7 +17,7 @@ export function Hero3DCanvas() {
   if (reduceMotion) return null;
 
   return (
-    <div className="hero-3d-layer absolute inset-0 z-[1] hidden lg:block" aria-hidden>
+    <div className="hero-3d-layer absolute inset-0 z-[1]" aria-hidden>
       <Hero3DScene reducedMotion={!!reduceMotion} />
     </div>
   );
