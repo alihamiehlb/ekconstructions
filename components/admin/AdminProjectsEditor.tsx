@@ -173,7 +173,11 @@ export function AdminProjectsEditor() {
               .map(([k, v]) => `${k}: ${v?.join(", ")}`)
               .join(" · ")
           : "";
-        showMessage([data.error ?? "Save failed", detail].filter(Boolean).join(" — "), "error");
+        const hint =
+          res.status === 503 || data.error?.includes("Supabase")
+            ? " Check Vercel env: NEXT_PUBLIC_SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY."
+            : "";
+        showMessage([data.error ?? "Save failed", detail].filter(Boolean).join(" — ") + hint, "error");
         return;
       }
 

@@ -1,7 +1,7 @@
 import { verifyAdminSession } from "@/lib/auth";
 import { readCms, writeCms } from "@/lib/cms";
 import { mergeCmsWithDefaults } from "@/lib/cms/merge";
-import { projectSchema } from "@/lib/cms/schema";
+import { projectSchema, cmsSchema } from "@/lib/cms/schema";
 import { logSecurityEvent } from "@/lib/security/audit";
 import { guardMutation, getClientIp } from "@/lib/security/api-guard";
 import { sanitizeProject } from "@/lib/security/sanitize-cms";
@@ -57,7 +57,15 @@ export async function PUT(request: Request) {
       projects: sanitizedProjects,
     });
 
-    await writeCms({ ...merged, updatedAt: new Date().toISOString() });
+    const validated = cmsSchema.safeParse(merged);
+    if (!validated.success) {
+      return NextResponse.json(
+        { error: "CMS validation failed after merge", details: validated.error.flatten() },
+        { status: 400 },
+      );
+    }
+
+    await writeCms(validated.data);
 
     await logSecurityEvent({
       type: "cms_update",
@@ -65,7 +73,11 @@ export async function PUT(request: Request) {
       detail: `Projects updated (${merged.projects.length} items)`,
     });
 
-    return NextResponse.json({ ok: true, count: merged.projects.length, projects: merged.projects });
+    return NextResponse.json({
+      ok: true,
+      count: validated.data.projects.length,
+      projects: validated.data.projects,
+    });
   } catch (error) {
     const message = error instanceof Error ? error.message : "Save failed";
     console.error("PUT /api/admin/cms/projects:", error);

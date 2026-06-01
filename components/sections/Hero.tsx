@@ -31,13 +31,13 @@ export function Hero() {
   return (
     <section
       id="home"
-      className="hero-cinematic section-block relative flex flex-col overflow-hidden bg-ek-navy pt-14 lg:pt-[72px]"
+      className="hero-cinematic section-block relative flex flex-col overflow-hidden bg-ek-navy pt-14 lg:grid lg:grid-cols-[minmax(0,1fr)_minmax(420px,48vw)] lg:pt-[4.5rem]"
       aria-labelledby="hero-heading"
     >
       <HeroVisual />
 
-      <div className="landing-container hero-cinematic-inner relative z-10 flex min-h-0 flex-1 flex-col pb-3 lg:justify-between lg:pb-8">
-        <div className="hero-content-enter hero-desktop-copy flex max-w-[680px] flex-1 flex-col justify-center pt-3 lg:flex-none lg:pt-10 xl:pt-12">
+      <div className="landing-container hero-cinematic-inner relative z-10 flex min-h-0 flex-1 flex-col pb-3 lg:col-start-1 lg:row-start-1 lg:mx-0 lg:max-w-none lg:justify-between lg:bg-ek-navy lg:pb-8 lg:pl-10 lg:pr-8 xl:pl-12 xl:pr-10">
+        <div className="hero-content-enter hero-desktop-copy flex max-w-[680px] flex-1 flex-col justify-center pt-3 lg:max-w-[34rem] lg:flex-none lg:pt-8 xl:max-w-[38rem] xl:pt-10">
           <p className="section-eyebrow section-eyebrow--dark">{site.location.area}</p>
 
           <h1

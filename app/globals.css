@@ -313,16 +313,28 @@ body {
 
 @media (min-width: 1024px) {
   .hero-cinematic {
-    min-height: min(96dvh, 940px);
+    min-height: min(96dvh, 920px);
+  }
+
+  .hero-visual {
+    position: relative;
+    inset: auto;
+    grid-column: 2;
+    grid-row: 1;
+    min-height: min(96dvh, 920px);
+    z-index: 0;
   }
 
   .hero-cinematic-inner {
-    min-height: calc(min(96dvh, 940px) - 4.5rem);
+    grid-column: 1;
+    grid-row: 1;
+    z-index: 10;
+    min-height: min(96dvh, 920px);
   }
 
   .hero-desktop-copy h1,
   .hero-desktop-copy p {
-    text-shadow: 0 2px 28px rgba(0, 0, 0, 0.55);
+    text-shadow: none;
   }
 
   .hero-trust-bar--hero {
@@ -705,6 +717,12 @@ body {
     linear-gradient(180deg, rgba(8, 8, 10, 0.4) 0%, transparent 38%, rgba(8, 8, 10, 0.68) 100%);
 }
 
+.hero-visual {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+}
+
 .hero-photo {
   object-fit: cover;
   object-position: center 38%;
@@ -712,41 +730,34 @@ body {
 
 @media (min-width: 1024px) {
   .hero-photo {
-    /* Portrait photo: anchor to bottom on wide screens so the pool stays in frame. */
-    object-position: 54% 100%;
-    transform: translateZ(0);
-    transform-origin: 54% 100%;
-    backface-visibility: hidden;
+    object-fit: cover;
+    object-position: center center;
   }
 
-  .hero-ken-burns {
-    transform-origin: 54% 100%;
+  .hero-ken-burns-off {
+    animation: none;
   }
 }
 
-@media (min-width: 1280px) {
-  .hero-photo {
-    object-position: 50% 98%;
-  }
+.hero-visual-panel-fade {
+  background: linear-gradient(
+    90deg,
+    rgba(10, 10, 10, 0.72) 0%,
+    rgba(10, 10, 10, 0.18) 12%,
+    transparent 28%
+  );
+}
+
+.hero-visual-panel-vignette {
+  background:
+    linear-gradient(180deg, rgba(8, 8, 10, 0.12) 0%, transparent 18%, rgba(8, 8, 10, 0.16) 100%),
+    linear-gradient(90deg, transparent 82%, rgba(8, 8, 10, 0.08) 100%);
 }
 
 @media (min-width: 1024px) {
-  .hero-visual-overlay--desktop {
-    background:
-      linear-gradient(
-        95deg,
-        rgba(8, 8, 10, 0.82) 0%,
-        rgba(8, 8, 10, 0.42) 26%,
-        rgba(8, 8, 10, 0.08) 52%,
-        transparent 68%
-      ),
-      linear-gradient(180deg, rgba(8, 8, 10, 0.16) 0%, transparent 45%, rgba(8, 8, 10, 0.22) 100%);
-  }
-
+  .hero-visual-overlay--desktop,
   .hero-visual-vignette--desktop {
-    background:
-      radial-gradient(ellipse 110% 70% at 50% 100%, rgba(8, 8, 10, 0.18), transparent 62%),
-      linear-gradient(180deg, transparent 0%, transparent 62%, rgba(8, 8, 10, 0.12) 100%);
+    display: none;
   }
 }
 

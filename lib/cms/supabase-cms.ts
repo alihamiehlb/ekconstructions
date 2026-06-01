@@ -1,5 +1,5 @@
 import { getDefaultCms } from "@/lib/cms/defaults";
-import { mergeCmsWithDefaults } from "@/lib/cms/merge";
+import { parseStoredCms } from "@/lib/cms/parse-stored-cms";
 import type { CmsData } from "@/lib/cms/types";
 import { cmsSchema } from "@/lib/cms/schema";
 import { createClient } from "@supabase/supabase-js";
@@ -30,29 +30,28 @@ export async function readCmsFromSupabase(): Promise<CmsData | null> {
   if (error) throw error;
   if (!row?.data) return null;
 
-  const parsed = cmsSchema.safeParse(row.data);
-  if (!parsed.success) {
-    console.error("readCmsFromSupabase schema:", parsed.error.flatten());
-    return getDefaultCms();
-  }
-
-  return mergeCmsWithDefaults({
-    ...parsed.data,
-    updatedAt: row.updated_at ?? undefined,
-  });
+  return parseStoredCms(row.data, row.updated_at);
 }
 
 export async function writeCmsToSupabase(data: CmsData): Promise<void> {
   const client = getAdminClient();
   if (!client) throw new Error("Supabase not configured");
 
-  const payload = { ...data, updatedAt: new Date().toISOString() };
+  const validated = cmsSchema.safeParse(data);
+  if (!validated.success) {
+    throw new Error(`CMS validation failed: ${JSON.stringify(validated.error.flatten())}`);
+  }
 
-  const { error } = await client.from("cms_content").upsert({
-    id: CMS_ROW_ID,
-    data: payload,
-    updated_at: payload.updatedAt,
-  });
+  const payload = { ...validated.data, updatedAt: new Date().toISOString() };
+
+  const { error } = await client.from("cms_content").upsert(
+    {
+      id: CMS_ROW_ID,
+      data: payload,
+      updated_at: payload.updatedAt,
+    },
+    { onConflict: "id" },
+  );
 
   if (error) throw error;
 }
