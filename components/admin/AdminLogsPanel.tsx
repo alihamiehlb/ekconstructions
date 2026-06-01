@@ -1,7 +1,6 @@
 "use client";
 
 import type { AuditEvent } from "@/lib/security/audit";
-import { motion } from "framer-motion";
 import { AlertCircle, CheckCircle2, Info, RefreshCw, Terminal } from "lucide-react";
 import { useCallback, useEffect, useState } from "react";
 
@@ -99,11 +98,8 @@ export function AdminLogsPanel({ initialEvents }: Props) {
               const parsed = parseDetail(event.detail);
 
               return (
-                <motion.li
+                <li
                   key={`${event.at}-${i}`}
-                  initial={{ opacity: 0, x: -6 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ delay: Math.min(i * 0.02, 0.3), duration: 0.25 }}
                   className="flex gap-4 px-5 py-4 sm:px-6"
                 >
                   <span
@@ -137,7 +133,7 @@ export function AdminLogsPanel({ initialEvents }: Props) {
                       </pre>
                     )}
                   </div>
-                </motion.li>
+                </li>
               );
             })}
           </ul>

@@ -1,7 +1,6 @@
 "use client";
 
 import type { AdminInsights } from "@/lib/admin/insights";
-import { motion } from "framer-motion";
 import {
   AlertTriangle,
   CheckCircle2,
@@ -34,12 +33,7 @@ function Meter({
         </span>
       </div>
       <div className="h-2 overflow-hidden rounded-full bg-ek-gray">
-        <motion.div
-          className={`h-full rounded-full ${color}`}
-          initial={{ width: 0 }}
-          animate={{ width: `${pct}%` }}
-          transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
-        />
+        <div className={`h-full rounded-full ${color}`} style={{ width: `${pct}%` }} />
       </div>
     </div>
   );
@@ -84,12 +78,9 @@ export function AdminInsightsPanel({ insights }: { insights: AdminInsights }) {
             { icon: Star, label: "Featured", value: gallery.featuredCount },
             { icon: Layers, label: "Multi-slide", value: gallery.carouselCount },
             { icon: Hash, label: "Total slides", value: gallery.totalSlides },
-          ].map(({ icon: Icon, label, value }, i) => (
-            <motion.div
+          ].map(({ icon: Icon, label, value }) => (
+            <div
               key={label}
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: i * 0.06 }}
               className="rounded-xl border border-ek-navy/8 bg-ek-gray/25 p-4"
             >
               <Icon className="h-4 w-4 text-ek-teal" aria-hidden />
@@ -97,7 +88,7 @@ export function AdminInsightsPanel({ insights }: { insights: AdminInsights }) {
               <p className="text-[10px] font-semibold tracking-wide text-ek-muted uppercase">
                 {label}
               </p>
-            </motion.div>
+            </div>
           ))}
         </div>
 

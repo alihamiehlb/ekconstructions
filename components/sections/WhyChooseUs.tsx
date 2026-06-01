@@ -1,10 +1,7 @@
-"use client";
-
 import { ServiceIcon } from "@/components/icons/ServiceIcons";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import { StaggerItem, StaggerReveal } from "@/components/ui/StaggerReveal";
 import type { CmsWhyItem } from "@/lib/cms/types";
-import { useReducedMotion } from "framer-motion";
 
 export function WhyChooseUs({
   items,
@@ -15,8 +12,6 @@ export function WhyChooseUs({
   projectsDelivered?: string;
   yearsExperience?: string;
 }) {
-  const reduceMotion = useReducedMotion();
-
   return (
     <section className="section-block-light" aria-labelledby="why-heading">
       <div className="landing-container">
@@ -51,18 +46,14 @@ export function WhyChooseUs({
         <StaggerReveal className="mt-10 grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 lg:gap-5">
           {items.map((item) => (
             <StaggerItem key={item.title}>
-              <div
-                className={`why-value-card flex h-full flex-col items-center text-center ${
-                  reduceMotion ? "" : ""
-                }`}
-              >
+              <div className="why-value-card flex h-full flex-col items-center text-center">
                 <div className="mb-4 flex h-11 w-11 items-center justify-center rounded-lg border border-ek-navy/8 bg-ek-gray text-ek-navy">
                   <ServiceIcon name={item.icon} className="h-6 w-6" />
                 </div>
-                <h3 className="text-[11px] font-bold leading-snug tracking-[0.06em] text-ek-navy uppercase sm:text-xs">
+                <h3 className="text-xs font-bold leading-snug tracking-wide text-ek-navy uppercase">
                   {item.title}
                 </h3>
-                <p className="mt-2 text-xs leading-relaxed text-ek-muted sm:text-[13px]">
+                <p className="mt-2 text-xs leading-relaxed text-ek-muted sm:text-sm">
                   {item.description}
                 </p>
               </div>

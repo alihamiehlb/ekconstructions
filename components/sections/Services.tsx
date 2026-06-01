@@ -1,12 +1,10 @@
-"use client";
-
 import { StaggerItem, StaggerReveal } from "@/components/ui/StaggerReveal";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import type { CmsService } from "@/lib/cms/types";
 import { ArrowRight } from "lucide-react";
 import Link from "next/link";
 
-const iconClass = "h-7 w-7 text-ek-teal sm:h-8 sm:w-8 lg:h-9 lg:w-9";
+const iconClass = "h-7 w-7 text-ek-teal sm:h-8 sm:w-8";
 
 function WindowIcon() {
   return (
@@ -57,12 +55,7 @@ function FenceIcon() {
 function HammerIcon() {
   return (
     <svg viewBox="0 0 32 32" className={iconClass} fill="none" aria-hidden>
-      <path
-        d="M9 23l10-10"
-        stroke="currentColor"
-        strokeWidth="1.25"
-        strokeLinecap="round"
-      />
+      <path d="M9 23l10-10" stroke="currentColor" strokeWidth="1.25" strokeLinecap="round" />
       <path
         d="M15 9l8 8-3 3-8-8 3-3z"
         stroke="currentColor"
@@ -85,70 +78,47 @@ export function Services({ services }: { services: CmsService[] }) {
   return (
     <section
       id="services"
-      className="section-block services-section-bg relative overflow-hidden scroll-mt-20 lg:scroll-mt-[5.5rem]"
+      className="section-block services-section-v2 scroll-mt-20 py-12 md:py-16 lg:scroll-mt-[5.5rem] lg:py-20"
       aria-labelledby="services-heading"
     >
-      <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-white/10" aria-hidden />
+      <div className="landing-container">
+        <SectionHeading
+          id="services-heading"
+          eyebrow="Our Expertise"
+          title="Services"
+          description="Premium aluminium, glass, steel and carpentry — designed, supplied and installed with precision across Sydney and Greater NSW."
+          theme="dark"
+        />
 
-      <div className="relative pb-10 pt-8 sm:pb-16 sm:pt-12 lg:pb-20 lg:pt-16">
-        <div className="landing-container">
-          <SectionHeading
-            id="services-heading"
-            eyebrow="Our Expertise"
-            title="Services"
-            description="Premium aluminium, glass, steel and carpentry — designed, supplied and installed with precision across Sydney and Greater NSW."
-            theme="dark"
-            className="hidden lg:block"
-          />
-          <SectionHeading
-            eyebrow="Our Expertise"
-            title="Services"
-            theme="dark"
-            className="lg:hidden"
-          />
+        <StaggerReveal className="mt-10 grid gap-4 sm:grid-cols-2 lg:mt-12 lg:grid-cols-3 lg:gap-5">
+          {services.map((service, index) => {
+            const Icon = icons[service.icon as keyof typeof icons] ?? WindowIcon;
+            const isLastOdd =
+              index === services.length - 1 && services.length % 2 === 1;
 
-          <StaggerReveal className="services-grid mt-8 sm:mt-10 lg:mt-12">
-            {services.map((service, index) => {
-              const Icon = icons[service.icon as keyof typeof icons] ?? WindowIcon;
-              const isLastOdd =
-                index === services.length - 1 && services.length % 2 === 1;
-
-              return (
-                <StaggerItem
-                  key={service.id}
-                  className={
-                    isLastOdd
-                      ? "sm:col-span-2 sm:max-w-xl sm:justify-self-center xl:col-span-1 xl:max-w-none xl:justify-self-auto"
-                      : ""
-                  }
-                >
-                  <Link href="#contact" className="service-card group">
-                    <span className="service-card-index" aria-hidden>
-                      {String(index + 1).padStart(2, "0")}
-                    </span>
-                    <span className="service-card-accent" aria-hidden />
-                    <span className="service-card-icon">
-                      <Icon />
-                    </span>
-                    <h3 className="mt-4 text-[10px] font-bold leading-snug tracking-[0.1em] text-white uppercase sm:text-xs lg:text-[13px]">
-                      {service.title}
-                    </h3>
-                    <p className="mt-2 flex-1 text-[12px] leading-relaxed text-white/60 sm:text-[13px] lg:text-sm lg:leading-[1.65]">
-                      {service.description}
-                    </p>
-                    <span className="mt-4 inline-flex items-center gap-1.5 text-[10px] font-bold tracking-[0.14em] text-white/70 uppercase transition group-hover:text-white">
-                      Enquire
-                      <ArrowRight
-                        className="h-3.5 w-3.5 transition group-hover:translate-x-0.5"
-                        aria-hidden
-                      />
-                    </span>
-                  </Link>
-                </StaggerItem>
-              );
-            })}
-          </StaggerReveal>
-        </div>
+            return (
+              <StaggerItem
+                key={service.id}
+                className={isLastOdd ? "sm:col-span-2 sm:max-w-md sm:justify-self-center lg:col-span-1 lg:max-w-none" : ""}
+              >
+                <Link href="#contact" className="service-card-v2 group">
+                  <span className="service-card-v2-index" aria-hidden>
+                    {String(index + 1).padStart(2, "0")}
+                  </span>
+                  <span className="service-card-v2-icon">
+                    <Icon />
+                  </span>
+                  <h3 className="mt-4 text-sm font-bold tracking-wide uppercase">{service.title}</h3>
+                  <p className="mt-2 flex-1 text-sm leading-relaxed">{service.description}</p>
+                  <span className="mt-4 inline-flex items-center gap-1.5 text-[11px] font-bold tracking-wide uppercase group-hover:text-white">
+                    Enquire
+                    <ArrowRight className="h-3.5 w-3.5" aria-hidden />
+                  </span>
+                </Link>
+              </StaggerItem>
+            );
+          })}
+        </StaggerReveal>
       </div>
     </section>
   );

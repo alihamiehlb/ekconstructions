@@ -5,7 +5,6 @@ import { ProjectImage } from "@/components/gallery/ProjectImage";
 import { useSite } from "@/components/providers/SiteProvider";
 import type { Project } from "@/content/projects";
 import { getProjectImages } from "@/lib/project-images";
-import { motion } from "framer-motion";
 import { ArrowLeft, ArrowRight, Instagram } from "lucide-react";
 import Link from "next/link";
 
@@ -59,12 +58,7 @@ export function ProjectDetailScreen({ project, projects, index }: Props) {
             Back to gallery
           </Link>
 
-          <motion.div
-            initial={{ opacity: 0, y: 24 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1] }}
-            className="relative z-10 max-w-3xl pb-4 lg:pb-8"
-          >
+          <div className="relative z-10 max-w-3xl pb-4 lg:pb-8">
             <span className="inline-block rounded-[2px] bg-ek-teal px-2.5 py-1 text-[10px] font-bold tracking-[0.16em] text-white uppercase">
               {project.category}
             </span>
@@ -75,17 +69,12 @@ export function ProjectDetailScreen({ project, projects, index }: Props) {
               Project {index + 1} of {projects.length}
               {images.length > 1 ? ` · ${images.length} photos` : ""}
             </p>
-          </motion.div>
+          </div>
         </div>
       </div>
 
       {images.length > 1 && (
-        <motion.div
-          initial={{ opacity: 0, y: 16 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.15, duration: 0.5 }}
-          className="landing-container -mt-2 border-b border-white/10 py-6 sm:py-8"
-        >
+        <div className="landing-container -mt-2 border-b border-white/10 py-6 sm:py-8">
           <p className="text-[10px] font-semibold tracking-[0.3em] text-ek-teal uppercase">
             Gallery
           </p>
@@ -109,15 +98,11 @@ export function ProjectDetailScreen({ project, projects, index }: Props) {
               </li>
             ))}
           </ul>
-        </motion.div>
+        </div>
       )}
 
       <div className="landing-container grid gap-10 py-10 sm:py-12 lg:grid-cols-[1fr_320px] lg:gap-16 lg:py-16">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.1, duration: 0.5 }}
-        >
+        <div>
           <h2 className="text-[10px] font-semibold tracking-[0.3em] text-ek-teal uppercase">
             Overview
           </h2>
@@ -137,14 +122,9 @@ export function ProjectDetailScreen({ project, projects, index }: Props) {
               ))}
             </ul>
           )}
-        </motion.div>
+        </div>
 
-        <motion.aside
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.18, duration: 0.5 }}
-          className="h-fit rounded-xl border border-white/10 bg-white/5 p-6 backdrop-blur-sm lg:sticky lg:top-24"
-        >
+        <aside className="h-fit rounded-xl border border-white/10 bg-white/5 p-6 backdrop-blur-sm lg:sticky lg:top-24">
           <p className="text-[10px] font-semibold tracking-[0.25em] text-ek-teal uppercase">
             Interested?
           </p>
@@ -164,7 +144,7 @@ export function ProjectDetailScreen({ project, projects, index }: Props) {
             <Instagram className="h-4 w-4" aria-hidden />
             @{site.instagram.handle}
           </a>
-        </motion.aside>
+        </aside>
       </div>
 
       <div className="border-t border-white/10">

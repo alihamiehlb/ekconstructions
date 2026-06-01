@@ -6,7 +6,6 @@ import { SectionHeading } from "@/components/ui/SectionHeading";
 import type { Project } from "@/content/projects";
 import { PROJECT_CATEGORIES } from "@/lib/project-categories";
 import { projectHasGallery } from "@/lib/project-images";
-import { motion } from "framer-motion";
 import { ArrowUpRight, Layers } from "lucide-react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
@@ -39,16 +38,12 @@ function ProjectCard({
   featured?: boolean;
 }) {
   return (
-    <motion.article
-      initial={{ opacity: 0, y: 18 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: "-30px" }}
-      transition={{ delay: index * 0.05, duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
+    <article
       className={`h-full ${featured && !compact ? "sm:col-span-2" : ""} ${compact ? "gallery-card-snap shrink-0 sm:shrink lg:shrink-0" : ""}`}
     >
       <Link
         href={`/gallery/${project.id}`}
-        className={`gallery-card group relative flex h-full flex-col overflow-hidden rounded-2xl border border-ek-navy/8 bg-white shadow-[0_8px_30px_-18px_rgba(10,10,10,0.35)] transition-all duration-300 hover:-translate-y-1.5 hover:border-ek-teal/30 hover:shadow-[0_22px_48px_-24px_rgba(219,32,34,0.28)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ek-teal ${
+        className={`gallery-card group relative flex h-full flex-col overflow-hidden rounded-2xl border border-ek-navy/8 bg-white shadow-[0_8px_30px_-18px_rgba(10,10,10,0.35)] hover:border-ek-teal/30 hover:shadow-[0_16px_40px_-20px_rgba(219,32,34,0.22)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ek-teal ${
           compact ? "w-[78vw] max-w-[320px] p-2.5 sm:w-auto sm:max-w-none sm:p-3" : "p-3 sm:p-4"
         }`}
       >
@@ -96,7 +91,7 @@ function ProjectCard({
           )}
         </div>
       </Link>
-    </motion.article>
+    </article>
   );
 }
 

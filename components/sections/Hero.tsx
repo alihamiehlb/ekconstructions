@@ -4,12 +4,12 @@ import { HeroVisual } from "@/components/hero/HeroVisual";
 import { HeroTrustBar } from "@/components/hero/HeroTrustBar";
 import { useSite } from "@/components/providers/SiteProvider";
 import { buildWhatsAppChatUrl } from "@/lib/whatsapp";
-import { motion, useReducedMotion } from "framer-motion";
 import { ArrowRight, ArrowUpRight } from "lucide-react";
 import Link from "next/link";
 import { useMemo } from "react";
 
-function stripTrailingPeriod(text: string) {
+function stripTrailingPeriod(text: string | undefined) {
+  if (!text) return "";
   return text.replace(/\.\s*$/, "");
 }
 
@@ -21,116 +21,56 @@ function WhatsAppIcon({ className }: { className?: string }) {
   );
 }
 
-const fadeUp = {
-  hidden: { opacity: 0, y: 24 },
-  show: (i: number) => ({
-    opacity: 1,
-    y: 0,
-    transition: { delay: 0.1 + i * 0.07, duration: 0.5, ease: [0.22, 1, 0.36, 1] as const },
-  }),
-};
-
 export function Hero() {
   const site = useSite();
-  const reduceMotion = useReducedMotion();
   const whatsappUrl = useMemo(
     () => buildWhatsAppChatUrl(site.contact.phone),
     [site.contact.phone],
   );
   const accent = stripTrailingPeriod(site.headlineAccent);
-  const MotionDiv = reduceMotion ? "div" : motion.div;
 
   return (
     <section
       id="home"
-      className="hero-cinematic section-block relative flex min-h-[100dvh] flex-col overflow-hidden bg-ek-navy pt-14 lg:min-h-[min(100dvh,900px)] lg:pt-[4.5rem]"
+      className="hero-pro section-block scroll-mt-20 lg:scroll-mt-[5.5rem]"
       aria-labelledby="hero-heading"
     >
-      <HeroVisual />
-
-      <div className="landing-container hero-cinematic-inner relative z-10 flex min-h-0 flex-1 flex-col justify-between pb-4 pt-2 sm:pb-6 sm:pt-4 lg:pb-8 lg:pt-6">
-        <div className="hero-copy flex max-w-xl flex-col justify-center lg:max-w-2xl xl:max-w-[40rem]">
-          <MotionDiv
-            custom={0}
-            initial={reduceMotion ? false : "hidden"}
-            animate={reduceMotion ? undefined : "show"}
-            variants={fadeUp}
-          >
+      <div className="hero-pro-grid">
+        <div className="hero-pro-panel">
+          <div className="landing-container hero-pro-panel-inner">
             <p className="section-eyebrow section-eyebrow--dark">{site.location.area}</p>
-          </MotionDiv>
-
-          <MotionDiv
-            custom={1}
-            initial={reduceMotion ? false : "hidden"}
-            animate={reduceMotion ? undefined : "show"}
-            variants={fadeUp}
-          >
-            <h1
-              id="hero-heading"
-              className="hero-title mt-3 font-black uppercase text-white lg:mt-4"
-            >
-              {site.headline}{" "}
-              <span className="hero-title-accent">
-                {accent}
-                <svg
-                  className="hero-brush-stroke absolute -bottom-1 left-0 w-full"
-                  viewBox="0 0 200 12"
-                  preserveAspectRatio="none"
-                  aria-hidden
-                >
-                  <path
-                    d="M2 8 C40 2, 80 10, 120 6 S180 4, 198 7"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="4"
-                    strokeLinecap="round"
-                    className="text-ek-teal"
-                  />
-                </svg>
-              </span>
+            <h1 id="hero-heading" className="hero-pro-heading">
+              {site.headline}
+              {accent ? <span className="hero-pro-accent">{accent}</span> : null}
             </h1>
-          </MotionDiv>
-
-          <MotionDiv
-            custom={2}
-            initial={reduceMotion ? false : "hidden"}
-            animate={reduceMotion ? undefined : "show"}
-            variants={fadeUp}
-          >
-            <p className="hero-tagline mt-3 lg:mt-4">{site.tagline}</p>
-          </MotionDiv>
-
-          <MotionDiv
-            custom={3}
-            initial={reduceMotion ? false : "hidden"}
-            animate={reduceMotion ? undefined : "show"}
-            variants={fadeUp}
-          >
-            <div className="hero-cta-row">
-              <Link href="#contact" className="hero-cta-primary">
-                <span>Get a Quote</span>
-                <ArrowRight className="h-3.5 w-3.5 shrink-0 lg:h-4 lg:w-4" aria-hidden />
+            <p className="hero-pro-lead">{site.tagline}</p>
+            <div className="hero-pro-actions">
+              <Link href="#contact" className="btn-primary hero-pro-cta-primary">
+                Get a Quote
+                <ArrowRight className="h-4 w-4" aria-hidden />
               </Link>
-              <Link href="/gallery" className="hero-cta-secondary">
-                <span>View Our Work</span>
-                <ArrowUpRight className="h-3.5 w-3.5 shrink-0 lg:h-4 lg:w-4" aria-hidden />
+              <Link href="/gallery" className="hero-pro-cta-secondary">
+                View Our Work
+                <ArrowUpRight className="h-4 w-4" aria-hidden />
               </Link>
               {whatsappUrl ? (
                 <a
                   href={whatsappUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="hero-cta-whatsapp"
+                  className="hero-pro-cta-secondary hero-pro-cta-whatsapp"
                 >
-                  <WhatsAppIcon className="h-3.5 w-3.5 shrink-0 text-white/90 lg:h-4 lg:w-4" />
-                  <span>WhatsApp</span>
+                  <WhatsAppIcon className="h-4 w-4 text-[#25D366]" />
+                  WhatsApp
                 </a>
               ) : null}
             </div>
-          </MotionDiv>
+            <HeroTrustBar className="mt-8" variant="hero" />
+          </div>
         </div>
-
-        <HeroTrustBar className="mt-6 shrink-0 sm:mt-8" variant="hero" />
+        <div className="hero-pro-visual">
+          <HeroVisual />
+        </div>
       </div>
     </section>
   );

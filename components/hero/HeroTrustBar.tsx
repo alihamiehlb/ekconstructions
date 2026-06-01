@@ -5,7 +5,7 @@ import { Award, Shield, ShieldCheck, TrendingUp } from "lucide-react";
 
 type Props = {
   className?: string;
-  variant?: "hero" | "default";
+  variant?: "hero" | "default" | "inline";
 };
 
 export function HeroTrustBar({ className = "", variant = "default" }: Props) {
@@ -15,75 +15,57 @@ export function HeroTrustBar({ className = "", variant = "default" }: Props) {
   const items = [
     {
       icon: Shield,
-      label: `${site.business.yearsExperience} Years Experience`,
-      sublabel: "Built on trust & quality",
+      label: `${site.business.yearsExperience} Years`,
+      sublabel: "Experience",
     },
     {
       icon: TrendingUp,
-      label: `${site.business.projectsDelivered} Projects Delivered`,
-      sublabel: "Across Sydney & NSW",
+      label: site.business.projectsDelivered,
+      sublabel: "Projects",
     },
     {
       icon: Award,
-      label: "Fully Licensed & Insured",
-      sublabel: "Peace of mind guaranteed",
+      label: "Licensed",
+      sublabel: "& insured",
     },
     {
       icon: ShieldCheck,
-      label: "Australian Standards Compliant",
-      sublabel: "Committed to safety",
+      label: "Australian",
+      sublabel: "Standards",
     },
   ];
 
   return (
-    <div className={`relative z-10 ${className}`.trim()}>
+    <div className={className}>
       <div
-        className={`hero-trust-bar hero-trust-bar--mobile ${
-          isHero ? "hero-trust-bar--hero" : ""
-        } grid gap-3 px-3 py-3 sm:grid-cols-4 sm:gap-4 sm:px-5 sm:py-4 ${
-          isHero ? "grid-cols-2 sm:grid-cols-4" : "grid-cols-2 gap-x-2.5 gap-y-3"
-        }`}
+        className={
+          isHero
+            ? "hero-trust-pro grid grid-cols-2 gap-3 sm:grid-cols-4"
+            : "hero-trust-bar grid grid-cols-2 gap-3 rounded-lg border border-ek-line bg-ek-gray p-4 sm:grid-cols-4"
+        }
       >
         {items.map(({ icon: Icon, label, sublabel }) => (
-          <div
-            key={label}
-            className={
-              isHero
-                ? "hero-trust-item hero-trust-item--stack flex flex-col items-center gap-1.5 text-center lg:flex-row lg:items-center lg:gap-3 lg:text-left"
-                : "flex items-start gap-1.5 sm:gap-3"
-            }
-          >
+          <div key={label} className="flex items-start gap-2.5">
             <span
-              className={`flex shrink-0 items-center justify-center rounded-full border border-ek-teal/25 bg-ek-teal/12 text-ek-teal ${
-                isHero ? "h-7 w-7 lg:h-10 lg:w-10" : "h-7 w-7 sm:h-10 sm:w-10"
+              className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-md border ${
+                isHero
+                  ? "border-white/15 bg-white/8 text-ek-teal"
+                  : "border-ek-teal/20 bg-ek-teal/8 text-ek-teal"
               }`}
             >
-              <Icon
-                className={
-                  isHero ? "h-3.5 w-3.5 lg:h-[18px] lg:w-[18px]" : "h-3.5 w-3.5 sm:h-[18px] sm:w-[18px]"
-                }
-                aria-hidden
-              />
+              <Icon className="h-4 w-4" aria-hidden />
             </span>
-            <div className={isHero ? "min-w-0" : "min-w-0 pt-0.5"}>
+            <div className="min-w-0">
               <p
-                className={`font-bold leading-snug text-white uppercase ${
-                  isHero
-                    ? "text-[9px] tracking-[0.04em] sm:text-[10px] sm:tracking-[0.06em]"
-                    : "text-[7px] tracking-[0.03em] sm:text-[10px] sm:tracking-[0.06em]"
+                className={`text-[11px] font-bold leading-tight tracking-wide uppercase ${
+                  isHero ? "text-white" : "text-ek-navy"
                 }`}
               >
                 {label}
               </p>
-              {!isHero ? (
-                <p className="mt-0.5 hidden text-[10px] leading-snug text-white/55 sm:block">
-                  {sublabel}
-                </p>
-              ) : (
-                <p className="mt-0.5 hidden text-[9px] leading-snug text-white/50 lg:block">
-                  {sublabel}
-                </p>
-              )}
+              <p className={`mt-0.5 text-[10px] ${isHero ? "text-white/55" : "text-ek-muted"}`}>
+                {sublabel}
+              </p>
             </div>
           </div>
         ))}

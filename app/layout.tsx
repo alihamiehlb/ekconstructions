@@ -1,14 +1,11 @@
 import { Montserrat } from "next/font/google";
-import { BrandLoader } from "@/components/branding/BrandLoader";
 import { PageViewTracker } from "@/components/analytics/PageViewTracker";
 import { CsrfBootstrap } from "@/components/security/CsrfBootstrap";
 import { SiteProvider } from "@/components/providers/SiteProvider";
 import { MobileChromeProvider } from "@/components/providers/MobileChromeProvider";
-import { SmoothScroll } from "@/components/providers/SmoothScroll";
 import { BackToTop } from "@/components/ui/BackToTop";
 import { MobileQuoteBar } from "@/components/ui/MobileQuoteBar";
 import { SkipLink } from "@/components/ui/SkipLink";
-import { ScrollProgress } from "@/components/ui/ScrollProgress";
 import { SceneScrollSync } from "@/components/three/SceneScrollSync";
 import { siteConfig } from "@/content/site";
 import { readCms } from "@/lib/cms";
@@ -75,16 +72,12 @@ export default async function RootLayout({
         <SiteProvider cms={cms}>
           <MobileChromeProvider>
             <CsrfBootstrap />
-            <SmoothScroll>
-              <SkipLink />
-              <BrandLoader />
-              <ScrollProgress />
-              <SceneScrollSync />
-              <PageViewTracker />
-              {children}
-              <MobileQuoteBar />
-              <BackToTop />
-            </SmoothScroll>
+            <SkipLink />
+            <SceneScrollSync />
+            <PageViewTracker />
+            {children}
+            <MobileQuoteBar />
+            <BackToTop />
           </MobileChromeProvider>
         </SiteProvider>
       </body>
