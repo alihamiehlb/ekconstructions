@@ -63,10 +63,16 @@ export function Header() {
 
   const onHomeHero = pathname === "/" && !scrolled;
   const mobileDark = immersiveMobile;
-  const mobileUsesDarkLogo = onHomeHero || mobileDark;
+  const headerTone =
+    onHomeHero || mobileDark
+      ? "dark"
+      : scrolled || pathname !== "/"
+        ? "light"
+        : "dark";
 
   return (
     <header
+      data-header-tone={headerTone}
       className={`fixed inset-x-0 top-0 z-50 border-b transition-[transform,background-color,border-color,box-shadow] duration-300 ${
         headerHidden ? "-translate-y-full lg:translate-y-0" : "translate-y-0"
       } ${
@@ -86,7 +92,10 @@ export function Header() {
           transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
           className="min-w-0 shrink-0"
         >
-          <Logo variant={mobileUsesDarkLogo ? "dark" : "light"} className="lg:hidden" />
+          <Logo
+            variant="dark"
+            className={`logo-header-mobile lg:hidden ${headerTone === "dark" ? "logo-header-mobile--on-dark" : "logo-header-mobile--on-light"}`}
+          />
           <Logo variant="light" className="hidden lg:inline-flex" />
         </motion.div>
 
@@ -125,7 +134,7 @@ export function Header() {
             ref={menuButtonRef}
             type="button"
             className={`inline-flex h-11 w-11 items-center justify-center rounded-md border transition lg:hidden ${
-              mobileUsesDarkLogo || open
+              headerTone === "dark" || open
                 ? "border-white/25 bg-white text-ek-navy hover:bg-white/90"
                 : "border-ek-navy/10 text-ek-navy hover:border-ek-teal/30 hover:bg-ek-gray"
             }`}

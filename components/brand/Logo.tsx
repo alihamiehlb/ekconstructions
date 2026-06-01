@@ -24,7 +24,7 @@ export function Logo({ className = "", size = "header", asLink = true, variant =
   return (
     <Link
       href="/#home"
-      className="logo-link inline-flex min-h-11 min-w-11 shrink-0 items-center justify-center rounded-md px-1 transition-opacity hover:opacity-95 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ek-teal"
+      className="logo-link inline-flex min-h-11 min-w-[7.5rem] shrink-0 items-center justify-center rounded-md px-1 transition-opacity hover:opacity-95 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ek-teal sm:min-w-[8.25rem]"
       aria-label="EK Constructions home"
     >
       {mark}
