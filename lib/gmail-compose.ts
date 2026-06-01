@@ -3,14 +3,14 @@ export function buildGmailComposeUrl(opts: {
   subject: string;
   body: string;
 }): string {
-  const params = new URLSearchParams({
-    view: "cm",
-    fs: "1",
-    to: opts.to,
-    su: opts.subject,
-    body: opts.body,
-  });
-  return `https://mail.google.com/mail/?${params.toString()}`;
+  const params = new URLSearchParams();
+  params.set("view", "cm");
+  params.set("fs", "1");
+  params.set("tf", "cm");
+  params.set("to", opts.to.trim());
+  params.set("su", opts.subject.trim());
+  params.set("body", opts.body);
+  return `https://mail.google.com/mail/u/0/?${params.toString()}`;
 }
 
 export function buildEnquiryEmailBody(data: {
