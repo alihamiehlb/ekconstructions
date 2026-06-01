@@ -7,7 +7,11 @@ import {
   PROJECT_CATEGORIES,
   isProjectCategory,
 } from "@/lib/project-categories";
-import { isValidGalleryImageSrc } from "@/lib/gallery-image";
+import {
+  isAcceptableGalleryImageInput,
+  isInstagramPostUrl,
+  isValidGalleryImageSrc,
+} from "@/lib/gallery-image";
 import { secureJsonFetch } from "@/lib/security/client-fetch";
 import {
   ChevronDown,
@@ -96,7 +100,7 @@ export function AdminProjectsEditor() {
     () => ({
       total: projects.length,
       featured: projects.filter((p) => p.featured).length,
-      missingImage: projects.filter((p) => !isValidGalleryImageSrc(p.src)).length,
+      missingImage: projects.filter((p) => !isAcceptableGalleryImageInput(p.src)).length,
     }),
     [projects],
   );
@@ -144,9 +148,12 @@ export function AdminProjectsEditor() {
 
   async function saveProjects() {
     const payload = normalizeForSave(projects);
-    const invalid = payload.filter((p) => !p.title || !p.src || !isValidGalleryImageSrc(p.src));
+    const invalid = payload.filter((p) => !p.title || !p.src || !isAcceptableGalleryImageInput(p.src));
     if (invalid.length > 0) {
-      showMessage("Each project needs a title and a valid cover image URL before saving.", "error");
+      showMessage(
+        "Each project needs a title and a cover image (upload, image URL, or Instagram post link).",
+        "error",
+      );
       setExpandedId(invalid[0].id);
       return;
     }
@@ -211,8 +218,9 @@ export function AdminProjectsEditor() {
     <div className="space-y-6 pb-24">
       <div className="admin-gallery-intro rounded-2xl border border-ek-navy/8 bg-white p-5 shadow-sm sm:p-6">
         <p className="text-sm leading-relaxed text-ek-muted">
-          This is the only source for the public gallery and homepage section. Upload images or
-          paste stable URLs — nothing appears on the site until you save here.
+          This is the only source for the public gallery and homepage section. Upload images, paste
+          a direct image URL, or paste a public Instagram post link — on save we fetch the photo
+          from Instagram automatically. For best long-term reliability, use Upload image.
         </p>
         <dl className="mt-4 flex flex-wrap gap-3">
           <div className="admin-gallery-stat">
@@ -257,7 +265,8 @@ export function AdminProjectsEditor() {
         <ul className="space-y-4">
           {projects.map((project, i) => {
             const open = expandedId === project.id;
-            const needsImage = !isValidGalleryImageSrc(project.src);
+            const needsImage = !isAcceptableGalleryImageInput(project.src);
+            const instagramPending = isInstagramPostUrl(project.src);
 
             return (
               <li
@@ -297,7 +306,7 @@ export function AdminProjectsEditor() {
                       aria-expanded={open}
                     >
                       <div className="relative h-16 w-24 shrink-0 overflow-hidden rounded-lg border border-ek-navy/10 bg-ek-gray">
-                        {isValidGalleryImageSrc(project.src) ? (
+                        {isValidGalleryImageSrc(project.src) && !instagramPending ? (
                           // eslint-disable-next-line @next/next/no-img-element
                           <img
                             src={project.src}
@@ -319,6 +328,11 @@ export function AdminProjectsEditor() {
                             <span className="inline-flex items-center gap-1 rounded-full bg-ek-teal/10 px-2 py-0.5 text-[9px] font-bold text-ek-teal uppercase">
                               <Star className="h-3 w-3" aria-hidden />
                               Featured
+                            </span>
+                          )}
+                          {instagramPending && (
+                            <span className="rounded-full bg-sky-100 px-2 py-0.5 text-[9px] font-bold text-sky-900 uppercase">
+                              Instagram
                             </span>
                           )}
                           {needsImage && (

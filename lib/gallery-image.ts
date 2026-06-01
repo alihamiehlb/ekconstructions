@@ -1,10 +1,8 @@
 import type { Project } from "@/content/projects";
+import { isInstagramPostUrl } from "@/lib/instagram/resolve-image";
 
-const UNRELIABLE_HOST_PATTERNS = [
-  /instagram\.[^/]+/i,
-  /cdninstagram\.com/i,
-  /fbcdn\.net/i,
-];
+/** Instagram post/reel pages — not image files; resolved to CDN URLs on save. */
+export { isInstagramPostUrl };
 
 /** Site stock assets — never valid gallery project photos. */
 const STOCK_IMAGE_PATH_PATTERNS = [
@@ -18,17 +16,7 @@ const STOCK_IMAGE_PATH_PATTERNS = [
 ];
 
 export function isUnreliableImageSrc(src: string): boolean {
-  const trimmed = src.trim();
-  if (!trimmed) return true;
-  try {
-    if (trimmed.startsWith("http://") || trimmed.startsWith("https://")) {
-      const url = new URL(trimmed);
-      return UNRELIABLE_HOST_PATTERNS.some((pattern) => pattern.test(url.hostname));
-    }
-  } catch {
-    return true;
-  }
-  return false;
+  return isInstagramPostUrl(src);
 }
 
 export function isStockGalleryImageSrc(src: string): boolean {
@@ -37,15 +25,22 @@ export function isStockGalleryImageSrc(src: string): boolean {
   return STOCK_IMAGE_PATH_PATTERNS.some((pattern) => pattern.test(trimmed));
 }
 
+/** Direct image URL suitable for <img> / Next Image (not an Instagram post page). */
 export function isValidGalleryImageSrc(src: string): boolean {
   const trimmed = src.trim();
   if (!trimmed) return false;
   if (isStockGalleryImageSrc(trimmed)) return false;
+  if (isInstagramPostUrl(trimmed)) return false;
   if (trimmed.startsWith("/images/")) return true;
-  if (trimmed.startsWith("http://") || trimmed.startsWith("https://")) {
-    return !isUnreliableImageSrc(trimmed);
-  }
+  if (trimmed.startsWith("http://") || trimmed.startsWith("https://")) return true;
   return false;
+}
+
+/** Allowed in admin before save — includes Instagram post links (resolved on save). */
+export function isAcceptableGalleryImageInput(src: string): boolean {
+  const trimmed = src.trim();
+  if (!trimmed) return false;
+  return isValidGalleryImageSrc(trimmed) || isInstagramPostUrl(trimmed);
 }
 
 export function resolveGalleryImageSrc(src: string): string {
