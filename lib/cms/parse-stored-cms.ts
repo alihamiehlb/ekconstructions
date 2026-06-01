@@ -9,7 +9,7 @@ export function parseStoredCms(data: unknown, updatedAt?: string | null): CmsDat
   if (parsed.success) {
     return mergeCmsWithDefaults({
       ...parsed.data,
-      updatedAt: updatedAt ?? parsed.data.updatedAt,
+      updatedAt: updatedAt ?? undefined,
     });
   }
 

@@ -65,7 +65,7 @@ export async function PUT(request: Request) {
       );
     }
 
-    await writeCms(validated.data);
+    await writeCms(merged);
 
     await logSecurityEvent({
       type: "cms_update",
@@ -75,8 +75,8 @@ export async function PUT(request: Request) {
 
     return NextResponse.json({
       ok: true,
-      count: validated.data.projects.length,
-      projects: validated.data.projects,
+      count: merged.projects.length,
+      projects: merged.projects,
     });
   } catch (error) {
     const message = error instanceof Error ? error.message : "Save failed";
