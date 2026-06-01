@@ -1,6 +1,6 @@
 /**
- * Resolve public Instagram post/reel URLs to a direct CDN image URL (og:image).
- * Post page URLs must not be used as img src — they are resolved on save.
+ * Resolve public Instagram post/reel URLs to a direct CDN image URL.
+ * Post page HTML often has no og:image for server fetches; the /media/ redirect works.
  */
 
 const BROWSER_UA =
@@ -38,6 +38,32 @@ export function normalizeInstagramPostUrl(url: string): string {
   return base;
 }
 
+export function isInstagramCdnImageUrl(url: string): boolean {
+  try {
+    const host = new URL(url).hostname.toLowerCase();
+    return host.includes("cdninstagram.com") || host.includes("fbcdn.net");
+  } catch {
+    return false;
+  }
+}
+
+/** Instagram legacy media redirect — returns a direct jpg/webp URL. */
+export function buildInstagramMediaUrl(postUrl: string): string {
+  const normalized = normalizeInstagramPostUrl(postUrl);
+  const parsed = new URL(normalized);
+  const match = parsed.pathname.match(POST_PATH);
+  if (!match) throw new Error("Invalid Instagram post URL.");
+
+  const type = match[1];
+  const code = match[2];
+  const imgIndex = parsed.searchParams.get("img_index");
+  let mediaUrl = `https://www.instagram.com/${type}/${code}/media/?size=l`;
+  if (imgIndex) {
+    mediaUrl += `&img_index=${encodeURIComponent(imgIndex)}`;
+  }
+  return mediaUrl;
+}
+
 function decodeHtmlAttr(value: string): string {
   return value
     .replace(/&amp;/g, "&")
@@ -54,14 +80,41 @@ function extractOgImage(html: string): string | null {
 
   for (const pattern of patterns) {
     const match = html.match(pattern);
-    if (match?.[1]?.includes("cdninstagram.com")) {
+    if (match?.[1] && isInstagramCdnImageUrl(decodeHtmlAttr(match[1]))) {
       return decodeHtmlAttr(match[1]);
     }
   }
   return null;
 }
 
-export async function resolveInstagramPostImage(postUrl: string): Promise<string> {
+async function resolveViaMediaRedirect(postUrl: string): Promise<string | null> {
+  const mediaUrl = buildInstagramMediaUrl(postUrl);
+
+  const res = await fetch(mediaUrl, {
+    headers: {
+      "User-Agent": BROWSER_UA,
+      Accept: "image/avif,image/webp,image/*,*/*;q=0.8",
+      "Accept-Language": "en-AU,en;q=0.9",
+      Referer: normalizeInstagramPostUrl(postUrl),
+    },
+    redirect: "follow",
+    cache: "no-store",
+    signal: AbortSignal.timeout(20_000),
+  });
+
+  if (isInstagramCdnImageUrl(res.url)) {
+    return res.url;
+  }
+
+  const location = res.headers.get("location");
+  if (location && isInstagramCdnImageUrl(location)) {
+    return location;
+  }
+
+  return null;
+}
+
+async function resolveViaOgImage(postUrl: string): Promise<string | null> {
   const normalized = normalizeInstagramPostUrl(postUrl);
 
   const res = await fetch(normalized, {
@@ -74,17 +127,22 @@ export async function resolveInstagramPostImage(postUrl: string): Promise<string
     signal: AbortSignal.timeout(20_000),
   });
 
-  if (!res.ok) {
-    throw new Error(`Instagram returned ${res.status}. The post may be private or unavailable.`);
-  }
+  if (!res.ok) return null;
 
   const html = await res.text();
-  const imageUrl = extractOgImage(html);
-  if (!imageUrl) {
-    throw new Error("Could not find an image on that Instagram post.");
-  }
+  return extractOgImage(html);
+}
 
-  return imageUrl;
+export async function resolveInstagramPostImage(postUrl: string): Promise<string> {
+  const viaMedia = await resolveViaMediaRedirect(postUrl);
+  if (viaMedia) return viaMedia;
+
+  const viaOg = await resolveViaOgImage(postUrl);
+  if (viaOg) return viaOg;
+
+  throw new Error(
+    "Could not fetch the image from Instagram. The post may be private, or Instagram blocked the request — try Upload image instead.",
+  );
 }
 
 export async function resolveGalleryImageSource(src: string): Promise<string> {
