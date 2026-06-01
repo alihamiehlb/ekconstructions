@@ -35,6 +35,7 @@ const securityHeaders = [
 ];
 
 const nextConfig: NextConfig = {
+  transpilePackages: ["three"],
   eslint: {
     ignoreDuringBuilds: true,
   },

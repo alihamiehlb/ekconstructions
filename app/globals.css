@@ -754,6 +754,37 @@ body {
     linear-gradient(90deg, transparent 82%, rgba(8, 8, 10, 0.08) 100%);
 }
 
+.hero-visual-3d-scrim {
+  background: linear-gradient(
+    105deg,
+    rgba(10, 10, 10, 0.55) 0%,
+    rgba(10, 10, 10, 0.08) 35%,
+    transparent 55%
+  );
+  pointer-events: none;
+}
+
+.hero-3d-layer {
+  pointer-events: auto;
+}
+
+.hero-3d-canvas {
+  width: 100% !important;
+  height: 100% !important;
+  touch-action: none;
+}
+
+.hero-3d-canvas--loading {
+  background: linear-gradient(135deg, #0a0a0a 0%, #141414 100%);
+  opacity: 0.4;
+}
+
+@media (min-width: 1024px) {
+  .hero-visual .hero-photo {
+    opacity: 0.92;
+  }
+}
+
 @media (min-width: 1024px) {
   .hero-visual-overlay--desktop,
   .hero-visual-vignette--desktop {

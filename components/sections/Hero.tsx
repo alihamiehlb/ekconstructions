@@ -4,6 +4,7 @@ import { HeroVisual } from "@/components/hero/HeroVisual";
 import { HeroTrustBar } from "@/components/hero/HeroTrustBar";
 import { useSite } from "@/components/providers/SiteProvider";
 import { buildWhatsAppChatUrl } from "@/lib/whatsapp";
+import { motion, useReducedMotion } from "framer-motion";
 import { ArrowRight, ArrowUpRight } from "lucide-react";
 import Link from "next/link";
 import { useMemo } from "react";
@@ -20,13 +21,24 @@ function WhatsAppIcon({ className }: { className?: string }) {
   );
 }
 
+const fadeUp = {
+  hidden: { opacity: 0, y: 28 },
+  show: (i: number) => ({
+    opacity: 1,
+    y: 0,
+    transition: { delay: 0.12 + i * 0.08, duration: 0.55, ease: [0.22, 1, 0.36, 1] as const },
+  }),
+};
+
 export function Hero() {
   const site = useSite();
+  const reduceMotion = useReducedMotion();
   const whatsappUrl = useMemo(
     () => buildWhatsAppChatUrl(site.contact.phone),
     [site.contact.phone],
   );
   const accent = stripTrailingPeriod(site.headlineAccent);
+  const MotionDiv = reduceMotion ? "div" : motion.div;
 
   return (
     <section
@@ -37,57 +49,85 @@ export function Hero() {
       <HeroVisual />
 
       <div className="landing-container hero-cinematic-inner relative z-10 flex min-h-0 flex-1 flex-col pb-3 lg:col-start-1 lg:row-start-1 lg:mx-0 lg:max-w-none lg:justify-between lg:bg-ek-navy lg:pb-8 lg:pl-10 lg:pr-8 xl:pl-12 xl:pr-10">
-        <div className="hero-content-enter hero-desktop-copy flex max-w-[680px] flex-1 flex-col justify-center pt-3 lg:max-w-[34rem] lg:flex-none lg:pt-8 xl:max-w-[38rem] xl:pt-10">
-          <p className="section-eyebrow section-eyebrow--dark">{site.location.area}</p>
-
-          <h1
-            id="hero-heading"
-            className="hero-mobile-title mt-3 font-black uppercase text-white lg:mt-4 lg:text-[2.35rem] lg:leading-[1.02] lg:tracking-tight xl:text-[2.75rem]"
+        <div className="hero-desktop-copy flex max-w-[680px] flex-1 flex-col justify-center pt-3 lg:max-w-[34rem] lg:flex-none lg:pt-8 xl:max-w-[38rem] xl:pt-10">
+          <MotionDiv
+            custom={0}
+            initial={reduceMotion ? false : "hidden"}
+            animate={reduceMotion ? undefined : "show"}
+            variants={fadeUp}
           >
-            {site.headline}{" "}
-            <span className="hero-title-accent">
-              {accent}
-              <svg
-                className="hero-brush-stroke absolute -bottom-1 left-0 hidden w-full lg:block"
-                viewBox="0 0 200 12"
-                preserveAspectRatio="none"
-                aria-hidden
-              >
-                <path
-                  d="M2 8 C40 2, 80 10, 120 6 S180 4, 198 7"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="4"
-                  strokeLinecap="round"
-                  className="text-ek-teal"
-                />
-              </svg>
-            </span>
-          </h1>
+            <p className="section-eyebrow section-eyebrow--dark">{site.location.area}</p>
+          </MotionDiv>
 
-          <p className="hero-tagline mt-3 lg:mt-4">{site.tagline}</p>
+          <MotionDiv
+            custom={1}
+            initial={reduceMotion ? false : "hidden"}
+            animate={reduceMotion ? undefined : "show"}
+            variants={fadeUp}
+          >
+            <h1
+              id="hero-heading"
+              className="hero-mobile-title mt-3 font-black uppercase text-white lg:mt-4 lg:text-[2.35rem] lg:leading-[1.02] lg:tracking-tight xl:text-[2.75rem]"
+            >
+              {site.headline}{" "}
+              <span className="hero-title-accent">
+                {accent}
+                <svg
+                  className="hero-brush-stroke absolute -bottom-1 left-0 hidden w-full lg:block"
+                  viewBox="0 0 200 12"
+                  preserveAspectRatio="none"
+                  aria-hidden
+                >
+                  <path
+                    d="M2 8 C40 2, 80 10, 120 6 S180 4, 198 7"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="4"
+                    strokeLinecap="round"
+                    className="text-ek-teal"
+                  />
+                </svg>
+              </span>
+            </h1>
+          </MotionDiv>
 
-          <div className="hero-cta-row">
-            <Link href="#contact" className="hero-cta-primary">
-              <span>Get a Quote</span>
-              <ArrowRight className="h-3.5 w-3.5 shrink-0 lg:h-4 lg:w-4" aria-hidden />
-            </Link>
-            <Link href="/gallery" className="hero-cta-secondary">
-              <span>View Our Work</span>
-              <ArrowUpRight className="h-3.5 w-3.5 shrink-0 lg:h-4 lg:w-4" aria-hidden />
-            </Link>
-            {whatsappUrl ? (
-              <a
-                href={whatsappUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="hero-cta-whatsapp"
-              >
-                <WhatsAppIcon className="h-3.5 w-3.5 shrink-0 text-white/90 lg:h-4 lg:w-4" />
-                <span>WhatsApp</span>
-              </a>
-            ) : null}
-          </div>
+          <MotionDiv
+            custom={2}
+            initial={reduceMotion ? false : "hidden"}
+            animate={reduceMotion ? undefined : "show"}
+            variants={fadeUp}
+          >
+            <p className="hero-tagline mt-3 lg:mt-4">{site.tagline}</p>
+          </MotionDiv>
+
+          <MotionDiv
+            custom={3}
+            initial={reduceMotion ? false : "hidden"}
+            animate={reduceMotion ? undefined : "show"}
+            variants={fadeUp}
+          >
+            <div className="hero-cta-row">
+              <Link href="#contact" className="hero-cta-primary">
+                <span>Get a Quote</span>
+                <ArrowRight className="h-3.5 w-3.5 shrink-0 lg:h-4 lg:w-4" aria-hidden />
+              </Link>
+              <Link href="/gallery" className="hero-cta-secondary">
+                <span>View Our Work</span>
+                <ArrowUpRight className="h-3.5 w-3.5 shrink-0 lg:h-4 lg:w-4" aria-hidden />
+              </Link>
+              {whatsappUrl ? (
+                <a
+                  href={whatsappUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="hero-cta-whatsapp"
+                >
+                  <WhatsAppIcon className="h-3.5 w-3.5 shrink-0 text-white/90 lg:h-4 lg:w-4" />
+                  <span>WhatsApp</span>
+                </a>
+              ) : null}
+            </div>
+          </MotionDiv>
         </div>
 
         <HeroTrustBar className="shrink-0 pt-3 lg:pt-0" variant="hero" />
