@@ -83,10 +83,18 @@ function moveItem<T>(list: T[], from: number, to: number): T[] {
   return next;
 }
 
-export function AdminProjectsEditor() {
+type EditorProps = {
+  initialProjects?: Project[];
+  loadError?: string | null;
+};
+
+export function AdminProjectsEditor({
+  initialProjects = [],
+  loadError: serverLoadError = null,
+}: EditorProps) {
   const router = useRouter();
-  const [projects, setProjects] = useState<Project[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [projects, setProjects] = useState<Project[]>(initialProjects);
+  const [loading, setLoading] = useState(initialProjects.length === 0 && !serverLoadError);
   const [saving, setSaving] = useState(false);
   const [expandedId, setExpandedId] = useState<string | null>(null);
   const [message, setMessage] = useState("");
@@ -100,14 +108,31 @@ export function AdminProjectsEditor() {
   } | null>(null);
 
   useEffect(() => {
+    if (serverLoadError) {
+      showMessage(serverLoadError, "error");
+      setLoading(false);
+      return;
+    }
+
+    if (initialProjects.length > 0) {
+      setExpandedId(initialProjects[0]?.id ?? null);
+      setLoading(false);
+      return;
+    }
+
     loadProjects()
       .then((list) => {
         setProjects(list);
         setExpandedId(list[0]?.id ?? null);
       })
-      .catch(() => showMessage("Failed to load projects", "error"))
+      .catch(() =>
+        showMessage(
+          "Could not load gallery. Check you are logged in and Supabase is configured.",
+          "error",
+        ),
+      )
       .finally(() => setLoading(false));
-  }, []);
+  }, [initialProjects.length, serverLoadError]);
 
   const stats = useMemo(
     () => ({

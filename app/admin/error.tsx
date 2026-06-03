@@ -19,9 +19,12 @@ export default function AdminError({
       <p className="text-xs font-semibold tracking-[0.3em] text-ek-teal uppercase">Admin error</p>
       <h1 className="mt-3 text-2xl font-black text-ek-navy uppercase">This admin page failed to load</h1>
       <p className="mt-3 max-w-lg text-sm text-ek-muted">
-        {error.message.includes("schema cache") || error.message.includes("Could not find the table")
-          ? "Database tables may be missing. Run the Supabase migration from Admin → Settings, then refresh."
-          : "An unexpected error occurred. Try again or return to the dashboard."}
+        {error.message.includes("ADMIN_SECRET")
+          ? "Server is missing ADMIN_SECRET (32+ characters) in Vercel environment variables. Add it under Settings → Environment Variables, redeploy, then sign in again."
+          : error.message.includes("schema cache") ||
+              error.message.includes("Could not find the table")
+            ? "Database tables may be missing. Run the Supabase migration from Admin → Settings, then refresh."
+            : error.message || "An unexpected error occurred. Try again or return to the dashboard."}
       </p>
       <div className="mt-8 flex flex-wrap gap-3">
         <button type="button" onClick={reset} className="btn-primary">

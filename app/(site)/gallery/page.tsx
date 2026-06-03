@@ -6,8 +6,6 @@ import { PROJECT_CATEGORIES } from "@/lib/project-categories";
 import { getProjects } from "@/lib/projects";
 import type { Metadata } from "next";
 
-export const dynamic = "force-dynamic";
-
 export const metadata: Metadata = {
   title: "Project Gallery",
   description:

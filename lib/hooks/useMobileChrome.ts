@@ -14,7 +14,10 @@ export function useMobileChrome(pathname: string) {
   const lastScrollY = useRef(0);
 
   useEffect(() => {
-    const onScroll = () => {
+    let ticking = false;
+
+    const update = () => {
+      ticking = false;
       const y = window.scrollY;
       setScrollY(y);
       setScrolled(y > 8);
@@ -30,7 +33,14 @@ export function useMobileChrome(pathname: string) {
       lastScrollY.current = y;
     };
 
-    onScroll();
+    const onScroll = () => {
+      if (!ticking) {
+        ticking = true;
+        window.requestAnimationFrame(update);
+      }
+    };
+
+    update();
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
   }, [pathname]);

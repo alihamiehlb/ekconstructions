@@ -1,13 +1,5 @@
 import { Montserrat } from "next/font/google";
-import { PageViewTracker } from "@/components/analytics/PageViewTracker";
-import { CsrfBootstrap } from "@/components/security/CsrfBootstrap";
-import { SiteProvider } from "@/components/providers/SiteProvider";
-import { MobileChromeProvider } from "@/components/providers/MobileChromeProvider";
-import { BackToTop } from "@/components/ui/BackToTop";
-import { MobileQuoteBar } from "@/components/ui/MobileQuoteBar";
-import { SkipLink } from "@/components/ui/SkipLink";
 import { siteConfig } from "@/content/site";
-import { readCms } from "@/lib/cms";
 import type { Metadata, Viewport } from "next";
 import "./globals.css";
 
@@ -56,37 +48,17 @@ export const viewport: Viewport = {
   initialScale: 1,
 };
 
-export default async function RootLayout({
+export default function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  let cms;
-  try {
-    cms = await readCms();
-  } catch (error) {
-    console.error("layout readCms:", error);
-    const { getDefaultCms } = await import("@/lib/cms/defaults");
-    cms = getDefaultCms();
-  }
-
   return (
     <html lang="en-AU" className={montserrat.variable}>
       <head>
         <link rel="preload" as="image" href="/images/hero-home.jpg" fetchPriority="high" />
       </head>
-      <body className="min-h-dvh antialiased">
-        <SiteProvider cms={cms}>
-          <MobileChromeProvider>
-            <CsrfBootstrap />
-            <SkipLink />
-            <PageViewTracker />
-            {children}
-            <MobileQuoteBar />
-            <BackToTop />
-          </MobileChromeProvider>
-        </SiteProvider>
-      </body>
+      <body className="min-h-dvh antialiased">{children}</body>
     </html>
   );
 }

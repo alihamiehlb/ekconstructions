@@ -1,28 +1,20 @@
-import { getDefaultCms } from "@/lib/cms/defaults";
-import { parseStoredCms } from "@/lib/cms/parse-stored-cms";
+import { CMS_CACHE_TAG, readCms } from "@/lib/cms/cache";
 import { mergeCmsWithDefaults } from "@/lib/cms/merge";
+import { readCmsUncached } from "@/lib/cms/read-cms";
 import {
   isSupabaseCmsConfigured,
-  readCmsFromSupabase,
   seedCmsIfEmpty,
   writeCmsToSupabase,
 } from "@/lib/cms/supabase-cms";
 import type { CmsData } from "@/lib/cms/types";
 import { cmsSchema } from "@/lib/cms/schema";
+import { revalidateTag } from "next/cache";
 import { promises as fs } from "fs";
 import path from "path";
 
 const CMS_PATH = path.join(process.cwd(), "data", "cms.json");
 
-async function readCmsFromFile(): Promise<CmsData> {
-  try {
-    const raw = await fs.readFile(CMS_PATH, "utf-8");
-    const parsed = JSON.parse(raw) as unknown;
-    return parseStoredCms(parsed);
-  } catch {
-    return getDefaultCms();
-  }
-}
+export { readCms };
 
 async function writeCmsToFile(data: CmsData): Promise<void> {
   await fs.mkdir(path.dirname(CMS_PATH), { recursive: true });
@@ -31,24 +23,6 @@ async function writeCmsToFile(data: CmsData): Promise<void> {
     JSON.stringify({ ...data, updatedAt: new Date().toISOString() }, null, 2),
     "utf-8",
   );
-}
-
-export async function readCms(): Promise<CmsData> {
-  if (isSupabaseCmsConfigured()) {
-    try {
-      await seedCmsIfEmpty();
-      const fromDb = await readCmsFromSupabase();
-      if (fromDb) return fromDb;
-    } catch (e) {
-      console.error("readCms supabase:", e);
-    }
-  }
-
-  if (process.env.VERCEL) {
-    return getDefaultCms();
-  }
-
-  return readCmsFromFile();
 }
 
 export async function writeCms(data: CmsData): Promise<void> {
@@ -60,7 +34,9 @@ export async function writeCms(data: CmsData): Promise<void> {
   const merged = mergeCmsWithDefaults(validated.data);
 
   if (isSupabaseCmsConfigured()) {
+    await seedCmsIfEmpty();
     await writeCmsToSupabase(merged);
+    revalidateTag(CMS_CACHE_TAG);
     return;
   }
 
@@ -71,6 +47,7 @@ export async function writeCms(data: CmsData): Promise<void> {
   }
 
   await writeCmsToFile(merged);
+  revalidateTag(CMS_CACHE_TAG);
 }
 
 export async function getCmsProjects() {

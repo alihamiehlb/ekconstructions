@@ -1,12 +1,26 @@
 import { AdminProjectsEditor } from "@/components/admin/AdminProjectsEditor";
 import { AdminLogoutButton } from "@/components/admin/AdminLogoutButton";
 import { requireAdmin } from "@/lib/auth";
+import { getAdminProjects } from "@/lib/projects";
+import { isMissingSchemaError, schemaErrorMessage } from "@/lib/supabase/errors";
 import Link from "next/link";
 
 export const metadata = { title: "Gallery" };
 
 export default async function AdminProjectsPage() {
   await requireAdmin();
+
+  let initialProjects: Awaited<ReturnType<typeof getAdminProjects>> = [];
+  let loadError: string | null = null;
+
+  try {
+    initialProjects = await getAdminProjects();
+  } catch (error) {
+    console.error("admin projects load:", error);
+    loadError = isMissingSchemaError(error)
+      ? "Database tables are missing. Run the Supabase migration from Settings, then refresh."
+      : schemaErrorMessage(error);
+  }
 
   return (
     <div className="section-pad py-6 sm:py-10">
@@ -31,7 +45,7 @@ export default async function AdminProjectsPage() {
         </div>
       </div>
       <div className="mt-8">
-        <AdminProjectsEditor />
+        <AdminProjectsEditor initialProjects={initialProjects} loadError={loadError} />
       </div>
     </div>
   );

@@ -3,7 +3,7 @@
 import { ProjectImage } from "@/components/gallery/ProjectImage";
 import { getProjectImages } from "@/lib/project-images";
 import type { Project } from "@/content/projects";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 type Props = {
   project: Project;
@@ -15,20 +15,35 @@ type Props = {
 export function GalleryCardPreview({ project, index, compact, featured }: Props) {
   const images = getProjectImages(project);
   const [slide, setSlide] = useState(0);
+  const [inView, setInView] = useState(false);
+  const rootRef = useRef<HTMLDivElement>(null);
   const multi = images.length > 1;
 
   useEffect(() => {
-    if (!multi) return;
+    const el = rootRef.current;
+    if (!el || !multi) return;
+
+    const observer = new IntersectionObserver(
+      ([entry]) => setInView(Boolean(entry?.isIntersecting)),
+      { rootMargin: "80px", threshold: 0.15 },
+    );
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, [multi]);
+
+  useEffect(() => {
+    if (!multi || !inView) return;
     const id = window.setInterval(() => {
       setSlide((s) => (s + 1) % images.length);
-    }, 4000);
+    }, 5000);
     return () => window.clearInterval(id);
-  }, [multi, images.length]);
+  }, [multi, inView, images.length]);
 
   const src = multi ? images[slide] : images[0];
 
   return (
     <div
+      ref={rootRef}
       className={`gallery-card-media relative w-full overflow-hidden rounded-xl bg-ek-gray ${
         featured && !compact
           ? "aspect-[16/10] sm:aspect-[2/1]"

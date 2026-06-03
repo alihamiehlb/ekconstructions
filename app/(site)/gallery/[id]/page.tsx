@@ -6,8 +6,6 @@ import { getProjectById, getProjects } from "@/lib/projects";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 
-export const dynamic = "force-dynamic";
-
 type Props = { params: Promise<{ id: string }> };
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {

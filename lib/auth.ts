@@ -14,15 +14,21 @@ export type AdminSessionUser = {
   role: "admin" | "editor" | "viewer";
 };
 
-function getSecret() {
+function getSecret(): Uint8Array | null {
   const secret = process.env.ADMIN_SECRET;
-  if (!secret || secret.length < 32) {
-    throw new Error("ADMIN_SECRET must be set (min 32 characters)");
-  }
+  if (!secret || secret.length < 32) return null;
   return new TextEncoder().encode(secret);
 }
 
+export function isAdminSecretConfigured(): boolean {
+  return getSecret() !== null;
+}
+
 export async function createAdminSession(user: AdminSessionUser = { role: "admin" }) {
+  const secret = getSecret();
+  if (!secret) {
+    throw new Error("ADMIN_SECRET must be set (min 32 characters) on the server.");
+  }
   const token = await new SignJWT({
     role: user.role,
     sub: user.id,
@@ -32,7 +38,7 @@ export async function createAdminSession(user: AdminSessionUser = { role: "admin
     .setProtectedHeader({ alg: "HS256" })
     .setIssuedAt()
     .setExpirationTime("8h")
-    .sign(getSecret());
+    .sign(secret);
 
   const cookieStore = await cookies();
   cookieStore.set(ADMIN_COOKIE, token, {
@@ -50,11 +56,14 @@ export async function clearAdminSession() {
 }
 
 export async function getAdminSession(): Promise<AdminSessionUser | null> {
+  const secret = getSecret();
+  if (!secret) return null;
+
   const cookieStore = await cookies();
   const token = cookieStore.get(ADMIN_COOKIE)?.value;
   if (!token) return null;
   try {
-    const { payload } = await jwtVerify(token, getSecret());
+    const { payload } = await jwtVerify(token, secret);
     return {
       id: payload.sub as string | undefined,
       email: payload.email as string | undefined,
