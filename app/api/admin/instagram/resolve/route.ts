@@ -1,4 +1,4 @@
-import { verifyAdminSession } from "@/lib/auth";
+import { assertAdminRole } from "@/lib/auth";
 import { isInstagramPostUrl } from "@/lib/instagram/resolve-image";
 import { resolveGalleryImageSource } from "@/lib/instagram/resolve-image";
 import { guardMutation, getClientIp } from "@/lib/security/api-guard";
@@ -6,8 +6,8 @@ import { logSecurityEvent } from "@/lib/security/audit";
 import { NextResponse } from "next/server";
 
 export async function POST(request: Request) {
-  const ok = await verifyAdminSession();
-  if (!ok) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  const session = await assertAdminRole(["admin", "editor"]);
+  if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
   const blocked = await guardMutation(request, {
     csrf: true,

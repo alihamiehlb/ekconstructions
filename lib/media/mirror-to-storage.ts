@@ -1,17 +1,11 @@
+import { processImageForStorage } from "@/lib/security/process-image";
+import { isAllowedRemoteImageUrl } from "@/lib/security/ssrf";
 import { createClient } from "@supabase/supabase-js";
 
 const MAX_BYTES = 5 * 1024 * 1024;
-const ALLOWED_TYPES = new Set(["image/jpeg", "image/png", "image/webp", "image/gif"]);
 
 const BROWSER_UA =
   "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36";
-
-function extensionForContentType(contentType: string): string {
-  if (contentType.includes("png")) return "png";
-  if (contentType.includes("webp")) return "webp";
-  if (contentType.includes("gif")) return "gif";
-  return "jpg";
-}
 
 function isAlreadyOnSupabase(url: string, supabaseHost: string): boolean {
   try {
@@ -35,6 +29,10 @@ export async function mirrorRemoteImageToStorage(remoteUrl: string): Promise<str
     return remoteUrl;
   }
 
+  if (!isAllowedRemoteImageUrl(remoteUrl)) {
+    throw new Error("Image URL host is not allowed.");
+  }
+
   const res = await fetch(remoteUrl, {
     headers: {
       "User-Agent": BROWSER_UA,
@@ -50,22 +48,17 @@ export async function mirrorRemoteImageToStorage(remoteUrl: string): Promise<str
     throw new Error(`Could not download image (${res.status}). Try Upload image instead.`);
   }
 
-  const contentType = (res.headers.get("content-type") ?? "image/jpeg").split(";")[0].trim();
-  if (!ALLOWED_TYPES.has(contentType)) {
-    throw new Error("Downloaded file is not a supported image type.");
-  }
-
-  const buffer = Buffer.from(await res.arrayBuffer());
-  if (buffer.length > MAX_BYTES) {
+  const raw = Buffer.from(await res.arrayBuffer());
+  if (raw.length > MAX_BYTES) {
     throw new Error("Image is over 5 MB. Upload a smaller file instead.");
   }
 
-  const ext = extensionForContentType(contentType);
-  const objectPath = `gallery/${Date.now()}-${crypto.randomUUID().slice(0, 8)}.${ext}`;
+  const processed = await processImageForStorage(raw);
+  const objectPath = `gallery/${Date.now()}-${crypto.randomUUID().slice(0, 8)}.${processed.ext}`;
 
   const client = createClient(supabaseUrl, serviceKey, { auth: { persistSession: false } });
-  const { error } = await client.storage.from("media").upload(objectPath, buffer, {
-    contentType,
+  const { error } = await client.storage.from("media").upload(objectPath, processed.buffer, {
+    contentType: processed.contentType,
     upsert: false,
   });
 

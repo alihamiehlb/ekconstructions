@@ -1,15 +1,15 @@
-import { verifyAdminSession } from "@/lib/auth";
+import { assertAdminRole } from "@/lib/auth";
+import { processImageForStorage } from "@/lib/security/process-image";
 import { guardMutation, getClientIp } from "@/lib/security/api-guard";
 import { logSecurityEvent } from "@/lib/security/audit";
 import { createClient } from "@supabase/supabase-js";
 import { NextResponse } from "next/server";
 
 const MAX_BYTES = 5 * 1024 * 1024;
-const ALLOWED = new Set(["image/jpeg", "image/png", "image/webp", "image/gif"]);
 
 export async function POST(request: Request) {
-  const ok = await verifyAdminSession();
-  if (!ok) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  const session = await assertAdminRole(["admin", "editor"]);
+  if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
   const blocked = await guardMutation(request, {
     csrf: true,
@@ -40,22 +40,24 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "No file provided." }, { status: 400 });
   }
 
-  if (!ALLOWED.has(file.type)) {
-    return NextResponse.json({ error: "Only JPEG, PNG, WebP, or GIF images are allowed." }, { status: 400 });
-  }
-
   if (file.size > MAX_BYTES) {
     return NextResponse.json({ error: "Image must be under 5 MB." }, { status: 400 });
   }
 
-  const ext = file.name.split(".").pop()?.toLowerCase() || "jpg";
-  const objectPath = `gallery/${Date.now()}-${crypto.randomUUID().slice(0, 8)}.${ext}`;
+  let processed;
+  try {
+    const buffer = Buffer.from(await file.arrayBuffer());
+    processed = await processImageForStorage(buffer);
+  } catch (error) {
+    const message = error instanceof Error ? error.message : "Invalid image file.";
+    return NextResponse.json({ error: message }, { status: 400 });
+  }
+
+  const objectPath = `gallery/${Date.now()}-${crypto.randomUUID().slice(0, 8)}.${processed.ext}`;
 
   const client = createClient(url, key, { auth: { persistSession: false } });
-  const buffer = Buffer.from(await file.arrayBuffer());
-
-  const { error } = await client.storage.from("media").upload(objectPath, buffer, {
-    contentType: file.type,
+  const { error } = await client.storage.from("media").upload(objectPath, processed.buffer, {
+    contentType: processed.contentType,
     upsert: false,
   });
 

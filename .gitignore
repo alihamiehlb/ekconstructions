@@ -53,5 +53,7 @@ yarn-error.log*
 next-env.d.ts
 
 tmp-*.html
+.tmp-gallery-import/
+ekcontruct-images.zip
 
 .vercel

@@ -91,6 +91,15 @@ export async function requireAdminRole(roles: AdminSessionUser["role"][]) {
   }
 }
 
+/** For API routes — returns session or null (no redirect). */
+export async function assertAdminRole(
+  roles: AdminSessionUser["role"][],
+): Promise<AdminSessionUser | null> {
+  const session = await getAdminSession();
+  if (!session || !roles.includes(session.role)) return null;
+  return session;
+}
+
 export function verifyAdminPassword(password: string): boolean {
   const expected = process.env.ADMIN_PASSWORD;
   if (!expected) return false;

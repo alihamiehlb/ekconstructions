@@ -1,6 +1,6 @@
 const HTML_TAG = /<[^>]*>/g;
 const CONTROL_CHARS = /[\u0000-\u0008\u000B\u000C\u000E-\u001F\u007F]/g;
-const DANGEROUS_PROTOCOL = /(?:javascript|data|vbscript):/gi;
+const DANGEROUS_PROTOCOL = /(?:javascript|data|vbscript):/i;
 
 export function stripHtml(value: string): string {
   return value.replace(HTML_TAG, "");

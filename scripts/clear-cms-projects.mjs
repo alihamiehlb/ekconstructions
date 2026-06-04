@@ -6,16 +6,34 @@ import { readFileSync, writeFileSync, mkdirSync } from "fs";
 import { createClient } from "@supabase/supabase-js";
 import path from "path";
 
-for (const file of [".env.local", ".env"]) {
+function loadEnvFile(filePath) {
   try {
-    const raw = readFileSync(file, "utf8");
-    for (const line of raw.split("\n")) {
-      const m = line.match(/^([A-Z_][A-Z0-9_]*)=(.*)$/);
-      if (m && !process.env[m[1]]) process.env[m[1]] = m[2].trim();
+    let raw = readFileSync(filePath, "utf8");
+    if (raw.charCodeAt(0) === 0xfeff) raw = raw.slice(1);
+    for (const line of raw.split(/\r?\n/)) {
+      const trimmed = line.trim();
+      if (!trimmed || trimmed.startsWith("#")) continue;
+      const body = trimmed.startsWith("export ") ? trimmed.slice(7).trim() : trimmed;
+      const eq = body.indexOf("=");
+      if (eq < 1) continue;
+      const key = body.slice(0, eq).trim();
+      let val = body.slice(eq + 1).trim();
+      if (
+        (val.startsWith('"') && val.endsWith('"')) ||
+        (val.startsWith("'") && val.endsWith("'"))
+      ) {
+        val = val.slice(1, -1);
+      }
+      const existing = process.env[key];
+      if (!existing || existing.length === 0) process.env[key] = val;
     }
   } catch {
     /* skip */
   }
+}
+
+for (const file of [".env.local", ".env"]) {
+  loadEnvFile(path.join(process.cwd(), file));
 }
 
 const CMS_ROW_ID = "main";

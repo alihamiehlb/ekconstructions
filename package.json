@@ -8,6 +8,7 @@
     "start": "next start",
     "lint": "eslint",
     "favicons": "node scripts/generate-favicons.mjs",
+    "import:gallery": "node scripts/import-gallery-zip.mjs",
     "test:e2e": "playwright test",
     "test:e2e:ui": "playwright test --ui"
   },

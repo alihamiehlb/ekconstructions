@@ -1,4 +1,4 @@
-import { verifyAdminSession } from "@/lib/auth";
+import { assertAdminRole, verifyAdminSession } from "@/lib/auth";
 import { readCms, writeCms } from "@/lib/cms";
 import { mergeCmsWithDefaults } from "@/lib/cms/merge";
 import { projectSchema, cmsSchema } from "@/lib/cms/schema";
@@ -23,8 +23,8 @@ export async function GET() {
 }
 
 export async function PUT(request: Request) {
-  const ok = await verifyAdminSession();
-  if (!ok) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  const session = await assertAdminRole(["admin", "editor"]);
+  if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
   const blocked = await guardMutation(request, {
     csrf: true,
