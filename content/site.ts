@@ -11,7 +11,7 @@ export const siteConfig = {
   },
   location: {
     area: "Sydney & Greater NSW",
-    suburb: "North Ryde",
+    suburb: "169 Walker Street, Helensburgh",
     state: "NSW",
     country: "Australia",
   },
@@ -39,14 +39,23 @@ export const services = [
   {
     id: "aluminium",
     title: "Aluminium Windows & Doors",
-    description: "Sleek, durable and energy efficient solutions.",
+    description:
+      "Premium, custom-made aluminium windows and doors, precision-built to fit any opening perfectly. Choose energy-efficient double glazing for maximum comfort or sleek single glazing for cost-effective styling — backed by 30 years of family-owned fabrication expertise and flawless finishes for builders and homeowners.",
     icon: "window",
   },
   {
     id: "balustrade",
-    title: "Glass Balustrade",
-    description: "Frameless or semi-frameless for a modern look.",
+    title: "Framed & Frameless Glass",
+    description:
+      "Transform your commercial or residential space with premium framed and frameless glass balustrades or sleek office partitions, custom-fabricated to your exact specifications. Choose frameless options for completely uninterrupted views, or framed designs optimised for maximum structural integrity.",
     icon: "balustrade",
+  },
+  {
+    id: "entry-door",
+    title: "Aluminium Front Entry Doors",
+    description:
+      "Make a powerful first impression with our custom, wood-look aluminium entry doors, engineered to deliver the timeless beauty of natural timber without the risk of rotting, warping, or high maintenance. Built for absolute structural robustness, these weather-resistant doors combine advanced safety and security features with ultimate long-term durability to protect your home beautifully in any environment.",
+    icon: "window",
   },
   {
     id: "steel",
@@ -56,8 +65,9 @@ export const services = [
   },
   {
     id: "privacy",
-    title: "Privacy Screens & Gates",
-    description: "Stylish, functional and built to last.",
+    title: "Aluminium Privacy Screens & Gates",
+    description:
+      "Secure and elevate your property with our custom aluminium privacy screens and gates, precision-engineered for maximum structural strength, long-term durability, and zero rust. Available in low-maintenance, weather-resistant finishes — including realistic timber looks — they provide the ultimate blend of premium privacy, advanced security, and modern curb appeal.",
     icon: "fence",
   },
   {
@@ -98,9 +108,9 @@ export const whyChooseUs = [
 ] as const;
 
 export const aboutParagraphs = [
-  "EK Constructions is a Sydney-based specialist in aluminium glazing, glass balustrades, steel work, privacy screens, and quality carpentry — backed by more than 30 years of hands-on trade experience.",
-  "From frameless stair balustrades to full window replacements, we focus on precision installation, compliant products, and finishes that elevate your space.",
-  "Follow our latest work on Instagram — real projects, real craftsmanship, across Greater Sydney.",
+  "Twenty Years of Precision. Family-Owned and Operated.",
+  "For over two decades, our family-owned business has been the trusted fabrication partner for premium homeowners and elite builders. We specialize in custom-made architectural windows, doors, framed and frameless glass balustrades, office partitions, and bespoke metal privacy screens and gates.",
+  "We bridge the gap between design and reality by combining 20+ years of technical expertise with a hand-selected network of premium suppliers. Our business is built on an unwavering commitment to integrity, absolute reliability, and meticulous attention to detail. Whether you are building a luxury dream home or managing a complex commercial project, we deliver the high-end finishes and flawless execution your project demands.",
 ] as const;
 
 export const materials = [
