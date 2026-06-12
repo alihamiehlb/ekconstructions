@@ -16,8 +16,8 @@ export default function PrivacyPage() {
       <LegalSection title="Who we are">
         <p>
           {businessLegal.name} (ABN {businessLegal.abn}) is a Sydney-based construction business
-          specialising in aluminium glazing, glass balustrades, steel work, privacy screens and
-          carpentry. This policy explains how we handle personal information under the{" "}
+          specialising in aluminium glazing, glass balustrades, steel work and privacy screens.
+          This policy explains how we handle personal information under the{" "}
           <em>Privacy Act 1988</em> (Cth) and the Australian Privacy Principles (APPs).
         </p>
       </LegalSection>

@@ -52,26 +52,11 @@ function FenceIcon() {
   );
 }
 
-function HammerIcon() {
-  return (
-    <svg viewBox="0 0 32 32" className={iconClass} fill="none" aria-hidden>
-      <path d="M9 23l10-10" stroke="currentColor" strokeWidth="1.25" strokeLinecap="round" />
-      <path
-        d="M15 9l8 8-3 3-8-8 3-3z"
-        stroke="currentColor"
-        strokeWidth="1.25"
-        strokeLinejoin="round"
-      />
-    </svg>
-  );
-}
-
 const icons = {
   window: WindowIcon,
   balustrade: BalustradeIcon,
   steel: SteelIcon,
   fence: FenceIcon,
-  hammer: HammerIcon,
 } as const;
 
 export function Services({ services }: { services: CmsService[] }) {
@@ -86,7 +71,7 @@ export function Services({ services }: { services: CmsService[] }) {
           id="services-heading"
           eyebrow="Our Expertise"
           title="Services"
-          description="Premium aluminium, glass, steel and carpentry — designed, supplied and installed with precision across Sydney and Greater NSW."
+          description="Premium aluminium, glass and steel — designed, supplied and installed with precision across Sydney and Greater NSW."
           theme="dark"
         />
 

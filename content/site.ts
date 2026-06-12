@@ -1,6 +1,6 @@
 export const siteConfig = {
   name: "EK Constructions",
-  tagline: "Premium aluminium, glass, steel and carpentry solutions built with precision and experience.",
+  tagline: "Premium aluminium, glass and steel solutions built with precision and experience.",
   headline: "WE TURN IDEAS INTO",
   headlineAccent: "ICONIC SPACES",
   url: "https://ekconstructions.vercel.app",
@@ -69,12 +69,6 @@ export const services = [
     description:
       "Secure and elevate your property with our custom aluminium privacy screens and gates, precision-engineered for maximum structural strength, long-term durability, and zero rust. Available in low-maintenance, weather-resistant finishes — including realistic timber looks — they provide the ultimate blend of premium privacy, advanced security, and modern curb appeal.",
     icon: "fence",
-  },
-  {
-    id: "carpentry",
-    title: "Carpentry",
-    description: "Custom carpentry with precision and care.",
-    icon: "hammer",
   },
 ] as const;
 

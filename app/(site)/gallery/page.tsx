@@ -9,7 +9,7 @@ import type { Metadata } from "next";
 export const metadata: Metadata = {
   title: "Project Gallery",
   description:
-    "Explore aluminium, glass balustrade, steel, privacy screen and carpentry projects by EK Constructions across Sydney.",
+    "Explore aluminium, glass balustrade, steel and privacy screen projects by EK Constructions across Sydney.",
 };
 
 type GalleryPageProps = {
@@ -39,7 +39,7 @@ export default async function GalleryPage({ searchParams }: GalleryPageProps) {
             </h1>
             <p className="mt-5 max-w-2xl text-sm leading-relaxed text-ek-muted sm:text-base md:text-[17px] md:leading-relaxed">
               {projects.length > 0
-                ? "Browse completed aluminium glazing, frameless glass balustrades, privacy screens, steel work and carpentry across Sydney and Greater NSW."
+                ? "Browse completed aluminium glazing, frameless glass balustrades, privacy screens and steel work across Sydney and Greater NSW."
                 : "Our portfolio is being refreshed with recent project photography. Follow us on Instagram for the latest work, or get in touch for examples similar to your project."}
             </p>
 
@@ -77,7 +77,7 @@ export default async function GalleryPage({ searchParams }: GalleryPageProps) {
           projects={projects}
           title="All Projects"
           subtitle="Showcase"
-          description="Filter by trade to explore glazing, balustrades, privacy screens, steel, and carpentry."
+          description="Filter by trade to explore glazing, balustrades, privacy screens, and steel."
           sectionId="gallery-showcase"
           syncUrl
           urlCategory={urlCategory ?? null}

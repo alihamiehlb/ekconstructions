@@ -17,7 +17,7 @@ export const metadata: Metadata = {
     template: `%s | ${siteConfig.name}`,
   },
   description:
-    "EK Constructions — aluminium windows & doors, glass balustrades, steel work, privacy screens and carpentry across Sydney NSW.",
+    "EK Constructions — aluminium windows & doors, glass balustrades, steel work and privacy screens across Sydney NSW.",
   openGraph: {
     type: "website",
     locale: siteConfig.locale,

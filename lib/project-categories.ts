@@ -3,7 +3,6 @@ export const PROJECT_CATEGORIES = [
   "Glass Balustrade",
   "Aluminium Windows",
   "Privacy Screens",
-  "Carpentry",
   "Steel Work",
   "Recent Work",
 ] as const;
