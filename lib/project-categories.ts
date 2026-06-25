@@ -11,6 +11,16 @@ export type ProjectCategory = (typeof PROJECT_CATEGORIES)[number];
 
 export const DEFAULT_PROJECT_CATEGORY: ProjectCategory = "Recent Work";
 
+const LEGACY_CATEGORY_MAP: Record<string, ProjectCategory> = {
+  Carpentry: "Recent Work",
+};
+
+/** Map stored category strings to a valid project category. */
+export function normalizeProjectCategory(value: string): ProjectCategory {
+  if (isProjectCategory(value)) return value;
+  return LEGACY_CATEGORY_MAP[value] ?? DEFAULT_PROJECT_CATEGORY;
+}
+
 export function isProjectCategory(value: string): value is ProjectCategory {
   return (PROJECT_CATEGORIES as readonly string[]).includes(value);
 }

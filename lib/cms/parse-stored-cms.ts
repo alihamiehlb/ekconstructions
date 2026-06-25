@@ -1,7 +1,15 @@
 import { mergeCmsWithDefaults } from "@/lib/cms/merge";
 import { cmsSchema, projectSchema } from "@/lib/cms/schema";
 import type { CmsData } from "@/lib/cms/types";
+import { normalizeProjectCategory } from "@/lib/project-categories";
 import { z } from "zod";
+
+function normalizeProjectInput(item: unknown) {
+  if (typeof item !== "object" || item === null) return item;
+  const raw = item as Record<string, unknown>;
+  const category = typeof raw.category === "string" ? normalizeProjectCategory(raw.category) : raw.category;
+  return { ...raw, category };
+}
 
 /** Parse CMS JSON from storage; salvages projects when the full document fails validation. */
 export function parseStoredCms(data: unknown, updatedAt?: string | null): CmsData {
@@ -35,7 +43,7 @@ export function parseStoredCms(data: unknown, updatedAt?: string | null): CmsDat
 
   if (Array.isArray(raw.projects)) {
     partial.projects = raw.projects
-      .map((item) => projectSchema.safeParse(item))
+      .map((item) => projectSchema.safeParse(normalizeProjectInput(item)))
       .filter((r): r is z.SafeParseSuccess<z.infer<typeof projectSchema>> => r.success)
       .map((r) => r.data);
   }

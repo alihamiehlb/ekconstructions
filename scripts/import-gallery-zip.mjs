@@ -58,7 +58,6 @@ function inferCategory(text) {
   if (/\b(glass|balustrade|awning|frameless)\b|#glass/.test(t)) return "Glass Balustrade";
   if (/\b(aluminium|aluminum|window)\b|#aluminium/.test(t)) return "Aluminium Windows";
   if (/\b(privacy|screen)\b|#privacy/.test(t)) return "Privacy Screens";
-  if (/\b(carpentry|door|timber|deck|cabinet)\b|#carpentry/.test(t)) return "Carpentry";
   if (/\b(steel|wrought|metal)\b|#steel/.test(t)) return "Steel Work";
   return "Recent Work";
 }
